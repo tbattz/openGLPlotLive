@@ -1,0 +1,28 @@
+# - Locate FREETYPE library
+# This module defines
+# FREETYPE_LIBRARY, the name of the library to link against
+# FREETYPE_FOUND
+# To Adding search path, set FREETYPE_ROOT_DIR as follows
+# set(FREETYPE_ROOT_DIR "path/to/FREETYPE")
+# or launch cmake with -DFREETYPE_ROOT_DIR="/path/to/FREETYPE_ROOT_DIR".
+
+find_library(FREETYPE_LIBRARY freetype
+	/usr/lib64
+	/usr/lib
+	/usr/local/lib
+	/opt/local/lib
+	${CMAKE_SOURCE_DIR}/lib
+)
+
+IF(FREETYPE_LIBRARY)
+	SET( FREETYPE_FOUND TRUE )
+	SET( FREETYPE_LIBRARIES ${FREETYPE_LIBRARY} )
+ENDIF(FREETYPE_LIBRARY)
+IF(FREETYPE_FOUND)
+	IF(NOT FREETYPE_FIND_QUIETLY)
+	ENDIF(NOT FREETYPE_FIND_QUIETLY)
+ELSE(FREETYPE_FOUND)
+	IF(FREETYPE_FIND_REQUIRED)
+	MESSAGE(FATAL_ERROR "Could not find libFREETYPE")
+	ENDIF(FREETYPE_FIND_REQUIRED)
+ENDIF(FREETYPE_FOUND)
