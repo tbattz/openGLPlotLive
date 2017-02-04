@@ -11,8 +11,10 @@
 #include <string>
 #include <unistd.h>
 #include <memory>
-#include <chrono>
+#include <iostream>
 #include <thread>
+#include <chrono>
+
 
 // GLEW (OpenGL Extension Wrangler Library)
 #define GLEW_STATIC
@@ -24,6 +26,7 @@
 // openGL Includes
 #include "../src/shader.h"
 #include "../src/fonts.h"
+#include "../src/line2d.h"
 
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -83,11 +86,18 @@ int main(int argc, char* argv[]) {
 	// Test for objects in front of each other
 	glEnable(GL_DEPTH_TEST);
 
+	// Line Antialisaing
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glLineWidth(2);
+
 	/* ======================================================
 	 *                  	  Shaders
 	   ====================================================== */
 	// Setup and compile shaders
-	//Shader lightingShader("../Shaders/multiple_lighting.vs","../Shaders/multiple_lighting.frag");
+	Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
 
 	/* ======================================================
 	 *                         Fonts
@@ -97,6 +107,22 @@ int main(int argc, char* argv[]) {
 
 	// Load Telemetry Font
 	//GLFont telemFont = GLFont(FONTPATH);
+
+	/* ======================================================
+	 *                      Simple Plot
+   	   ====================================================== */
+
+	vector<pt2D> graph;
+	// Create Data
+	for(int i = 0; i < 2000; i++) {
+		pt2D pt;
+		float x = i/1000.0;
+		pt.x = x;
+		pt.y = x*x;
+		graph.push_back(pt);
+	}
+
+	Line2D plot1(graph);
 
 	/* ======================================================
 	 *                     Drawing Loop
@@ -111,12 +137,13 @@ int main(int argc, char* argv[]) {
 		glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		plot1.Draw(plot2dShader);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
 
-		// Sleep to lower framerate
-		//std::this_thread::sleep_for(std::chrono::milliseconds(int(1000.0/30.0)));
+		// Sleep
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	}
 
