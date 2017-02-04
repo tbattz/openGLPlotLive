@@ -24,9 +24,15 @@ struct pt2D {
 
 class Line2D {
 public:
+	/* Buffers */
 	GLuint VAO, VBO;
 	int nPts = 0;
+
+	/* Data */
 	vector<pt2D> dataPt;
+
+	/* Axes */
+
 
 	Line2D(vector<pt2D> dataPt) {
 		this->dataPt = dataPt;

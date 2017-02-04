@@ -51,8 +51,14 @@ bool toggleKeys[1024];
 	#define FONTPATH "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf"
 #endif
 
+// Screen Size
+float screenHeight = 800.0;
+float screenWidth  = 800.0;
+
 // Functions
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void window_size_callback(GLFWwindow* window, int width, int height);
+glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight);
 
 
 int main(int argc, char* argv[]) {
@@ -66,15 +72,12 @@ int main(int argc, char* argv[]) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE); // Set core profile
 
 	// Screen Properties
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	GLfloat screenHeight = 300;
-	GLfloat screenWidth  = 300;
-
 	GLFWwindow* window = glfwCreateWindow(screenWidth,screenHeight,"openGLPlotLive",nullptr,nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Setup Callbacks for user input
 	glfwSetKeyCallback(window,key_callback);
+	glfwSetWindowSizeCallback(window,window_size_callback);
 
 	// Initialise GLEW - setup OpenGL pointers
 	glewExperimental = GL_TRUE;
@@ -87,11 +90,11 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 
 	// Line Antialisaing
-	glEnable(GL_BLEND);
+	/*glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glLineWidth(2);
+	glLineWidth(1);*/
 
 	/* ======================================================
 	 *                  	  Shaders
@@ -124,6 +127,8 @@ int main(int argc, char* argv[]) {
 
 	Line2D plot1(graph);
 
+	float marginRatio = 0.1;
+
 	/* ======================================================
 	 *                     Drawing Loop
 	   ====================================================== */
@@ -137,7 +142,25 @@ int main(int argc, char* argv[]) {
 		glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Change viewport area
+		glViewport(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
+		// Set Scissor Area
+		glScissor(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
+
+
+		// Enable Scissor Test
+		glEnable(GL_SCISSOR_TEST);
+
+		// Draw Lines
+		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, screenWidth/4.0, screenHeight/4.0, screenWidth, screenHeight);
+		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
 		plot1.Draw(plot2dShader);
+
+		// Change viewport back to full screen
+		glViewport(0,0,screenWidth,screenHeight);
+		// Disable Scissor Testing
+		glDisable(GL_SCISSOR_TEST);
+
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -167,4 +190,32 @@ void key_callback(GLFWwindow* window,int key,int scancode, int action, int mode)
 	} else if (action == GLFW_RELEASE) {
 		keys[key] = false;
 	}
+}
+
+// Window Resized
+void window_size_callback(GLFWwindow* window, int width, int height) {
+	// Update stored window size variable
+	screenWidth  = width;
+	screenHeight = height;
+}
+
+// Transform to custom viewports
+glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight) {
+	// Creates transform matrix for a custom sized viewport
+	// xc:			The center x coordinate (in -1 to 1)
+	// yc:			The center left corner y coordinate (in -1 to 1)
+	// width:		The width of the new viewport
+	// height:		The height of the new viewport
+	// winWidth: The width of the original window
+	// winHeight:	The height of the original window
+
+	// Translate by offset
+	glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(xc, yc, 0));
+
+	// Scale new viewport
+	float scaleX = width/winWidth;
+	float scaleY = height/winHeight;
+	glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX, scaleY, 1));
+
+	return scale;
 }
