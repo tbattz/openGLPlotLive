@@ -112,6 +112,30 @@ int main(int argc, char* argv[]) {
 	//GLFont telemFont = GLFont(FONTPATH);
 
 	/* ======================================================
+	 *                         Axes
+   	   ====================================================== */
+	/* Create Buffers */
+	GLuint VAO, VBO;
+	glGenVertexArrays(1,&VAO);
+	glGenBuffers(1,&VBO);
+
+	/* Setup Buffers */
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER,VBO);
+	vector<GLfloat> boxVerts = { -1, -1,
+								  1, -1,
+								  1,  1,
+								  -1, 1};
+	glBufferData(GL_ARRAY_BUFFER, boxVerts.size()*sizeof(GLfloat),&boxVerts[0],GL_STATIC_DRAW);
+
+	/* Position Attributes */
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+	glBindVertexArray(0);
+
+
+	/* ======================================================
 	 *                      Simple Plot
    	   ====================================================== */
 
@@ -127,7 +151,7 @@ int main(int argc, char* argv[]) {
 
 	Line2D plot1(graph);
 
-	float marginRatio = 0.1;
+	float marginRatio = 0.05; // Ratio of screen width/height
 
 	/* ======================================================
 	 *                     Drawing Loop
@@ -144,23 +168,33 @@ int main(int argc, char* argv[]) {
 
 		// Change viewport area
 		glViewport(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
-		// Set Scissor Area
-		glScissor(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
-
-
-		// Enable Scissor Test
-		glEnable(GL_SCISSOR_TEST);
 
 		// Draw Lines
-		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, screenWidth/4.0, screenHeight/4.0, screenWidth, screenHeight);
+		float winHeight = screenHeight;
+		float winWidth = screenWidth;
+		float axesHeight = screenHeight*(1-(2*marginRatio));
+		float axesWidth = screenWidth*(1-(2*marginRatio));
+		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
 		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
 		plot1.Draw(plot2dShader);
 
-		// Change viewport back to full screen
-		glViewport(0,0,screenWidth,screenHeight);
+		// Enable Scissor Test
+		glEnable(GL_SCISSOR_TEST);
+		// Set Scissor Area
+		glScissor(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
 		// Disable Scissor Testing
 		glDisable(GL_SCISSOR_TEST);
 
+		// Draw Axes
+		plot2dShader.Use();
+		viewportTrans = viewportTransform(0.0, 0.0, winWidth, winHeight, winWidth, winHeight);
+		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_LINE_LOOP,0,4);
+		glBindVertexArray(0);
+
+		// Change viewport back to full screen
+		glViewport(0,0,screenWidth,screenHeight);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -203,10 +237,10 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight) {
 	// Creates transform matrix for a custom sized viewport
 	// xc:			The center x coordinate (in -1 to 1)
-	// yc:			The center left corner y coordinate (in -1 to 1)
+	// yc:			The center y coordinate (in -1 to 1)
 	// width:		The width of the new viewport
 	// height:		The height of the new viewport
-	// winWidth: The width of the original window
+	// winWidth: 	The width of the original window
 	// winHeight:	The height of the original window
 
 	// Translate by offset
