@@ -27,6 +27,7 @@
 #include "../src/shader.h"
 #include "../src/fonts.h"
 #include "../src/line2d.h"
+#include "../src/plot.h"
 
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -96,6 +97,12 @@ int main(int argc, char* argv[]) {
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glLineWidth(1);*/
 
+	// Line Width
+	glLineWidth(1);
+
+	// Create Plot
+	Plot myplot(0,0,1,1);
+
 	/* ======================================================
 	 *                  	  Shaders
 	   ====================================================== */
@@ -115,24 +122,24 @@ int main(int argc, char* argv[]) {
 	 *                         Axes
    	   ====================================================== */
 	/* Create Buffers */
-	GLuint VAO, VBO;
-	glGenVertexArrays(1,&VAO);
-	glGenBuffers(1,&VBO);
+	//GLuint VAO, VBO;
+	//glGenVertexArrays(1,&VAO);
+	//glGenBuffers(1,&VBO);
 
 	/* Setup Buffers */
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER,VBO);
-	vector<GLfloat> boxVerts = { -1, -1,
-								  1, -1,
-								  1,  1,
-								  -1, 1};
-	glBufferData(GL_ARRAY_BUFFER, boxVerts.size()*sizeof(GLfloat),&boxVerts[0],GL_STATIC_DRAW);
+	//glBindVertexArray(VAO);
+	//glBindBuffer(GL_ARRAY_BUFFER,VBO);
+	//vector<GLfloat> boxVerts = { -1, -1,
+	//							  1, -1,
+	//							  1,  1,
+	//							  -1, 1};
+	//glBufferData(GL_ARRAY_BUFFER, boxVerts.size()*sizeof(GLfloat),&boxVerts[0],GL_STATIC_DRAW);
 
 	/* Position Attributes */
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
 
 	/* ======================================================
@@ -151,7 +158,8 @@ int main(int argc, char* argv[]) {
 
 	Line2D plot1(graph);
 
-	float marginRatio = 0.05; // Ratio of screen width/height
+	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
+	float tickRatio = 0.025; //
 
 	/* ======================================================
 	 *                     Drawing Loop
@@ -172,8 +180,8 @@ int main(int argc, char* argv[]) {
 		// Draw Lines
 		float winHeight = screenHeight;
 		float winWidth = screenWidth;
-		float axesHeight = screenHeight*(1-(2*marginRatio));
-		float axesWidth = screenWidth*(1-(2*marginRatio));
+		float axesHeight = screenHeight*(1-(2*marginRatio)+(2*tickRatio));
+		float axesWidth = screenWidth*(1-(2*marginRatio)+(2*tickRatio));
 		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
 		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
 		plot1.Draw(plot2dShader);
@@ -181,20 +189,18 @@ int main(int argc, char* argv[]) {
 		// Enable Scissor Test
 		glEnable(GL_SCISSOR_TEST);
 		// Set Scissor Area
-		glScissor(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
+		glScissor(screenWidth*(marginRatio+tickRatio),screenHeight*(marginRatio+tickRatio),(1-(2*marginRatio)+(2*tickRatio))*screenWidth,(1-(2*marginRatio)+(2*tickRatio))*screenHeight);
 		// Disable Scissor Testing
 		glDisable(GL_SCISSOR_TEST);
 
-		// Draw Axes
-		plot2dShader.Use();
-		viewportTrans = viewportTransform(0.0, 0.0, winWidth, winHeight, winWidth, winHeight);
-		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_LINE_LOOP,0,4);
-		glBindVertexArray(0);
-
 		// Change viewport back to full screen
 		glViewport(0,0,screenWidth,screenHeight);
+
+		// Draw Axes
+		viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
+		myplot.Draw(plot2dShader,viewportTrans);
+
+
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -236,7 +242,7 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 // Transform to custom viewports
 glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight) {
 	// Creates transform matrix for a custom sized viewport
-	// xc:			The center x coordinate (in -1 to 1)
+	// xc:			The center x coordinate (in -1 to 1)x
 	// yc:			The center y coordinate (in -1 to 1)
 	// width:		The width of the new viewport
 	// height:		The height of the new viewport
