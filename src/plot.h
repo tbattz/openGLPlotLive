@@ -26,7 +26,7 @@ public:
 	// Area
 	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 
-	Plot(float x, float y, float width, float height) : axes(0.15,0.15,0.80,0.75,width,height) {
+	Plot(float x, float y, float width, float height) : axes(0.15,0.15,0.80,0.75) {
 		// Set Size and Position
 		this->x = x;
 		this->y = y;

@@ -19,6 +19,11 @@ public:
 	float y; // Location of bottom left corner y position of axes in 0 to 1 (in plot area)
 	float width; // Width of axes as a proportion of the current plot width, including tick marks
 	float height; // Height of axes as a proportion of the current plot height, including tick marks
+	// Axes Limits
+	float xmin = -1.0;
+	float xmax = 1.0;
+	float ymin = -1.0;
+	float ymax = 1.0;
 	// Axes Ticks
 	float majorTickSizeW = 0.02; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.01; // Size of minor axes ticks (proportional to plot area width)
@@ -28,24 +33,19 @@ public:
 	GLuint VAO, VBO;
 	// Axes Box
 	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
-	// Plot Properties
-	float plotWidth;	// In pixels
-	float plotHeight;	// In pixels
+	// Line Data
+	vector<Line2D> lines;
 
-
-	Axes(float x,float y, float width, float height, float plotWidth, float plotHeight) {
+	Axes(float x,float y, float width, float height) {
 		// Setup Position
 		this->x = x;
 		this->y = y;
 		this->width = width;
 		this->height = height;
 
-		// Store Plot Properties
-		this->plotWidth = plotWidth;
-		this->plotHeight = plotHeight;
-
 		// Setup Buffers
 		createAndSetupBuffers();
+
 	}
 
 	void createAndSetupBuffers() {
@@ -70,12 +70,16 @@ public:
 		// Calculate Viewport Transformation
 		glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
 		glm::mat4 axesViewportTrans = plotViewportTrans * viewportTransform(x+majorTickSizeW, y+majorTickSizeH, width - majorTickSizeW, height - majorTickSizeH);
+		glm::mat4 axesLimitsViewportTrans = axesViewportTrans * scale2AxesLimits();
 
 		// Draw Axes Box Outline
-		drawAxesAreaOutline(shader,axesAreaViewportTrans);
+		drawAxesAreaOutline(shader, axesAreaViewportTrans);
 
 		// Draw Axes Box
-		drawAxesBox(shader,axesViewportTrans);
+		drawAxesBox(shader, axesViewportTrans);
+
+		// Draw Lines
+		drawLines(shader, axesLimitsViewportTrans);
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {
@@ -98,6 +102,35 @@ public:
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_LINE_LOOP,0,4);
 		glBindVertexArray(0);
+	}
+
+	void addLine(Line2D line) {
+		// Adds a line to the axes
+		lines.push_back(line);
+	}
+
+	void drawLines(Shader shader, glm::mat4 axesViewportTrans) {
+		// Draws the lines on the axes
+		for(unsigned int i=0; i<lines.size(); i++) {
+			lines[i].Draw(shader, axesViewportTrans);
+		}
+	}
+
+	glm::mat4 scale2AxesLimits() {
+		// Creates a transformation matrix to scale points to the axes limits
+		// Calculate center of current limits
+		float xc = (xmin + xmax)/2.0;
+		float yc = (ymin + ymax)/2.0;
+
+		// Translate by offset
+		glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(xc, yc,0));
+
+		// Scale to limits
+		float scaleX = (xmax-xmin)/2.0;
+		float scaleY = (ymax-ymin)/2.0;
+		glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX,scaleY,1));
+
+		return scale;
 	}
 
 };
