@@ -143,8 +143,7 @@ int main(int argc, char* argv[]) {
    	   ====================================================== */
 
 	// Create Plot
-	WindowProperties winProp(screenHeight,screenWidth);
-	Plot myplot(0.375, 0.625, 0.75, 0.75, &winProp);
+	Plot myplot(0.0, 0.25, 0.75, 0.75);
 
 	vector<pt2D> graph;
 	vector<pt2D> graph2;
@@ -193,7 +192,7 @@ int main(int argc, char* argv[]) {
 		float winWidth = screenWidth;
 		float axesHeight = screenHeight*(1-(2*marginRatio)+(2*tickRatio));
 		float axesWidth = screenWidth*(1-(2*marginRatio)+(2*tickRatio));
-		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
+		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight);
 		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
 		//plot1.Draw(plot2dShader);
 		//plot2.Draw(plot2dShader);
@@ -210,7 +209,7 @@ int main(int argc, char* argv[]) {
 
 		// Draw Axes
 		//viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
-		myplot.Draw(plot2dShader,viewportTrans);
+		myplot.Draw(plot2dShader);
 
 
 
