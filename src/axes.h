@@ -13,8 +13,8 @@ public:
 	// Position
 	float x; // Location of x position of axes in 0 to 1 (in plot area)
 	float y; // Location of y position of axes in 0 to 1 (in plot area)
-	float width; // Width of axes as a proportion of the current plot width
-	float height; // Height of axes as a proportion of the current plot heigth
+	float width; // Width of axes as a proportion of the current plot width, including tick marks
+	float height; // Height of axes as a proportion of the current plot height, including tick marks
 	// Axes Ticks
 	float majorTickSizeW = 0.02; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.01; // Size of minor axes ticks (proportional to plot area width)
@@ -23,10 +23,7 @@ public:
 	// Buffers
 	GLuint VAO, VBO;
 	// Axes Box
-	vector<GLfloat> boxVerts = { -1, -1,
-								  1, -1,
-								  1,  1,
-								  -1, 1};
+	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 
 
 	Axes(float x,float y, float width, float height) {
@@ -40,10 +37,8 @@ public:
 		createAndSetupBuffers();
 	}
 
-	void createAndSetupBuffers() {vector<GLfloat> boxVerts = { -1, -1,
-			  1, -1,
-			  1,  1,
-			  -1, 1};
+	void createAndSetupBuffers() {
+		vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 		/* Create Buffers */
 		glGenVertexArrays(1,&VAO);
 		glGenBuffers(1,&VBO);

@@ -59,7 +59,6 @@ float screenWidth  = 800.0;
 // Functions
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void window_size_callback(GLFWwindow* window, int width, int height);
-glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight);
 
 
 int main(int argc, char* argv[]) {
@@ -99,9 +98,6 @@ int main(int argc, char* argv[]) {
 
 	// Line Width
 	glLineWidth(1);
-
-	// Create Plot
-	Plot myplot(0,0,1,1);
 
 	/* ======================================================
 	 *                  	  Shaders
@@ -146,9 +142,14 @@ int main(int argc, char* argv[]) {
 	 *                      Simple Plot
    	   ====================================================== */
 
+	// Create Plot
+	WindowProperties winProp(screenHeight,screenWidth);
+	Plot myplot(0.375, 0.625, 0.75, 0.75, &winProp);
+
 	vector<pt2D> graph;
+	vector<pt2D> graph2;
 	// Create Data
-	for(int i = 0; i < 2000; i++) {
+	for(int i = 0; i < 1000; i++) {
 		pt2D pt;
 		float x = i/1000.0;
 		pt.x = x;
@@ -156,7 +157,16 @@ int main(int argc, char* argv[]) {
 		graph.push_back(pt);
 	}
 
-	Line2D plot1(graph);
+	for(int i=-1000; i<1000; i++) {
+		pt2D pt2;
+		float x = i/1000.0;
+		pt2.x = x;
+		pt2.y = x;
+		graph2.push_back(pt2);
+	}
+
+	//Line2D plot1(graph);
+	//Line2D plot2(graph2);
 
 	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
 	float tickRatio = 0.025; //
@@ -171,7 +181,8 @@ int main(int argc, char* argv[]) {
 		glfwPollEvents();
 
 		// Clear the colour buffer
-		glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
+		//glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Change viewport area
@@ -184,7 +195,8 @@ int main(int argc, char* argv[]) {
 		float axesWidth = screenWidth*(1-(2*marginRatio)+(2*tickRatio));
 		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
 		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
-		plot1.Draw(plot2dShader);
+		//plot1.Draw(plot2dShader);
+		//plot2.Draw(plot2dShader);
 
 		// Enable Scissor Test
 		glEnable(GL_SCISSOR_TEST);
@@ -197,7 +209,7 @@ int main(int argc, char* argv[]) {
 		glViewport(0,0,screenWidth,screenHeight);
 
 		// Draw Axes
-		viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
+		//viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
 		myplot.Draw(plot2dShader,viewportTrans);
 
 
@@ -239,23 +251,3 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 	screenHeight = height;
 }
 
-// Transform to custom viewports
-glm::mat4 viewportTransform(float xc, float yc, float width, float height, float winWidth, float winHeight) {
-	// Creates transform matrix for a custom sized viewport
-	// xc:			The center x coordinate (in -1 to 1)x
-	// yc:			The center y coordinate (in -1 to 1)
-	// width:		The width of the new viewport
-	// height:		The height of the new viewport
-	// winWidth: 	The width of the original window
-	// winHeight:	The height of the original window
-
-	// Translate by offset
-	glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(xc, yc, 0));
-
-	// Scale new viewport
-	float scaleX = width/winWidth;
-	float scaleY = height/winHeight;
-	glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX, scaleY, 1));
-
-	return scale;
-}
