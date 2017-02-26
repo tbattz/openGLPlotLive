@@ -31,8 +31,11 @@ public:
 	float minorTickSizeH = 0.01; // Size of minor axes ticks (proportional to plot area height)
 	// Buffers
 	GLuint VAO, VBO;
+	GLuint axVAO, axVBO;
 	// Axes Box
 	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
+	// Axes Lines
+	vector <GLfloat> axesVerts = {-1, -1,   1, -1,    1,  1,    -1, 1};
 	// Line Data
 	vector<Line2D> lines;
 
@@ -45,11 +48,11 @@ public:
 
 		// Setup Buffers
 		createAndSetupBuffers();
+		createAndSetupAxesLineBuffers();
 
 	}
 
 	void createAndSetupBuffers() {
-		vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 		/* Create Buffers */
 		glGenVertexArrays(1,&VAO);
 		glGenBuffers(1,&VBO);
@@ -66,6 +69,24 @@ public:
 		glBindVertexArray(0);
 	}
 
+	void createAndSetupAxesLineBuffers() {
+		/* Create Buffers */
+		glGenVertexArrays(1,&axVAO);
+		glGenBuffers(1,&axVBO);
+
+		/* Setup Buffers */
+		glBindVertexArray(axVAO);
+		glBindBuffer(GL_ARRAY_BUFFER,axVBO);
+		glBufferData(GL_ARRAY_BUFFER, axesVerts.size()*2*sizeof(GLfloat),&axesVerts[0],GL_DYNAMIC_DRAW);
+
+		/* Position Attributes */
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0,(GLvoid*)0);
+
+		glBindVertexArray(0); // Unbind VAO
+
+	}
+
 	void Draw(Shader shader,glm::mat4 plotViewportTrans) {
 		// Calculate Viewport Transformation
 		glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
@@ -78,8 +99,12 @@ public:
 		// Draw Axes Box
 		drawAxesBox(shader, axesViewportTrans);
 
+		// Draw Axes Lines
+		drawAxesLines(shader, axesLimitsViewportTrans);
+
 		// Draw Lines
 		drawLines(shader, axesLimitsViewportTrans);
+
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {
@@ -109,11 +134,27 @@ public:
 		lines.push_back(line);
 	}
 
-	void drawLines(Shader shader, glm::mat4 axesViewportTrans) {
+	void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
 		// Draws the lines on the axes
 		for(unsigned int i=0; i<lines.size(); i++) {
-			lines[i].Draw(shader, axesViewportTrans);
+			lines[i].Draw(shader, axesLimitsViewportTrans);
 		}
+	}
+
+	void drawAxesLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
+		// Update Line Data
+		axesVerts = {xmin, 0.0,   xmax, 0.0,   0.0, ymin,   0.0, ymax};
+		glBindBuffer(GL_ARRAY_BUFFER,axVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, axesVerts.size()*2*sizeof(GLfloat), &axesVerts[0]) ;
+		// Draws axes lines in grey
+		shader.Use();
+		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitsViewportTrans));
+		glm::vec4 inColor = glm::vec4(0.5,0.5,0.5,1.0);
+		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
+		glBindVertexArray(axVAO);
+		glDrawArrays(GL_LINES,0,4);
+		glBindVertexArray(0);
+
 	}
 
 	glm::mat4 scale2AxesLimits() {
