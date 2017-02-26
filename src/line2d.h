@@ -63,14 +63,14 @@ public:
 
 	}
 
-	void Draw(Shader shader, glm::mat4 axesViewportTrans) {
+	void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
 		// Check if number of points changed
 
 		// Update buffer and attributes
 
 		// Draw Plot
 		shader.Use();
-		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesViewportTrans));
+		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitViewportTrans));
 		glm::vec4 inColor = glm::vec4(1.0, 1.0, 1.0, 1.0);
 		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
 		glBindVertexArray(VAO);

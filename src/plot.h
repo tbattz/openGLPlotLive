@@ -20,7 +20,6 @@ public:
 	float height;		// Height of plot as a proportion of the current window height
 	//Axes* axesPt;
 	Axes axes;
-
 	// Buffers
 	GLuint VAO, VBO;
 	// Area

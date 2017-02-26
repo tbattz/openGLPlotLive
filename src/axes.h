@@ -8,6 +8,9 @@
 #ifndef AXES_H_
 #define AXES_H_
 
+// GLFW (Multi-platform library for OpenGL)
+#include <GLFW/glfw3.h>
+
 #include "../src/transforms.h"
 #include "../src/plot.h"
 
@@ -23,7 +26,7 @@ public:
 	float xmin = -2.0;
 	float xmax = 2.0;
 	float ymin = -2.0;
-	float ymax = 4.0;
+	float ymax = 2.0;
 	// Axes Ticks
 	float majorTickSizeW = 0.02; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.01; // Size of minor axes ticks (proportional to plot area width)
@@ -103,8 +106,21 @@ public:
 		drawAxesLines(shader, axesLimitsViewportTrans);
 
 		// Draw Lines
+		// Calculate corners of axes limits area
+		glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1);
+		glm::vec4 b = axesLimitsViewportTrans * glm::vec4(xmax,ymax,0,1);
+		// Transform back to 0 to 1
+		float x1 = 0.5*a[0] + 0.5;
+		float y1 = 0.5*a[1] + 0.5;
+		float x2 = 0.5*b[0] + 0.5;
+		float y2 = 0.5*b[1] + 0.5;
+		// Enable Scissor Test
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(x1*800.0,y1*800.0,(x2-x1)*800.0,(y2-y1)*800.0);
+		// Draw All Lines
 		drawLines(shader, axesLimitsViewportTrans);
-
+		// Disable Scissor Testing
+		glDisable(GL_SCISSOR_TEST);
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {

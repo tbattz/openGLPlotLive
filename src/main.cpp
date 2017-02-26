@@ -28,6 +28,7 @@
 #include "../src/fonts.h"
 #include "../src/line2d.h"
 #include "../src/plot.h"
+#include "../src/transforms.h"
 
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -99,6 +100,9 @@ int main(int argc, char* argv[]) {
 	// Line Width
 	glLineWidth(1);
 
+	// Create Window Dimensions Class
+	WinDimensions winDim(screenWidth,screenHeight);
+
 	/* ======================================================
 	 *                  	  Shaders
 	   ====================================================== */
@@ -113,30 +117,6 @@ int main(int argc, char* argv[]) {
 
 	// Load Telemetry Font
 	//GLFont telemFont = GLFont(FONTPATH);
-
-	/* ======================================================
-	 *                         Axes
-   	   ====================================================== */
-	/* Create Buffers */
-	//GLuint VAO, VBO;
-	//glGenVertexArrays(1,&VAO);
-	//glGenBuffers(1,&VBO);
-
-	/* Setup Buffers */
-	//glBindVertexArray(VAO);
-	//glBindBuffer(GL_ARRAY_BUFFER,VBO);
-	//vector<GLfloat> boxVerts = { -1, -1,
-	//							  1, -1,
-	//							  1,  1,
-	//							  -1, 1};
-	//glBufferData(GL_ARRAY_BUFFER, boxVerts.size()*sizeof(GLfloat),&boxVerts[0],GL_STATIC_DRAW);
-
-	/* Position Attributes */
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-
-	//glBindVertexArray(0);
-
 
 	/* ======================================================
 	 *                      Simple Plot
@@ -189,31 +169,18 @@ int main(int argc, char* argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Change viewport area
-		glViewport(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
+		//glViewport(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
 
-		// Draw Lines
-		float winHeight = screenHeight;
-		float winWidth = screenWidth;
-		float axesHeight = screenHeight*(1-(2*marginRatio)+(2*tickRatio));
-		float axesWidth = screenWidth*(1-(2*marginRatio)+(2*tickRatio));
-		glm::mat4 viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight);
-		glUniformMatrix4fv(glGetUniformLocation(plot2dShader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(viewportTrans));
-		//plot1.Draw(plot2dShader);
-		//plot2.Draw(plot2dShader);
 
-		// Enable Scissor Test
-		glEnable(GL_SCISSOR_TEST);
 		// Set Scissor Area
-		glScissor(screenWidth*(marginRatio+tickRatio),screenHeight*(marginRatio+tickRatio),(1-(2*marginRatio)+(2*tickRatio))*screenWidth,(1-(2*marginRatio)+(2*tickRatio))*screenHeight);
-		// Disable Scissor Testing
-		glDisable(GL_SCISSOR_TEST);
 
 		// Change viewport back to full screen
-		glViewport(0,0,screenWidth,screenHeight);
+		//glViewport(0,0,screenWidth,screenHeight);
 
-		// Draw Axes
-		//viewportTrans = viewportTransform(0.0, 0.0, axesWidth, axesHeight, winWidth, winHeight);
+		// Draw Plot
 		myplot.Draw(plot2dShader);
+
+
 
 
 
