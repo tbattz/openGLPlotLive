@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
 
 	vector<pt2D> graph;
 	vector<pt2D> graph2;
+	vector<pt2D> graph3;
 	// Create Data
 	for(int i = 0; i < 2000; i++) {
 		pt2D pt;
@@ -144,12 +145,22 @@ int main(int argc, char* argv[]) {
 		graph2.push_back(pt2);
 	}
 
+	for(int i=-3000; i<3000 ; i++) {
+		pt2D pt3;
+		float x = i/1000.0;
+		pt3.x = x;
+		pt3.y = sin(x);
+		graph3.push_back(pt3);
+	}
+
 	Line2D plot1(graph);
 	Line2D plot2(graph2);
+	Line2D plot3(graph3);
 
 	// Add lines to axes
 	myplot.axes.addLine(plot1);
 	myplot.axes.addLine(plot2);
+	myplot.axes.addLine(plot3);
 
 	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
 	float tickRatio = 0.025; //
