@@ -20,10 +20,10 @@ public:
 	float width; // Width of axes as a proportion of the current plot width, including tick marks
 	float height; // Height of axes as a proportion of the current plot height, including tick marks
 	// Axes Limits
-	float xmin = -1.0;
-	float xmax = 1.0;
-	float ymin = -1.0;
-	float ymax = 1.0;
+	float xmin = -2.0;
+	float xmax = 2.0;
+	float ymin = -2.0;
+	float ymax = 4.0;
 	// Axes Ticks
 	float majorTickSizeW = 0.02; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.01; // Size of minor axes ticks (proportional to plot area width)
@@ -119,15 +119,15 @@ public:
 	glm::mat4 scale2AxesLimits() {
 		// Creates a transformation matrix to scale points to the axes limits
 		// Calculate center of current limits
-		float xc = (xmin + xmax)/2.0;
-		float yc = (ymin + ymax)/2.0;
+		float xShift = ((xmin+xmax)/2.0)/(xmax-xmin) * 2.0; // xavg/width * 2.0, *2 to take it to -1 to 1
+		float yShift = ((ymin+ymax)/2.0)/(ymax-ymin) * 2.0; // yavg/height * 2.0, *2 to take it to -1 to 1
 
 		// Translate by offset
-		glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(xc, yc,0));
+		glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(-xShift, -yShift,0));
 
 		// Scale to limits
-		float scaleX = (xmax-xmin)/2.0;
-		float scaleY = (ymax-ymin)/2.0;
+		float scaleX = 2.0/(xmax-xmin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+		float scaleY = 2.0/(ymax-ymin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
 		glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX,scaleY,1));
 
 		return scale;

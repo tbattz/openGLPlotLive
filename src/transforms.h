@@ -12,8 +12,8 @@
 // Transform to custom viewports
 glm::mat4 viewportTransform(float x, float y, float width, float height) {
 	// Creates transform matrix for a custom sized viewport
-	// xc:			The bottom left corner x coordinate (in 0 to 1)
-	// yc:			The bottom left corner y coordinate (in 0 to 1)
+	// x:			The bottom left corner x coordinate (in 0 to 1)
+	// y:			The bottom left corner y coordinate (in 0 to 1)
 	// width:		The width of the new viewport (in 0 to 1)
 	// height:		The height of the new viewport (in 0 to 1)
 
