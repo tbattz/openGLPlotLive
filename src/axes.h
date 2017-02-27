@@ -41,13 +41,16 @@ public:
 	vector <GLfloat> axesVerts = {-1, -1,   1, -1,    1,  1,    -1, 1};
 	// Line Data
 	vector<Line2D> lines;
+	// Window Dimensions
+	WinDimensions* winDimPt;
 
-	Axes(float x,float y, float width, float height) {
+	Axes(float x,float y, float width, float height, WinDimensions* winDimPt) {
 		// Setup Position
 		this->x = x;
 		this->y = y;
 		this->width = width;
 		this->height = height;
+		this->winDimPt = winDimPt;
 
 		// Setup Buffers
 		createAndSetupBuffers();
@@ -116,7 +119,7 @@ public:
 		float y2 = 0.5*b[1] + 0.5;
 		// Enable Scissor Test
 		glEnable(GL_SCISSOR_TEST);
-		glScissor(x1*800.0,y1*800.0,(x2-x1)*800.0,(y2-y1)*800.0);
+		glScissor(x1*(winDimPt->width),y1*(winDimPt->height),(x2-x1)*(winDimPt->width),(y2-y1)*(winDimPt->height));
 		// Draw All Lines
 		drawLines(shader, axesLimitsViewportTrans);
 		// Disable Scissor Testing

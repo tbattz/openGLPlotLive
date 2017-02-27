@@ -24,13 +24,16 @@ public:
 	GLuint VAO, VBO;
 	// Area
 	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
+	// Window Dimensions
+	WinDimensions* winDimPt;
 
-	Plot(float x, float y, float width, float height) : axes(0.15,0.15,0.80,0.75) {
+	Plot(float x, float y, float width, float height, WinDimensions* winDimPt) : axes(0.15,0.15,0.80,0.75,winDimPt) {
 		// Set Size and Position
 		this->x = x;
 		this->y = y;
 		this->width = width;
 		this->height = height;
+		this->winDimPt = winDimPt;
 
 		// Setup Buffers
 		createAndSetupBuffers();

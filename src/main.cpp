@@ -100,9 +100,6 @@ int main(int argc, char* argv[]) {
 	// Line Width
 	glLineWidth(1);
 
-	// Create Window Dimensions Class
-	WinDimensions winDim(screenWidth,screenHeight);
-
 	/* ======================================================
 	 *                  	  Shaders
 	   ====================================================== */
@@ -122,8 +119,12 @@ int main(int argc, char* argv[]) {
 	 *                      Simple Plot
    	   ====================================================== */
 
+	// Create Window Dimensions Class
+	WinDimensions winDim(screenWidth,screenHeight);
+
+
 	// Create Plot
-	Plot myplot(0.0, 0.25, 0.75, 0.75);
+	Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim);
 
 	vector<pt2D> graph;
 	vector<pt2D> graph2;
