@@ -40,8 +40,8 @@ glm::mat4 viewportTransform(float x, float y, float width, float height) {
 
 class WinDimensions {
 public:
-	float width;
-	float height;
+	int width;
+	int height;
 
 	WinDimensions(float width, float height) {
 		this->width = width;

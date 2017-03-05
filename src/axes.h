@@ -110,8 +110,8 @@ public:
 
 		// Draw Lines
 		// Calculate corners of axes limits area
-		glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1);
-		glm::vec4 b = axesLimitsViewportTrans * glm::vec4(xmax,ymax,0,1);
+		glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1); // -1 to 1
+		glm::vec4 b = axesLimitsViewportTrans * glm::vec4(xmax,ymax,0,1); // -1 to 1
 		// Transform back to 0 to 1
 		float x1 = 0.5*a[0] + 0.5;
 		float y1 = 0.5*a[1] + 0.5;

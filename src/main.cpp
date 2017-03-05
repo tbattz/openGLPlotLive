@@ -175,6 +175,9 @@ int main(int argc, char* argv[]) {
 		// Check Events
 		glfwPollEvents();
 
+		// Update window size
+		glfwGetWindowSize(window,&(winDim.width),&(winDim.height));
+
 		// Clear the colour buffer
 		//glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -231,5 +234,8 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 	// Update stored window size variable
 	screenWidth  = width;
 	screenHeight = height;
+	// Update Viewport Dimensions
+	glViewport(0, 0, width, height);
+
 }
 
