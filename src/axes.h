@@ -28,17 +28,24 @@ public:
 	float ymin = -2.0;
 	float ymax = 2.0;
 	// Axes Ticks
-	float majorTickSizeW = 0.02; // Size of major axes ticks (proportional to plot area width)
-	float minorTickSizeW = 0.01; // Size of minor axes ticks (proportional to plot area width)
-	float majorTickSizeH = 0.02; // Size of major axes ticks (proportional to plot area height)
-	float minorTickSizeH = 0.01; // Size of minor axes ticks (proportional to plot area height)
+	float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
+	float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
+	float majorTickSizeH = 0.03; // Size of major axes ticks (proportional to plot area height)
+	float minorTickSizeH = 0.015;// Size of minor axes ticks (proportional to plot area height)
+	int majorTickNum = 5; 		 // The number of major tick marks
+	int minorTickNum = 3;		 // The number of minor tick marks between each set of major tick marks
+	int maxMajorTickNum = 20;	 // The maximum number of major tick marks (used to preallocate buffer)
+	int maxMinorTickNum = 5;	 // The maximum number of minor tick marks (used to preallocate buffer)
 	// Buffers
 	GLuint VAO, VBO;
 	GLuint axVAO, axVBO;
+	GLuint axtVAO, axtVBO;
 	// Axes Box
 	vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 	// Axes Lines
-	vector <GLfloat> axesVerts = {-1, -1,   1, -1,    1,  1,    -1, 1};
+	vector<GLfloat> axesVerts = {-1, -1,   1, -1,    1,  1,    -1, 1};
+	// Axes Ticks
+	vector<GLfloat> axesTicks = {0, 0, -1, 1};
 	// Line Data
 	vector<Line2D> lines;
 	// Window Dimensions
@@ -55,6 +62,7 @@ public:
 		// Setup Buffers
 		createAndSetupBuffers();
 		createAndSetupAxesLineBuffers();
+		createAndSetupAxesTickBuffers();
 
 	}
 
@@ -93,6 +101,23 @@ public:
 
 	}
 
+	void createAndSetupAxesTickBuffers() {
+		/* Create Buffers */
+		glGenVertexArrays(1,&axtVAO);
+		glGenBuffers(1,&axtVBO);
+
+		/* Setup Buffers */
+		glBindVertexArray(axtVAO);
+		glBindBuffer(GL_ARRAY_BUFFER,axtVBO);
+		glBufferData(GL_ARRAY_BUFFER, maxMajorTickNum*2*sizeof(GLfloat),&axesTicks[0],GL_DYNAMIC_DRAW);
+
+		/* Position Attributes */
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+		glBindVertexArray(0); // Unbind VAO
+	}
+
 	void Draw(Shader shader,glm::mat4 plotViewportTrans) {
 		// Calculate Viewport Transformation
 		glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
@@ -124,6 +149,9 @@ public:
 		drawLines(shader, axesLimitsViewportTrans);
 		// Disable Scissor Testing
 		glDisable(GL_SCISSOR_TEST);
+
+		// Draw Tick Marks
+		drawAxesTickMarks(shader,axesViewportTrans);
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {
@@ -164,7 +192,7 @@ public:
 		// Update Line Data
 		axesVerts = {xmin, 0.0,   xmax, 0.0,   0.0, ymin,   0.0, ymax};
 		glBindBuffer(GL_ARRAY_BUFFER,axVBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, axesVerts.size()*2*sizeof(GLfloat), &axesVerts[0]) ;
+		glBufferSubData(GL_ARRAY_BUFFER, 0, axesVerts.size()*sizeof(GLfloat), &axesVerts[0]) ;
 		// Draws axes lines in grey
 		shader.Use();
 		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitsViewportTrans));
@@ -172,6 +200,44 @@ public:
 		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
 		glBindVertexArray(axVAO);
 		glDrawArrays(GL_LINES,0,4);
+		glBindVertexArray(0);
+
+	}
+
+	void drawAxesTickMarks(Shader shader, glm::mat4 axesViewportTrans) {
+		// Draws the major and minor axes tick marks
+		// Update Tick Marks
+		//axesTicks = {0.0, 0.0, 1.0, 1.0};
+		axesTicks = {};
+		// x Axes
+		for(int i=0; i<majorTickNum; i++) {
+			// Calculate in -1 to 1
+			float spacing = 2.0/(majorTickNum-1);
+			axesTicks.push_back(-1.0 + (i*spacing)); 	// x1
+			axesTicks.push_back(-1.0);					// y1
+			axesTicks.push_back(-1.0 + (i*spacing));	// x2
+			axesTicks.push_back(-1.0 - (2.0/(1.0-(majorTickSizeH)) - 2.0)); // y2
+		}
+		// y Axes
+		for(int i=0; i<majorTickNum; i++) {
+			// Calculate in -1 to 1
+			float spacing = 2.0/(majorTickNum-1);
+			axesTicks.push_back(-1.0); 					// x1
+			axesTicks.push_back(-1.0 + (i*spacing));	// y1
+			axesTicks.push_back(-1.0 - (2.0/(1.0-(majorTickSizeW)) - 2.0));	// x2
+			axesTicks.push_back(-1.0 + (i*spacing)); 	// y2
+		}
+
+		// Bind Buffers
+		glBindBuffer(GL_ARRAY_BUFFER,axtVBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, axesTicks.size()*sizeof(GLfloat), &axesTicks[0]);
+		// Draw Tick Lines
+		shader.Use();
+		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesViewportTrans));
+		glm::vec4 inColor = glm::vec4(1.0,1.0,1.0,1.0);
+		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
+		glBindVertexArray(axtVAO);
+		glDrawArrays(GL_LINES,0,(int)axesTicks.size()/2);
 		glBindVertexArray(0);
 
 	}

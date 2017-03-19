@@ -183,20 +183,8 @@ int main(int argc, char* argv[]) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Change viewport area
-		//glViewport(screenWidth*marginRatio,screenHeight*marginRatio,(1-(2*marginRatio))*screenWidth,(1-(2*marginRatio))*screenHeight);
-
-
-		// Set Scissor Area
-
-		// Change viewport back to full screen
-		//glViewport(0,0,screenWidth,screenHeight);
-
 		// Draw Plot
 		myplot.Draw(plot2dShader);
-
-
-
 
 
 		// Swap buffers
