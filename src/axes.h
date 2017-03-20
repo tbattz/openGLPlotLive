@@ -16,6 +16,10 @@
 #include "../src/shader.h"
 #include "../src/fonts.h"
 
+// Standard Includes
+#include <iomanip>
+#include <sstream>
+
 class Axes {
 	// Axes contains the axes draw space, axes and tick markings
 public:
@@ -281,16 +285,15 @@ public:
 		glm::mat4 textProjection = glm::ortho(0.0f, (float)winDimPt->width, 0.0f, (float)winDimPt->height);
 		glUniformMatrix4fv(glGetUniformLocation(textShaderPt->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(axesViewportTrans*textProjection));
 		// Draw Labels
+		// x Axes
 		for(int i=0; i<majorTickNum; i++) {
 			std::stringstream ss;
-			ss << "12";
+			float val = (xmin + (i*(xmax-xmin)/(majorTickNum-1.0)));
+			ss << std::fixed << std::setprecision(1) << val;
 			float x = (axesTicks[i*4]+1)/2.0 * winDimPt->width;
-			float y = (axesTicks[i*4+1]+1)/2.0 * winDimPt->height;
-			printf("%f, %f\n",x,y);
-			axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,0.0f),0.5);
-
+			float y = (axesTicks[i*4+1]+1)/2.0 * winDimPt->height - 60;
+			axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),2);
 		}
-		printf("==================\n");
 	}
 };
 
