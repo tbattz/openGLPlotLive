@@ -13,6 +13,8 @@
 
 #include "../src/transforms.h"
 #include "../src/plot.h"
+#include "../src/shader.h"
+#include "../src/fonts.h"
 
 class Axes {
 	// Axes contains the axes draw space, axes and tick markings
@@ -50,14 +52,21 @@ public:
 	vector<Line2D> lines;
 	// Window Dimensions
 	WinDimensions* winDimPt;
+	// Font Shader
+	Shader* textShaderPt;
+	// Font Pointer
+	const GLchar* fontPath = "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf";
+	GLFont axesTicksFont;
 
-	Axes(float x,float y, float width, float height, WinDimensions* winDimPt) {
+
+	Axes(float x,float y, float width, float height, WinDimensions* winDimPt, Shader* textShaderPt) : axesTicksFont(fontPath) {
 		// Setup Position
 		this->x = x;
 		this->y = y;
 		this->width = width;
 		this->height = height;
 		this->winDimPt = winDimPt;
+		this->textShaderPt = textShaderPt;
 
 		// Setup Buffers
 		createAndSetupBuffers();
@@ -150,8 +159,17 @@ public:
 		// Disable Scissor Testing
 		glDisable(GL_SCISSOR_TEST);
 
-		// Draw Tick Marks
+		// Draw Tick Marks and Labels
 		drawAxesTickMarks(shader,axesViewportTrans);
+
+		// Draw Tick Mark Labels
+		drawMajorAxesTickLabels(axesViewportTrans);
+/*		std::string mystr = "12";
+		printf("%s\n",mystr.c_str());
+		std::stringstream ss;
+		ss << "12";
+		axesTicksFont.RenderText(textShaderPt,ss.str(),0.0f,0.0f,1.0f,glm::vec3(1.0f,1.0f,0.0f),1);
+		axesTicksFont.RenderText(textShaderPt,ss.str(),100.0f,100.0f,1.0f,glm::vec3(1.0f,1.0f,0.0f),1);*/
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {
@@ -207,7 +225,6 @@ public:
 	void drawAxesTickMarks(Shader shader, glm::mat4 axesViewportTrans) {
 		// Draws the major and minor axes tick marks
 		// Update Tick Marks
-		//axesTicks = {0.0, 0.0, 1.0, 1.0};
 		axesTicks = {};
 		// x Axes
 		for(int i=0; i<majorTickNum; i++) {
@@ -259,6 +276,26 @@ public:
 		return scale;
 	}
 
+	void drawMajorAxesTickLabels(glm::mat4 axesViewportTrans) {
+		// Draws the number labelling for the major axes ticks
+		// Set Uniform
+		textShaderPt->Use();
+		glm::mat4 transform = glm::scale(glm::mat4(1),glm::vec3(0.5,0.5,0.0));
+		transform = glm::translate(transform,glm::vec3(1,1,0));
+		transform = glm::scale(transform,glm::vec3(width*winDimPt->width,height*winDimPt->height,1));
+		transform = glm::translate(transform,glm::vec3(x*winDimPt->width,y*winDimPt->height,0));
+		glm::mat4 textProjection = glm::ortho(0.0f, (float)winDimPt->width, 0.0f, (float)winDimPt->height);
+		glUniformMatrix4fv(glGetUniformLocation(textShaderPt->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(transform*textProjection));
+		// Draw Labels
+		for(int i=0; i<majorTickNum; i++) {
+			std::stringstream ss;
+			ss << "12";
+			printf("%f,%f\n",axesTicks[i*4],axesTicks[i*4+1]);
+			axesTicksFont.RenderText(textShaderPt,ss.str(),axesTicks[i*4],axesTicks[i*4 + 1],1.0f,glm::vec3(1.0f,1.0f,0.0f),0.5);
+
+		}
+		printf("==================\n");
+	}
 };
 
 

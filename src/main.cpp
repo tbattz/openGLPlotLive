@@ -109,9 +109,6 @@ int main(int argc, char* argv[]) {
 	/* ======================================================
 	 *                         Fonts
 	   ====================================================== */
-	// Load Font Shader
-	//Shader textShader = setupFontShader("../Shaders/font.vs", "../Shaders/font.frag",screenWidth,screenHeight);
-
 	// Load Telemetry Font
 	//GLFont telemFont = GLFont(FONTPATH);
 
@@ -122,14 +119,12 @@ int main(int argc, char* argv[]) {
 	// Create Window Dimensions Class
 	WinDimensions winDim(screenWidth,screenHeight);
 
-
 	// Create Plot
 	Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim);
 
-	vector<pt2D> graph;
-	vector<pt2D> graph2;
-	vector<pt2D> graph3;
 	// Create Data
+	// Graph 1
+	vector<pt2D> graph;
 	for(int i = 0; i < 2000; i++) {
 		pt2D pt;
 		float x = i/1000.0;
@@ -137,7 +132,8 @@ int main(int argc, char* argv[]) {
 		pt.y = x*x;
 		graph.push_back(pt);
 	}
-
+	// Graph 2
+	vector<pt2D> graph2;
 	for(int i=-1000; i<1000; i++) {
 		pt2D pt2;
 		float x = i/1000.0;
@@ -145,7 +141,8 @@ int main(int argc, char* argv[]) {
 		pt2.y = -x-1;
 		graph2.push_back(pt2);
 	}
-
+	// Graph 3
+	vector<pt2D> graph3;
 	for(int i=-3000; i<3000 ; i++) {
 		pt2D pt3;
 		float x = i/1000.0;
@@ -154,6 +151,7 @@ int main(int argc, char* argv[]) {
 		graph3.push_back(pt3);
 	}
 
+	// Create Lines
 	Line2D plot1(graph);
 	Line2D plot2(graph2);
 	Line2D plot3(graph3);
@@ -186,6 +184,10 @@ int main(int argc, char* argv[]) {
 		// Draw Plot
 		myplot.Draw(plot2dShader);
 
+		// Font Test
+		std::stringstream sh;
+		sh << "12";
+		//(&telemFont)->RenderText(&textShader,sh.str(),0.0f,0.0f,1.0f,glm::vec3(1.0f, 1.0f, 0.0f),1);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
