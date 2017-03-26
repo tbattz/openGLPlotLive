@@ -138,7 +138,7 @@ public:
 		glm::mat4 axesLimitsViewportTrans = axesViewportTrans * scale2AxesLimits();
 
 		// Draw Axes Box Outline
-		drawAxesAreaOutline(shader, axesAreaViewportTrans);
+		//drawAxesAreaOutline(shader, axesAreaViewportTrans);
 
 		// Draw Axes Box
 		drawAxesBox(shader, axesViewportTrans);
@@ -278,21 +278,33 @@ public:
 		// Draws the number labelling for the major axes ticks
 		// Set Uniform
 		textShaderPt->Use();
-		//glm::mat4 transform = glm::scale(glm::mat4(1),glm::vec3(0.5,0.5,0.0));
-		//transform = glm::translate(transform,glm::vec3(1,1,0));
-		//transform = glm::scale(transform,glm::vec3(width*winDimPt->width,height*winDimPt->height,1));
-		//transform = glm::translate(transform,glm::vec3(x*winDimPt->width,y*winDimPt->height,0));
 		glm::mat4 textProjection = glm::ortho(0.0f, (float)winDimPt->width, 0.0f, (float)winDimPt->height);
 		glUniformMatrix4fv(glGetUniformLocation(textShaderPt->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(axesViewportTrans*textProjection));
 		// Draw Labels
 		// x Axes
 		for(int i=0; i<majorTickNum; i++) {
+			// Calculate Label
 			std::stringstream ss;
 			float val = (xmin + (i*(xmax-xmin)/(majorTickNum-1.0)));
 			ss << std::fixed << std::setprecision(1) << val;
+			// Calculate Position
 			float x = (axesTicks[i*4]+1)/2.0 * winDimPt->width;
 			float y = (axesTicks[i*4+1]+1)/2.0 * winDimPt->height - 60;
+			// Draw Label
 			axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),2);
+		}
+		// y Axes
+		for(int i=0; i<majorTickNum; i++) {
+			int j = i + majorTickNum;
+			// Calculate Label
+			std::stringstream ss;
+			float val = (ymin + (i*(ymax-ymin)/(majorTickNum-1.0)));
+			ss << std::fixed << std::setprecision(1) << val;
+			// Calculate Position
+			float x = (axesTicks[j*4]+1)/2.0 * winDimPt->width - 80;
+			float y = (axesTicks[j*4+1]+1)/2.0 * winDimPt->height;
+			// Draw Label
+			axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),3);
 		}
 	}
 };
