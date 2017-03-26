@@ -143,13 +143,15 @@ int main(int argc, char* argv[]) {
 	}
 	// Graph 3
 	vector<pt2D> graph3;
-	for(int i=-3000; i<3000 ; i++) {
+	int i=-2000;
+	int j = 0;
+	/*for(int i=-3000; i<3000 ; i++) {
 		pt2D pt3;
 		float x = i/1000.0;
 		pt3.x = x;
 		pt3.y = sin(x);
 		graph3.push_back(pt3);
-	}
+	}*/
 
 	// Create Lines
 	Line2D plot1(graph);
@@ -157,9 +159,9 @@ int main(int argc, char* argv[]) {
 	Line2D plot3(graph3);
 
 	// Add lines to axes
-	myplot.axes.addLine(plot1);
-	myplot.axes.addLine(plot2);
-	myplot.axes.addLine(plot3);
+	myplot.axes.addLine(&plot1);
+	myplot.axes.addLine(&plot2);
+	myplot.axes.addLine(&plot3);
 
 	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
 	float tickRatio = 0.025; //
@@ -177,9 +179,16 @@ int main(int argc, char* argv[]) {
 		glfwGetWindowSize(window,&(winDim.width),&(winDim.height));
 
 		// Clear the colour buffer
-		//glClearColor(0.64f, 0.64f, 1.0f, 1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Update Plot Data
+		pt2D pt3;
+		float x = i/1000.0;
+		pt3.x = x;
+		pt3.y = sin(x);
+		plot3.appendPt(pt3);
+		i += 1;
 
 		// Draw Plot
 		myplot.Draw(plot2dShader);
@@ -193,7 +202,7 @@ int main(int argc, char* argv[]) {
 		glfwSwapBuffers(window);
 
 		// Sleep
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	}
 

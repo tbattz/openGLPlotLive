@@ -31,9 +31,6 @@ public:
 	/* Data */
 	vector<pt2D> dataPt;
 
-	/* Axes */
-
-
 	Line2D(vector<pt2D> dataPt) {
 		this->dataPt = dataPt;
 
@@ -65,8 +62,13 @@ public:
 
 	void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
 		// Check if number of points changed
-
-		// Update buffer and attributes
+		int newPts = (dataPt).size();
+		if (newPts != nPts) {
+			nPts = newPts;
+			// Update buffer and attributes
+			glBindBuffer(GL_ARRAY_BUFFER,VBO);
+			glBufferData(GL_ARRAY_BUFFER, dataPt.size()*2*sizeof(GLfloat),&dataPt[0],GL_DYNAMIC_DRAW);
+		}
 
 		// Draw Plot
 		shader.Use();
@@ -76,6 +78,11 @@ public:
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_LINE_STRIP,0,nPts);
 		glBindVertexArray(0);
+	}
+
+	void appendPt(pt2D pt) {
+		// Appends a point to the current data
+		this->dataPt.push_back(pt);
 	}
 
 };

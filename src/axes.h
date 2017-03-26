@@ -53,7 +53,7 @@ public:
 	// Axes Ticks
 	vector<GLfloat> axesTicks = {0, 0, -1, 1};
 	// Line Data
-	vector<Line2D> lines;
+	vector<Line2D*> lines;
 	// Window Dimensions
 	WinDimensions* winDimPt;
 	// Font Shader
@@ -133,7 +133,7 @@ public:
 
 	void Draw(Shader shader,glm::mat4 plotViewportTrans) {
 		// Calculate Viewport Transformation
-		glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
+		//glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
 		glm::mat4 axesViewportTrans = plotViewportTrans * viewportTransform(x+majorTickSizeW, y+majorTickSizeH, width - majorTickSizeW, height - majorTickSizeH);
 		glm::mat4 axesLimitsViewportTrans = axesViewportTrans * scale2AxesLimits();
 
@@ -192,7 +192,7 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void addLine(Line2D line) {
+	void addLine(Line2D* line) {
 		// Adds a line to the axes
 		lines.push_back(line);
 	}
@@ -200,7 +200,7 @@ public:
 	void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
 		// Draws the lines on the axes
 		for(unsigned int i=0; i<lines.size(); i++) {
-			lines[i].Draw(shader, axesLimitsViewportTrans);
+			lines[i]->Draw(shader, axesLimitsViewportTrans);
 		}
 	}
 
