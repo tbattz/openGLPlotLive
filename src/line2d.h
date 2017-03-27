@@ -22,7 +22,7 @@ struct pt2D {
 };
 
 
-class Line2D {
+class Line2DPts {
 public:
 	/* Buffers */
 	GLuint VAO, VBO;
@@ -31,7 +31,7 @@ public:
 	/* Data */
 	vector<pt2D> dataPt;
 
-	Line2D(vector<pt2D> dataPt) {
+	Line2DPts(vector<pt2D> dataPt) {
 		this->dataPt = dataPt;
 
 		/* Setup Buffers */
@@ -87,6 +87,71 @@ public:
 
 };
 
+class Line2DVec {
+public:
+	/* Buffers */
+	GLuint VAO, VBO;
+	int nPts = 0;
+
+	/* Data */
+	vector<float> dataVec;
+
+	Line2DVec(vector<float> dataVec) {
+		this->dataVec = dataVec;
+
+		/* Setup Buffers */
+		createAndSetupBuffers();
+
+		/* Set Number of Points */
+		nPts = (dataVec).size()/2;
+
+	}
+
+	void createAndSetupBuffers() {
+		/* Create Buffers */
+		glGenVertexArrays(1,&VAO);
+		glGenBuffers(1,&VBO);
+
+		/* Setup Buffers */
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER,VBO);
+		glBufferData(GL_ARRAY_BUFFER, dataVec.size()*sizeof(dataVec[0]),&dataVec[0],GL_DYNAMIC_DRAW);
+
+		/* Position Attributes */
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(dataVec[0]),(GLvoid*)0);
+
+		glBindVertexArray(0); // Unbind VAO
+
+	}
+
+	void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
+		// Check if number of points changed
+		int newPts = (dataVec).size()/2;
+		if (newPts != nPts) {
+			nPts = newPts;
+			// Update buffer and attributes
+			glBindBuffer(GL_ARRAY_BUFFER,VBO);
+			glBufferData(GL_ARRAY_BUFFER, dataVec.size()*sizeof(dataVec[0]),&dataVec[0],GL_DYNAMIC_DRAW);
+		}
+
+		// Draw Plot
+		shader.Use();
+		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitViewportTrans));
+		glm::vec4 inColor = glm::vec4(1.0, 1.0, 1.0, 1.0);
+		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_LINE_STRIP,0,nPts);
+		glBindVertexArray(0);
+	}
+
+	void appendVec(float x, float y) {
+		// Appends a point to the current data
+		this->dataVec.push_back(x);
+		this->dataVec.push_back(y);
+	}
+
+};
 
 
 #endif /* LINE2D_H_ */

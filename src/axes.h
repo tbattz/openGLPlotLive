@@ -53,7 +53,8 @@ public:
 	// Axes Ticks
 	vector<GLfloat> axesTicks = {0, 0, -1, 1};
 	// Line Data
-	vector<Line2D*> lines;
+	vector<Line2DPts*> lines;
+	vector<Line2DVec*> lines2;
 	// Window Dimensions
 	WinDimensions* winDimPt;
 	// Font Shader
@@ -192,15 +193,24 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void addLine(Line2D* line) {
-		// Adds a line to the axes
+	void addLine(Line2DPts* line) {
+		// Adds a line containing pt2D to the axes
 		lines.push_back(line);
+	}
+
+	void addLine(Line2DVec* line) {
+		// Adds a line containing vectors to the axes
+		lines2.push_back(line);
 	}
 
 	void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
 		// Draws the lines on the axes
 		for(unsigned int i=0; i<lines.size(); i++) {
 			lines[i]->Draw(shader, axesLimitsViewportTrans);
+		}
+		// Draw second set of lines
+		for(unsigned int i=0; i<lines2.size(); i++) {
+			lines2[i]->Draw(shader, axesLimitsViewportTrans);
 		}
 	}
 

@@ -153,15 +153,24 @@ int main(int argc, char* argv[]) {
 		graph3.push_back(pt3);
 	}*/
 
+	// Graph 4 - Vector
+	vector<float> graph4;
+	for(int i=-1000; i<1500; i++) {
+		graph4.push_back(i/1000.0);
+		graph4.push_back(-i/1000.0);
+ 	}
+
 	// Create Lines
-	Line2D plot1(graph);
-	Line2D plot2(graph2);
-	Line2D plot3(graph3);
+	Line2DPts plot1(graph);
+	Line2DPts plot2(graph2);
+	Line2DPts plot3(graph3);
+	Line2DVec plot4(graph4);
 
 	// Add lines to axes
 	myplot.axes.addLine(&plot1);
 	myplot.axes.addLine(&plot2);
 	myplot.axes.addLine(&plot3);
+	myplot.axes.addLine(&plot4);
 
 	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
 	float tickRatio = 0.025; //
@@ -184,11 +193,13 @@ int main(int argc, char* argv[]) {
 
 		// Update Plot Data
 		pt2D pt3;
-		float x = i/1000.0;
-		pt3.x = x;
-		pt3.y = sin(x);
-		plot3.appendPt(pt3);
-		i += 1;
+		for(int j=0; j<10; j++) {
+			float x = i/1000.0;
+			pt3.x = x;
+			pt3.y = sin(x);
+			plot3.appendPt(pt3);
+			i += 1;
+		}
 
 		// Draw Plot
 		myplot.Draw(plot2dShader);
