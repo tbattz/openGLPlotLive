@@ -55,6 +55,7 @@ public:
 	// Line Data
 	vector<Line2DPts*> lines;
 	vector<Line2DVec*> lines2;
+	vector<Line2DVecVec*> lines3;
 	// Window Dimensions
 	WinDimensions* winDimPt;
 	// Font Shader
@@ -203,6 +204,11 @@ public:
 		lines2.push_back(line);
 	}
 
+	void addLine(Line2DVecVec* line) {
+		// ADds a line containing a vector of vectors to the axes
+		lines3.push_back(line);
+	}
+
 	void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
 		// Draws the lines on the axes
 		for(unsigned int i=0; i<lines.size(); i++) {
@@ -211,6 +217,10 @@ public:
 		// Draw second set of lines
 		for(unsigned int i=0; i<lines2.size(); i++) {
 			lines2[i]->Draw(shader, axesLimitsViewportTrans);
+		}
+		// Draw third set of lines
+		for(unsigned int i=0; i<lines3.size(); i++) {
+			lines3[i]->Draw(shader, axesLimitsViewportTrans);
 		}
 	}
 

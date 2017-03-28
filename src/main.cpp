@@ -160,17 +160,26 @@ int main(int argc, char* argv[]) {
 		graph4.push_back(-i/1000.0);
  	}
 
+	// Graph 5 - Vector of Vectors
+	vector<vector<float>> graph5;
+	for(int i=-1000; i < 2000; i++) {
+		vector<float> tempVec = {i/1000.0, 0.5*i/1000.0};
+		graph5.push_back(tempVec);
+	}
+
 	// Create Lines
 	Line2DPts plot1(graph);
 	Line2DPts plot2(graph2);
 	Line2DPts plot3(graph3);
 	Line2DVec plot4(graph4);
+	Line2DVecVec plot5(&graph5);
 
 	// Add lines to axes
 	myplot.axes.addLine(&plot1);
 	myplot.axes.addLine(&plot2);
 	myplot.axes.addLine(&plot3);
 	myplot.axes.addLine(&plot4);
+	myplot.axes.addLine(&plot5);
 
 	float marginRatio = 0.05; // Ratio of screen (-1 to 1)
 	float tickRatio = 0.025; //
@@ -246,6 +255,5 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 	screenHeight = height;
 	// Update Viewport Dimensions
 	glViewport(0, 0, width, height);
-
 }
 
