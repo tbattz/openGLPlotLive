@@ -53,9 +53,9 @@ public:
 	// Axes Ticks
 	vector<GLfloat> axesTicks = {0, 0, -1, 1};
 	// Line Data
-	vector<Line2DPts*> lines;
-	vector<Line2DVec*> lines2;
-	vector<Line2DVecVec*> lines3;
+	vector<Line2DPts*> lines2DPts;
+	vector<Line2DVec*> lines2DVec;
+	vector<Line2DVecVec*> lines2DVecVec;
 	// Window Dimensions
 	WinDimensions* winDimPt;
 	// Font Shader
@@ -196,31 +196,31 @@ public:
 
 	void addLine(Line2DPts* line) {
 		// Adds a line containing pt2D to the axes
-		lines.push_back(line);
+		lines2DPts.push_back(line);
 	}
 
 	void addLine(Line2DVec* line) {
 		// Adds a line containing vectors to the axes
-		lines2.push_back(line);
+		lines2DVec.push_back(line);
 	}
 
 	void addLine(Line2DVecVec* line) {
 		// ADds a line containing a vector of vectors to the axes
-		lines3.push_back(line);
+		lines2DVecVec.push_back(line);
 	}
 
 	void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
-		// Draws the lines on the axes
-		for(unsigned int i=0; i<lines.size(); i++) {
-			lines[i]->Draw(shader, axesLimitsViewportTrans);
+		// Draws the lines of 2Dpts on the axes
+		for(unsigned int i=0; i<lines2DPts.size(); i++) {
+			lines2DPts[i]->Draw(shader, axesLimitsViewportTrans);
 		}
-		// Draw second set of lines
-		for(unsigned int i=0; i<lines2.size(); i++) {
-			lines2[i]->Draw(shader, axesLimitsViewportTrans);
+		// Draw the lines of 2D Vecs on the axes
+		for(unsigned int i=0; i<lines2DVec.size(); i++) {
+			lines2DVec[i]->Draw(shader, axesLimitsViewportTrans);
 		}
-		// Draw third set of lines
-		for(unsigned int i=0; i<lines3.size(); i++) {
-			lines3[i]->Draw(shader, axesLimitsViewportTrans);
+		// Draw the lines of 2D Vectors of vectors on the axes
+		for(unsigned int i=0; i<lines2DVecVec.size(); i++) {
+			lines2DVecVec[i]->Draw(shader, axesLimitsViewportTrans);
 		}
 	}
 
