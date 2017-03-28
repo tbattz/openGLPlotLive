@@ -162,10 +162,10 @@ int main(int argc, char* argv[]) {
 
 	// Graph 5 - Vector of Vectors
 	vector<vector<float>> graph5;
-	for(int i=-1000; i < 2000; i++) {
+	/*for(int i=-1000; i < 2000; i++) {
 		vector<float> tempVec = {i/1000.0, 0.5*i/1000.0};
 		graph5.push_back(tempVec);
-	}
+	}*/
 
 	// Create Lines
 	Line2DPts plot1(graph);
@@ -209,6 +209,14 @@ int main(int argc, char* argv[]) {
 			plot3.appendPt(pt3);
 			i += 1;
 		}
+		// Update Graph 5
+		i -= 10;
+		for(int j=0; j < 10; j++) {
+			vector<float> tempVec = {i/1000.0, 0.5*i/1000.0};
+			graph5.push_back(tempVec);
+			i += 1;
+		}
+		plot5.updateInternalData();
 
 		// Draw Plot
 		myplot.Draw(plot2dShader);

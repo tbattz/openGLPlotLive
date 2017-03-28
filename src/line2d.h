@@ -167,7 +167,7 @@ public:
 		this->dataVecPt = dataVecPt;
 
 		/* Setup Buffers */
-		createInternalData();
+		updateInternalData();
 		createAndSetupBuffers();
 
 		/* Set Number of Points */
@@ -175,7 +175,7 @@ public:
 
 	}
 
-	void createInternalData() {
+	void updateInternalData() {
 		/* Creates an internal data store from the current dataVecPt */
 		// Clear Previous Data
 		internalData.clear();
