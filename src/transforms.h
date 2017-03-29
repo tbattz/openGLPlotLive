@@ -38,16 +38,7 @@ glm::mat4 viewportTransform(float x, float y, float width, float height) {
 	return scale;
 };
 
-class WinDimensions {
-public:
-	int width;
-	int height;
 
-	WinDimensions(float width, float height) {
-		this->width = width;
-		this->height = height;
-	}
-};
 
 
 #endif /* TRANSFORMS_H_ */

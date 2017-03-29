@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../src/transforms.h"
+#include "../src/window.h"
 #include "../src/plot.h"
 #include "../src/shader.h"
 #include "../src/fonts.h"
