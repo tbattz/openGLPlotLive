@@ -109,12 +109,27 @@ void initGLEW() {
 	glewInit();
 }
 
-void setupLoop() {
-	// To be run before a drawing loop or single draw call is used
+void preLoopDraw(bool clearBuffer, WinDimensions* winDimPt) {
+	// To be run before a drawing inside a loop or single draw call is used
+	// clearBuffer:	True if the colour buffer should be reset
+	//				Set to false for transparent background
 
+	// Check Events
+	glfwPollEvents();
+
+	// Update window size
+	winDimPt->updateStoredSize();
+
+	if (clearBuffer) {
+		// Clear the colour buffer
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
-void preLoop() {
-
+void postLoopDraw(GLFWwindow* window) {
+	// To be run after drawing inside a loop or after a single draw call is used
+	// Swap buffers
+	glfwSwapBuffers(window);
 }
 
 

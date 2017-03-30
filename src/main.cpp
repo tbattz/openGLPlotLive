@@ -96,15 +96,8 @@ int main(int argc, char* argv[]) {
 	// Game Loop
 	while(!glfwWindowShouldClose(window)) {
 
-		// Check Events
-		glfwPollEvents();
-
-		// Update window size
-		winDim.updateStoredSize();
-
-		// Clear the colour buffer
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Pre-loop draw
+		preLoopDraw(true, &winDim);
 
 		// Update Plot Data
 		pt2D pt3;
@@ -127,13 +120,8 @@ int main(int argc, char* argv[]) {
 		// Draw Plot
 		myplot.Draw(plot2dShader);
 
-		// Font Test
-		std::stringstream sh;
-		sh << "12";
-		//(&telemFont)->RenderText(&textShader,sh.str(),0.0f,0.0f,1.0f,glm::vec3(1.0f, 1.0f, 0.0f),1);
-
-		// Swap buffers
-		glfwSwapBuffers(window);
+		// Post-loop draw
+		postLoopDraw(window);
 
 	}
 
