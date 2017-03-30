@@ -67,28 +67,28 @@ public:
 	int nPts = 0;
 
 	/* Data */
-	vector<pt2D> dataPt;
+	vector<pt2D>* dataPtPt;
 
-	Line2DPts(vector<pt2D> dataPt) {
-		this->dataPt = dataPt;
+	Line2DPts(vector<pt2D>* dataPtPt) {
+		this->dataPtPt = dataPtPt;
 
 		/* Setup Buffers */
-		int dataSizeBytes = dataPt.size()*2*sizeof(GLfloat);
-		createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &dataPt[0], sizeof(pt2D));
+		int dataSizeBytes = dataPtPt->size()*2*sizeof(GLfloat);
+		createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, dataPtPt->data(), sizeof(pt2D)); // dataPtPt->data() gives the address of the first element of the vector
 
 		/* Set Number of Points */
-		nPts = (dataPt).size();
+		nPts = dataPtPt->size();
 
 	}
 
 	void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
 		// Check if number of points changed
-		int newPts = (dataPt).size();
+		int newPts = dataPtPt->size();
 		if (newPts != nPts) {
 			nPts = newPts;
 			// Update buffer and attributes
 			glBindBuffer(GL_ARRAY_BUFFER,VBO);
-			glBufferData(GL_ARRAY_BUFFER, dataPt.size()*2*sizeof(GLfloat),&dataPt[0],GL_DYNAMIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, dataPtPt->size()*2*sizeof(GLfloat),dataPtPt->data(),GL_DYNAMIC_DRAW);
 		}
 
 		// Draw Plot
@@ -97,7 +97,7 @@ public:
 
 	void appendPt(pt2D pt) {
 		// Appends a point to the current data
-		this->dataPt.push_back(pt);
+		this->dataPtPt->push_back(pt);
 	}
 
 };
@@ -112,28 +112,28 @@ public:
 	int nPts = 0;
 
 	/* Data */
-	vector<float> dataVec;
+	vector<float>* dataVecPt;
 
-	Line2DVec(vector<float> dataVec) {
-		this->dataVec = dataVec;
+	Line2DVec(vector<float>* dataVecPt) {
+		this->dataVecPt = dataVecPt;
 
 		/* Setup Buffers */
-		int dataSizeBytes = dataVec.size()*sizeof(dataVec[0]);
-		createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &dataVec[0], 2*sizeof(dataVec[0]));
+		int dataSizeBytes = dataVecPt->size()*sizeof((*dataVecPt)[0]);
+		createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, dataVecPt->data(), 2*sizeof((*dataVecPt)[0])); // dataVecPt->data() gives the address of the first element of the vector
 
 		/* Set Number of Points */
-		nPts = (dataVec).size()/2;
+		nPts = dataVecPt->size()/2;
 
 	}
 
 	void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
 		// Check if number of points changed
-		int newPts = (dataVec).size()/2;
+		int newPts = dataVecPt->size()/2;
 		if (newPts != nPts) {
 			nPts = newPts;
 			// Update buffer and attributes
 			glBindBuffer(GL_ARRAY_BUFFER,VBO);
-			glBufferData(GL_ARRAY_BUFFER, dataVec.size()*sizeof(dataVec[0]),&dataVec[0],GL_DYNAMIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, dataVecPt->size()*sizeof((*dataVecPt)[0]),dataVecPt->data(),GL_DYNAMIC_DRAW);
 		}
 
 		// Draw Plot
@@ -142,8 +142,8 @@ public:
 
 	void appendVec(float x, float y) {
 		// Appends a point to the current data
-		this->dataVec.push_back(x);
-		this->dataVec.push_back(y);
+		this->dataVecPt->push_back(x);
+		this->dataVecPt->push_back(y);
 	}
 
 };
