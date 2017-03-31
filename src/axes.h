@@ -30,10 +30,10 @@ public:
 	float width; // Width of axes as a proportion of the current plot width, including tick marks
 	float height; // Height of axes as a proportion of the current plot height, including tick marks
 	// Axes Limits
-	float xmin = -2.0;
-	float xmax = 2.0;
-	float ymin = -2.0;
-	float ymax = 2.0;
+	float xmin = -1.0;
+	float xmax = 1.0;
+	float ymin = -1.0;
+	float ymax = 1.0;
 	// Axes Ticks
 	float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
@@ -335,7 +335,28 @@ public:
 			axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),3);
 		}
 	}
+
+	void updateAxesLimits(float xmin, float xmax, float ymin, float ymax) {
+		// Updates the axes limits to those given
+		this->xmin = xmin;
+		this->xmax = xmax;
+		this->ymin = ymin;
+		this->ymax = ymax;
+	}
+
+	void updateXAxesLimits(float xmin, float xmax) {
+		// Updates the x-axes limits to those given
+		this->xmin = xmin;
+		this->xmax = xmax;
+	}
+
+	void updateYAxesLimits(float ymin, float ymax) {
+		// Updates the y-axes limits to those given
+		this->ymin = ymin;
+		this->ymax = ymax;
+	}
 };
+
 
 
 
