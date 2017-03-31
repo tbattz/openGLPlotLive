@@ -20,6 +20,7 @@
 // Standard Includes
 #include <iomanip>
 #include <sstream>
+#include <math.h>
 
 class Axes {
 	// Axes contains the axes draw space, axes and tick markings
@@ -36,7 +37,7 @@ public:
 	float ymax = 1.0;
 	bool autoScaleX = true; // True if the x-axes are to sale to the given data
 	bool autoScaleY = true; // True if the y-axes are to sale to the given data
-	bool autoScaleRound = false; // True to round auto scale limits to the nearest significant value
+	bool autoScaleRound = true; // True to round auto scale limits to the nearest significant value
 	// Axes Ticks
 	float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
@@ -407,6 +408,27 @@ public:
 			vector<float> minMax = lines2DVecVec[i]->getMinMax();
 			compareMinMax(&dataMinMax,minMax);
 		}
+		// Adjust to nearest significant number if specified
+		if(autoScaleRound) {
+			for(unsigned int i =0; i < dataMinMax.size(); i++) {
+				float num = dataMinMax[i];
+				// Get number of tens
+				int tens = -1;
+				while(abs(num) > 1) {
+					tens += 1;
+					num = num/10.0;
+				}
+				// Odd are mins, even are maxes
+				if(i%2==0) {
+					// Even, minimum
+					dataMinMax[i] = floor(dataMinMax[i]/(pow(10.0,tens)))*(pow(10.0,tens));
+				} else {
+					// Odd, maximum
+					dataMinMax[i] = ceil(dataMinMax[i]/(pow(10.0,tens)))*(pow(10.0,tens));
+				}
+			}
+		}
+
 		// Update min and max values
 		if(autoScaleX) {
 			updateXAxesLimits(dataMinMax[0],dataMinMax[1],false);
