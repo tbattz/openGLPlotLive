@@ -149,18 +149,10 @@ public:
 		// Draw Axes Lines
 		drawAxesLines(shader, axesLimitsViewportTrans);
 
-		// Draw Lines
-		// Calculate corners of axes limits area
-		glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1); // -1 to 1
-		glm::vec4 b = axesLimitsViewportTrans * glm::vec4(xmax,ymax,0,1); // -1 to 1
-		// Transform back to 0 to 1
-		float x1 = 0.5*a[0] + 0.5;
-		float y1 = 0.5*a[1] + 0.5;
-		float x2 = 0.5*b[0] + 0.5;
-		float y2 = 0.5*b[1] + 0.5;
-		// Enable Scissor Test
+		// Scissor Test
+		vector<float> xy = calculateScissor(axesLimitsViewportTrans);
 		glEnable(GL_SCISSOR_TEST);
-		glScissor(x1*(winDimPt->width),y1*(winDimPt->height),(x2-x1)*(winDimPt->width),(y2-y1)*(winDimPt->height));
+		glScissor(xy[0]*(winDimPt->width),xy[1]*(winDimPt->height),(xy[2]-xy[0])*(winDimPt->width),(xy[3]-xy[1])*(winDimPt->height));
 		// Draw All Lines
 		drawLines(shader, axesLimitsViewportTrans);
 		// Disable Scissor Testing
@@ -171,6 +163,21 @@ public:
 
 		// Draw Tick Mark Labels
 		drawMajorAxesTickLabels(axesViewportTrans);
+	}
+
+	vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans) {
+		// Calculate corners of axes limits area
+		glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1); // -1 to 1
+		glm::vec4 b = axesLimitsViewportTrans * glm::vec4(xmax,ymax,0,1); // -1 to 1
+		// Transform back to 0 to 1
+		float x1 = 0.5*a[0] + 0.5;
+		float y1 = 0.5*a[1] + 0.5;
+		float x2 = 0.5*b[0] + 0.5;
+		float y2 = 0.5*b[1] + 0.5;
+		// Form vector
+		vector<float> xyVec = {x1,y1,x2,y2};
+
+		return xyVec;
 	}
 
 	void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans) {
