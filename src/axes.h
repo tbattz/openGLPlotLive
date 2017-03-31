@@ -34,6 +34,9 @@ public:
 	float xmax = 1.0;
 	float ymin = -1.0;
 	float ymax = 1.0;
+	bool autoScaleX = true; // True if the x-axes are to sale to the given data
+	bool autoScaleY = true; // True if the y-axes are to sale to the given data
+	bool autoScaleRound = false; // True to round auto scale limits to the nearest significant value
 	// Axes Ticks
 	float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
 	float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
@@ -142,6 +145,11 @@ public:
 
 		// Draw Axes Box Outline
 		//drawAxesAreaOutline(shader, axesAreaViewportTrans);
+
+		// Check for autoscaling of axes
+		if(autoScaleX || autoScaleY) {
+			updateAxesLimitsAutoscale();
+		}
 
 		// Draw Axes Box
 		drawAxesBox(shader, axesViewportTrans);
@@ -336,24 +344,91 @@ public:
 		}
 	}
 
-	void updateAxesLimits(float xmin, float xmax, float ymin, float ymax) {
+	void updateAxesLimits(float xmin, float xmax, float ymin, float ymax,bool autoChange = true) {
 		// Updates the axes limits to those given
 		this->xmin = xmin;
 		this->xmax = xmax;
 		this->ymin = ymin;
 		this->ymax = ymax;
+		// Set Autoscale Off
+		if(autoChange) {
+			autoScaleX = false;
+			autoScaleY = false;
+		}
 	}
 
-	void updateXAxesLimits(float xmin, float xmax) {
+	void updateAxesLimits(vector<float> minMax, bool autoChange = true) {
+		// Updates the axes limits given a vector of {xmin,xmax,ymin,ymax}
+		this->xmin = minMax[0];
+		this->xmax = minMax[1];
+		this->ymin = minMax[2];
+		this->ymax = minMax[3];
+		// Set Autoscale Off
+		if(autoChange) {
+			autoScaleX = false;
+			autoScaleY = false;
+		}
+	}
+
+	void updateXAxesLimits(float xmin, float xmax, bool autoChange = true) {
 		// Updates the x-axes limits to those given
 		this->xmin = xmin;
 		this->xmax = xmax;
+		// Set autoscale off
+		if (autoChange) {
+			autoScaleX = false;
+		}
 	}
 
-	void updateYAxesLimits(float ymin, float ymax) {
+	void updateYAxesLimits(float ymin, float ymax, bool autoChange) {
 		// Updates the y-axes limits to those given
 		this->ymin = ymin;
 		this->ymax = ymax;
+		// Set autoscale off
+		if (autoChange) {
+			autoScaleY = false;
+		}
+	}
+
+	void updateAxesLimitsAutoscale() {
+		// Updates the axes limits according to the maximum
+		// and minimum values of the current data
+		vector<float> dataMinMax = {0.0,0.0,0.0,0.0};
+		// Get data max and mins
+			for(unsigned int i=0; i<lines2DPts.size(); i++) {
+			vector<float> minMax = lines2DPts[i]->getMinMax();
+			compareMinMax(&dataMinMax,minMax);
+		}
+		for(unsigned int i=0; i<lines2DVec.size(); i++) {
+			vector<float> minMax = lines2DVec[i]->getMinMax();
+			compareMinMax(&dataMinMax,minMax);
+		}
+		for(unsigned int i=0; i<lines2DVecVec.size(); i++) {
+			vector<float> minMax = lines2DVecVec[i]->getMinMax();
+			compareMinMax(&dataMinMax,minMax);
+		}
+		// Update min and max values
+		if(autoScaleX) {
+			updateXAxesLimits(dataMinMax[0],dataMinMax[1],false);
+		}
+		if(autoScaleY) {
+			updateYAxesLimits(dataMinMax[2],dataMinMax[3],false);
+		}
+	}
+
+	void compareMinMax(vector<float>* dataMinMaxPt,vector<float> minMax) {
+		if (minMax[0] < (*dataMinMaxPt)[0]) {
+			(*dataMinMaxPt)[0] = minMax[0];
+		}
+		if (minMax[1] > (*dataMinMaxPt)[1]) {
+			(*dataMinMaxPt)[1] = minMax[1];
+		}
+		if (minMax[2] < (*dataMinMaxPt)[2]) {
+			(*dataMinMaxPt)[2] = minMax[2];
+		}
+		if (minMax[3] > (*dataMinMaxPt)[3]) {
+			(*dataMinMaxPt)[3] = minMax[3];
+		}
 	}
 };
 

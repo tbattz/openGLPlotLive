@@ -100,6 +100,30 @@ public:
 		this->dataPtPt->push_back(pt);
 	}
 
+	vector<float> getMinMax() {
+		// Gets the minimum and maximum values of both x and y for the data
+		float xmin = 0;
+		float xmax = 0;
+		float ymin = 0;
+		float ymax = 0;
+		for (unsigned int i = 0; i<dataPtPt->size(); i++) {
+			float xval = (*dataPtPt)[0].x;
+			float yval = (*dataPtPt)[0].y;
+			if (xval > xmax) {
+				xmax = xval;
+			} else if (xval < xmin) {
+				xmin = xval;
+			}
+			if (yval > ymax) {
+				ymax = yval;
+			} else if (yval < ymin) {
+				ymin = yval;
+			}
+		}
+
+		return vector<float> {xmin,xmax,ymin,ymax};
+	}
+
 };
 
 /* ====================================================================== */
@@ -146,6 +170,29 @@ public:
 		this->dataVecPt->push_back(y);
 	}
 
+	vector<float> getMinMax() {
+		// Gets the minimum and maximum values of both x and y for the data
+		float xmin = 0;
+		float xmax = 0;
+		float ymin = 0;
+		float ymax = 0;
+		for (unsigned int i = 0; i<dataVecPt->size()/2.0; i++) {
+			float xval = (*dataVecPt)[2*i];
+			float yval = (*dataVecPt)[2*i+1];
+			if (xval > xmax) {
+				xmax = xval;
+			} else if (xval < xmin) {
+				xmin = xval;
+			}
+			if (yval > ymax) {
+				ymax = yval;
+			} else if (yval < ymin) {
+				ymin = yval;
+			}
+		}
+
+		return vector<float> {xmin,xmax,ymin,ymax};
+	}
 };
 
 /* ====================================================================== */
@@ -199,6 +246,29 @@ public:
 		drawData(shader, axesLimitViewportTrans, &VAO, nPts);
 	}
 
+	vector<float> getMinMax() {
+		// Gets the minimum and maximum values of both x and y for the data
+		float xmin = 0;
+		float xmax = 0;
+		float ymin = 0;
+		float ymax = 0;
+		for (unsigned int i = 0; i<internalData.size()/2.0; i++) {
+			float xval = (internalData)[2*i];
+			float yval = (internalData)[2*i+1];
+			if (xval > xmax) {
+				xmax = xval;
+			} else if (xval < xmin) {
+				xmin = xval;
+			}
+			if (yval > ymax) {
+				ymax = yval;
+			} else if (yval < ymin) {
+				ymin = yval;
+			}
+		}
+
+		return vector<float> {xmin,xmax,ymin,ymax};
+	}
 };
 
 #endif /* LINE2D_H_ */

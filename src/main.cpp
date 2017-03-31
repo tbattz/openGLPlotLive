@@ -118,9 +118,9 @@ int main(int argc, char* argv[]) {
 		line5.updateInternalData();
 
 		// Update Axes Limits
-		if(i > 500) {
-			myplot.axes.updateAxesLimits(-2.0,2.0,-2.0,2.0);
-		}
+		//if(i > 500) {
+		//	myplot.axes.updateAxesLimits(-2.0,2.0,-2.0,2.0);
+		//}
 
 		// Draw Plot
 		myplot.Draw(plot2dShader);
