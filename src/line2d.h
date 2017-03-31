@@ -107,8 +107,8 @@ public:
 		float ymin = 0;
 		float ymax = 0;
 		for (unsigned int i = 0; i<dataPtPt->size(); i++) {
-			float xval = (*dataPtPt)[0].x;
-			float yval = (*dataPtPt)[0].y;
+			float xval = (*dataPtPt)[i].x;
+			float yval = (*dataPtPt)[i].y;
 			if (xval > xmax) {
 				xmax = xval;
 			} else if (xval < xmin) {

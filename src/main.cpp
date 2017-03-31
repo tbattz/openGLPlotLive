@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
 		// Update Graph 5
 		i -= 10;
 		for(int j=0; j < 10; j++) {
-			vector<float> tempVec = {i/1000.0, 0.5*i/1000.0};
+			vector<float> tempVec = {i/2000.0, 0.5*i/1000.0};
 			data5.push_back(tempVec);
 			i += 1;
 		}
