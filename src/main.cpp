@@ -13,6 +13,8 @@
 #include "../src/plot.h"
 #include "../src/window.h"
 
+using namespace GLPL;
+
 int main(int argc, char* argv[]) {
 	/* ======================================================
 	 *                     Setup Window
@@ -56,7 +58,7 @@ int main(int argc, char* argv[]) {
 	}
 	// Graph 3
 	vector<pt2D> data3;
-	int i = -2000;
+	float i = -2000.0;
 
 	// Graph 4 - Vector
 	vector<float> data4;

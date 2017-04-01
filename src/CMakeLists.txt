@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 project(openGLPlotLive)
 
 # Add c11++ flag to compiler
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing")
 
 # Add Cmake Module Path
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake/")
