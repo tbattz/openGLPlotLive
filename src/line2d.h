@@ -211,8 +211,14 @@ namespace GLPL {
 		vector<vector<float>>* dataVecPt;
 		vector<float> internalData;
 
-		Line2DVecVec(vector<vector<float>>* dataVecPt) {
+		/* Selection */
+		int indexX;
+		int indexY;
+
+		Line2DVecVec(vector<vector<float>>* dataVecPt, int indexX = 0, int indexY = 1) {
 			this->dataVecPt = dataVecPt;
+			this->indexX = indexX;
+			this->indexY = indexY;
 
 			/* Setup Buffers */
 			updateInternalData();
@@ -230,8 +236,90 @@ namespace GLPL {
 			internalData.clear();
 			// Update With New Data
 			for(unsigned int i=0; i<dataVecPt->size(); i++) {
-				internalData.push_back((*dataVecPt)[i][0]);
-				internalData.push_back((*dataVecPt)[i][1]);
+				internalData.push_back((*dataVecPt)[i][indexX]);
+				internalData.push_back((*dataVecPt)[i][indexY]);
+			}
+		}
+
+		void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
+			// Check if number of points changed
+			int newPts = (internalData).size()/2;
+			if (newPts != nPts) {
+				nPts = newPts;
+				// Update buffer and attributes
+				glBindBuffer(GL_ARRAY_BUFFER,VBO);
+				glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]),&internalData[0],GL_DYNAMIC_DRAW);
+			}
+
+			// Draw Plot
+			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+		}
+
+		vector<float> getMinMax() {
+			// Gets the minimum and maximum values of both x and y for the data
+			float xmin = 0;
+			float xmax = 0;
+			float ymin = 0;
+			float ymax = 0;
+			for (unsigned int i = 0; i<internalData.size()/2.0; i++) {
+				float xval = (internalData)[2*i];
+				float yval = (internalData)[2*i+1];
+				if (xval > xmax) {
+					xmax = xval;
+				} else if (xval < xmin) {
+					xmin = xval;
+				}
+				if (yval > ymax) {
+					ymax = yval;
+				} else if (yval < ymin) {
+					ymin = yval;
+				}
+			}
+
+			return vector<float> {xmin,xmax,ymin,ymax};
+		}
+	};
+
+	/* ====================================================================== */
+	/*						 Line of vector of glm::vec3s					  */
+	/* ====================================================================== */
+	class Line2DVecGLMV3 {
+	public:
+		/* Buffers */
+		GLuint VAO, VBO;
+		int nPts = 0;
+
+		/* Data */
+		vector<glm::dvec3>* dataVecPt;
+		vector<float> internalData;
+
+		/* Selection */
+		int indexX;
+		int indexY;
+
+		Line2DVecGLMV3(vector<glm::dvec3>* dataVecPt, int indexX = 0, int indexY = 1) {
+			this->dataVecPt = dataVecPt;
+			this->indexX = indexX;
+			this->indexY = indexY;
+
+			/* Setup Buffers */
+			updateInternalData();
+			int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
+			createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
+
+			/* Set Number of Points */
+			nPts = dataVecPt->size()/2.0;
+
+		}
+
+		void updateInternalData() {
+			/* Creates an internal data store from the current dataVecPt */
+			// Clear Previous Data
+			internalData.clear();
+			// Update With New Data
+			for(unsigned int i=0; i<dataVecPt->size(); i++) {
+				internalData.push_back((*dataVecPt)[i][indexX]);
+				internalData.push_back((*dataVecPt)[i][indexY]);
 			}
 		}
 

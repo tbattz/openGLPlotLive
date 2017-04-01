@@ -25,7 +25,6 @@
 
 namespace GLPL {
 
-
 	class Axes {
 		// Axes contains the axes draw space, axes and tick markings
 	public:
@@ -65,6 +64,7 @@ namespace GLPL {
 		vector<Line2DPts*> lines2DPts;
 		vector<Line2DVec*> lines2DVec;
 		vector<Line2DVecVec*> lines2DVecVec;
+		vector<Line2DVecGLMV3*> lines2DVecGLMV3;
 		// Window Dimensions
 		WinDimensions* winDimPt;
 		// Font Shader
@@ -226,8 +226,13 @@ namespace GLPL {
 		}
 
 		void addLine(Line2DVecVec* line) {
-			// ADds a line containing a vector of vectors to the axes
+			// Adds a line containing a vector of vectors to the axes
 			lines2DVecVec.push_back(line);
+		}
+
+		void addLine(Line2DVecGLMV3* line) {
+			// Adds a line containing a vector of glm::dvec3 to the axes
+			lines2DVecGLMV3.push_back(line);
 		}
 
 		void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
@@ -242,6 +247,10 @@ namespace GLPL {
 			// Draw the lines of 2D Vectors of vectors on the axes
 			for(unsigned int i=0; i<lines2DVecVec.size(); i++) {
 				lines2DVecVec[i]->Draw(shader, axesLimitsViewportTrans);
+			}
+			// Draw the lines of vectors of glm::dvec3 on the axes
+			for(unsigned int i=0; i<lines2DVecGLMV3.size(); i++) {
+				lines2DVecGLMV3[i]->Draw(shader, axesLimitsViewportTrans);
 			}
 		}
 
@@ -410,6 +419,10 @@ namespace GLPL {
 			}
 			for(unsigned int i=0; i<lines2DVecVec.size(); i++) {
 				vector<float> minMax = lines2DVecVec[i]->getMinMax();
+				compareMinMax(&dataMinMax,minMax);
+			}
+			for(unsigned int i=0; i<lines2DVecGLMV3.size(); i++) {
+				vector<float> minMax = lines2DVecGLMV3[i]->getMinMax();
 				compareMinMax(&dataMinMax,minMax);
 			}
 			// Adjust to nearest significant number if specified
