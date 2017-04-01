@@ -5,8 +5,8 @@
  *      Author: bcub3d-desktop
  */
 
-#ifndef SHADER_H_
-#define SHADER_H_
+#ifndef P_SHADER_H_
+#define P_SHADER_H_
 
 #include <string>
 #include <fstream>
@@ -101,4 +101,4 @@ public:
 	}
 };
 
-#endif /* SHADER_H_ */
+#endif /* P_SHADER_H_ */

@@ -5,8 +5,8 @@
  *      Author: bcub3d-desktop
  */
 
-#ifndef FONTS_H_
-#define FONTS_H_
+#ifndef P_FONTS_H_
+#define P_FONTS_H_
 
 // Free Type Library
 #include <ft2build.h>
@@ -490,4 +490,4 @@ Shader setupFontShader(GLchar* vertexShaderPath,GLchar* fragmentShaderPath, GLui
 }
 
 
-#endif /* FONTS_H_ */
+#endif /* P_FONTS_H_ */

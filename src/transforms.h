@@ -5,8 +5,8 @@
  *      Author: bcub3d-desktop
  */
 
-#ifndef TRANSFORMS_H_
-#define TRANSFORMS_H_
+#ifndef P_TRANSFORMS_H_
+#define P_TRANSFORMS_H_
 
 
 // Transform to custom viewports
@@ -41,4 +41,4 @@ glm::mat4 viewportTransform(float x, float y, float width, float height) {
 
 
 
-#endif /* TRANSFORMS_H_ */
+#endif /* P_TRANSFORMS_H_ */

@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
 	myplot.axes.addLine(&line3);
 	myplot.axes.addLine(&line4);
 	myplot.axes.addLine(&line5);
+	myplot.axes.autoScaleRound = false;
 
 
 	/* ======================================================

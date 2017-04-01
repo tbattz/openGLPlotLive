@@ -5,8 +5,8 @@
  *      Author: bcub3d-desktop
  */
 
-#ifndef LINE2D_H_
-#define LINE2D_H_
+#ifndef P_LINE2D_H_
+#define P_LINE2D_H_
 
 // GLEW (OpenGL Extension Wrangler Library)
 #define GLEW_STATIC
@@ -271,4 +271,4 @@ public:
 	}
 };
 
-#endif /* LINE2D_H_ */
+#endif /* P_LINE2D_H_ */

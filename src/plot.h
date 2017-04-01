@@ -5,8 +5,8 @@
  *      Author: bcub3d-laptop
  */
 
-#ifndef PLOT_H_
-#define PLOT_H_
+#ifndef P_PLOT_H_
+#define P_PLOT_H_
 
 #include "../src/axes.h"
 #include "../src/transforms.h"
@@ -95,4 +95,4 @@ public:
 
 
 
-#endif /* PLOT_H_ */
+#endif /* P_PLOT_H_ */

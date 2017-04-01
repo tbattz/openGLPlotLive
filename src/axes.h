@@ -5,8 +5,8 @@
  *      Author: bcub3d-laptop
  */
 
-#ifndef AXES_H_
-#define AXES_H_
+#ifndef P_AXES_H_
+#define P_AXES_H_
 
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
@@ -457,4 +457,4 @@ public:
 
 
 
-#endif /* AXES_H_ */
+#endif /* P_AXES_H_ */

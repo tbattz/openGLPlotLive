@@ -5,8 +5,8 @@
  *      Author: bcub3d-desktop
  */
 
-#ifndef WINDOW_H_
-#define WINDOW_H_
+#ifndef P_WINDOW_H_
+#define P_WINDOW_H_
 
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
@@ -135,4 +135,4 @@ void postLoopDraw(GLFWwindow* window) {
 
 
 
-#endif /* WINDOW_H_ */
+#endif /* P_WINDOW_H_ */
