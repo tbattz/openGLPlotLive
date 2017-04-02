@@ -18,6 +18,8 @@ using std::vector;
 
 namespace GLPL {
 
+	float maxFloat = std::numeric_limits<float>::max();
+
 	struct pt2D {
 		GLfloat x;
 		GLfloat y;
@@ -339,10 +341,10 @@ namespace GLPL {
 
 		vector<float> getMinMax() {
 			// Gets the minimum and maximum values of both x and y for the data
-			float xmin = 0;
-			float xmax = 0;
-			float ymin = 0;
-			float ymax = 0;
+			float xmin = maxFloat;
+			float xmax = -maxFloat;
+			float ymin = maxFloat;
+			float ymax = -maxFloat;
 			for (unsigned int i = 0; i<internalData.size()/2.0; i++) {
 				float xval = (internalData)[2*i];
 				float yval = (internalData)[2*i+1];

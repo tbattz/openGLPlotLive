@@ -407,9 +407,9 @@ namespace GLPL {
 		void updateAxesLimitsAutoscale() {
 			// Updates the axes limits according to the maximum
 			// and minimum values of the current data
-			vector<float> dataMinMax = {0.0,0.0,0.0,0.0};
+			vector<float> dataMinMax = {maxFloat,-maxFloat,maxFloat,-maxFloat};
 			// Get data max and mins
-				for(unsigned int i=0; i<lines2DPts.size(); i++) {
+			for(unsigned int i=0; i<lines2DPts.size(); i++) {
 				vector<float> minMax = lines2DPts[i]->getMinMax();
 				compareMinMax(&dataMinMax,minMax);
 			}
