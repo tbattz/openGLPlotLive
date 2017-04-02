@@ -159,13 +159,14 @@ namespace GLPL {
 			// Draw Axes Box
 			drawAxesBox(shader, axesViewportTrans);
 
+			// Scissor Test
+			glEnable(GL_SCISSOR_TEST);
+			vector<float> xy = calculateScissor(axesLimitsViewportTrans);
+			glScissor(xy[0]*(winDimPt->width),xy[1]*(winDimPt->height),(xy[2]-xy[0])*(winDimPt->width),(xy[3]-xy[1])*(winDimPt->height));
+
 			// Draw Axes Lines
 			drawAxesLines(shader, axesLimitsViewportTrans);
 
-			// Scissor Test
-			vector<float> xy = calculateScissor(axesLimitsViewportTrans);
-			glEnable(GL_SCISSOR_TEST);
-			glScissor(xy[0]*(winDimPt->width),xy[1]*(winDimPt->height),(xy[2]-xy[0])*(winDimPt->width),(xy[3]-xy[1])*(winDimPt->height));
 			// Draw All Lines
 			drawLines(shader, axesLimitsViewportTrans);
 			// Disable Scissor Testing
