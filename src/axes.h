@@ -143,6 +143,11 @@ namespace GLPL {
 		}
 
 		void Draw(Shader shader,glm::mat4 plotViewportTrans) {
+			// Check for autoscaling of axes
+			if(autoScaleX || autoScaleY) {
+				updateAxesLimitsAutoscale();
+			}
+
 			// Calculate Viewport Transformation
 			//glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
 			glm::mat4 axesViewportTrans = plotViewportTrans * viewportTransform(x+majorTickSizeW, y+majorTickSizeH, width - majorTickSizeW, height - majorTickSizeH);
@@ -150,11 +155,6 @@ namespace GLPL {
 
 			// Draw Axes Box Outline
 			//drawAxesAreaOutline(shader, axesAreaViewportTrans);
-
-			// Check for autoscaling of axes
-			if(autoScaleX || autoScaleY) {
-				updateAxesLimitsAutoscale();
-			}
 
 			// Draw Axes Box
 			drawAxesBox(shader, axesViewportTrans);
