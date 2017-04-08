@@ -439,7 +439,6 @@ namespace GLPL {
 			}
 			for(unsigned int i=0; i<lines2DVecfVecGLMV3.size(); i++) {
 				vector<float> minMax = lines2DVecfVecGLMV3[i]->getMinMax();
-				printf("%f,%f,%f,%f\n",minMax[0],minMax[1],minMax[2],minMax[3]);
 				compareMinMax(&dataMinMax,minMax);
 			}
 			// Adjust to nearest significant number if specified
