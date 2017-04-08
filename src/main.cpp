@@ -91,6 +91,10 @@ int main(int argc, char* argv[]) {
 	Line2DVecVec line5(&data5);
 	Line2DVecGLMV3 line6(&data6,2,1);
 	Line2DVecfVecGLMV3 line7(&data7, &data6, 0);
+	line4.colour = LC_MAGENTA;
+	line5.colour = LC_CYAN;
+	line6.colour = LC_YELLOW;
+	line7.colour = LC_RED;
 
 	// Add lines to axes
 	myplot.axes.addLine(&line1);

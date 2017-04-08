@@ -12,6 +12,9 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+// Project Includes
+#include "../src/lineColours.h"
+
 // Standard Includes
 #include <vector>
 using std::vector;
@@ -48,11 +51,11 @@ namespace GLPL {
 	}
 
 
-	void drawData(Shader shader, glm::mat4 axesLimitViewportTrans,GLuint* VAOPt, int nPts) {
+	void drawData(Shader shader, glm::mat4 axesLimitViewportTrans,GLuint* VAOPt, glm::vec3 colour, int nPts) {
 		// Draws the data currently stored in the line corresponding to the given VAO
 		shader.Use();
 		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitViewportTrans));
-		glm::vec4 inColor = glm::vec4(1.0, 1.0, 1.0, 1.0);
+		glm::vec4 inColor = glm::vec4(colour, 1.0);
 		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
 		glBindVertexArray(*VAOPt);
 		glDrawArrays(GL_LINE_STRIP,0,nPts);
@@ -73,6 +76,9 @@ namespace GLPL {
 
 		/* Data */
 		vector<pt2D>* dataPtPt;
+
+		/* Attributes */
+		glm::vec3 colour = LC_WHITE;
 
 		Line2DPts(vector<pt2D>* dataPtPt) {
 			this->dataPtPt = dataPtPt;
@@ -97,7 +103,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
 		}
 
 		void appendPt(pt2D pt) {
@@ -145,6 +151,9 @@ namespace GLPL {
 		/* Data */
 		vector<float>* dataVecPt;
 
+		/* Attributes */
+		glm::vec3 colour = LC_WHITE;
+
 		Line2DVec(vector<float>* dataVecPt) {
 			this->dataVecPt = dataVecPt;
 
@@ -168,7 +177,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
 		}
 
 		void appendVec(float x, float y) {
@@ -221,6 +230,9 @@ namespace GLPL {
 		int indexX;
 		int indexY;
 
+		/* Attributes */
+		glm::vec3 colour = LC_WHITE;
+
 		Line2DVecVec(vector<vector<float>>* dataVecPt, int indexX = 0, int indexY = 1) {
 			this->dataVecPt = dataVecPt;
 			this->indexX = indexX;
@@ -258,7 +270,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
 		}
 
 		vector<float> getMinMax() {
@@ -305,6 +317,9 @@ namespace GLPL {
 		int indexX;
 		int indexY;
 
+		/* Attributes */
+		glm::vec3 colour = LC_WHITE;
+
 		Line2DVecGLMV3(vector<glm::dvec3>* dataVecPt, int indexX = 0, int indexY = 1) {
 			this->dataVecPt = dataVecPt;
 			this->indexX = indexX;
@@ -342,7 +357,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
 		}
 
 		vector<float> getMinMax() {
@@ -391,6 +406,9 @@ namespace GLPL {
 		/* Selection */
 		int indexGLM;
 
+		/* Attributes */
+		glm::vec3 colour = LC_WHITE;
+
 		Line2DVecfVecGLMV3(vector<float>* dataVecfPt, vector<glm::dvec3>* dataVecGLMV3Pt, int indexGLM = 0) {
 			this->dataVecfPt = dataVecfPt;
 			this->dataVecGLMV3Pt = dataVecGLMV3Pt;
@@ -430,7 +448,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
 		}
 
 		vector<float> getMinMax() {
