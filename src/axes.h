@@ -41,6 +41,7 @@ namespace GLPL {
 		bool autoScaleX = true; // True if the x-axes are to sale to the given data
 		bool autoScaleY = true; // True if the y-axes are to sale to the given data
 		bool autoScaleRound = true; // True to round auto scale limits to the nearest significant value
+		float maxXRange = 0; // Plot will adjust to xmax-maxXRange if set to something other than 0 (useful for time scrolling)
 		// Axes Ticks
 		float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
 		float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
@@ -459,6 +460,13 @@ namespace GLPL {
 						// Odd, maximum
 						dataMinMax[i] = ceil(dataMinMax[i]/(pow(10.0,tens)))*(pow(10.0,tens));
 					}
+				}
+			}
+
+			// Adjust for xrange limit
+			if (maxXRange != 0) {
+				if(dataMinMax[1]-dataMinMax[0] > maxXRange) {
+					dataMinMax[0] = dataMinMax[1] - maxXRange;
 				}
 			}
 
