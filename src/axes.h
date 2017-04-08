@@ -65,6 +65,7 @@ namespace GLPL {
 		vector<Line2DVec*> lines2DVec;
 		vector<Line2DVecVec*> lines2DVecVec;
 		vector<Line2DVecGLMV3*> lines2DVecGLMV3;
+		vector<Line2DVecfVecGLMV3*> lines2DVecfVecGLMV3;
 		// Window Dimensions
 		WinDimensions* winDimPt;
 		// Font Shader
@@ -236,6 +237,12 @@ namespace GLPL {
 			lines2DVecGLMV3.push_back(line);
 		}
 
+		void addLine(Line2DVecfVecGLMV3* line) {
+			// Adds to the axes a line containing both a vector of floats and vector of glm::dvec3, so that
+			// data from the two can be plotted against each other.
+			lines2DVecfVecGLMV3.push_back(line);
+		}
+
 		void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
 			// Draws the lines of 2Dpts on the axes
 			for(unsigned int i=0; i<lines2DPts.size(); i++) {
@@ -252,6 +259,10 @@ namespace GLPL {
 			// Draw the lines of vectors of glm::dvec3 on the axes
 			for(unsigned int i=0; i<lines2DVecGLMV3.size(); i++) {
 				lines2DVecGLMV3[i]->Draw(shader, axesLimitsViewportTrans);
+			}
+			// Draw the lines of vectors of floats against vectors of glm::dvec3 on the axes
+			for(unsigned int i=0; i<lines2DVecfVecGLMV3.size(); i++) {
+				lines2DVecfVecGLMV3[i]->Draw(shader, axesLimitsViewportTrans);
 			}
 		}
 
@@ -424,6 +435,11 @@ namespace GLPL {
 			}
 			for(unsigned int i=0; i<lines2DVecGLMV3.size(); i++) {
 				vector<float> minMax = lines2DVecGLMV3[i]->getMinMax();
+				compareMinMax(&dataMinMax,minMax);
+			}
+			for(unsigned int i=0; i<lines2DVecfVecGLMV3.size(); i++) {
+				vector<float> minMax = lines2DVecfVecGLMV3[i]->getMinMax();
+				printf("%f,%f,%f,%f\n",minMax[0],minMax[1],minMax[2],minMax[3]);
 				compareMinMax(&dataMinMax,minMax);
 			}
 			// Adjust to nearest significant number if specified

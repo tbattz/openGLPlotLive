@@ -116,12 +116,14 @@ namespace GLPL {
 				float yval = (*dataPtPt)[i].y;
 				if (xval > xmax) {
 					xmax = xval;
-				} else if (xval < xmin) {
+				}
+				if (xval < xmin) {
 					xmin = xval;
 				}
 				if (yval > ymax) {
 					ymax = yval;
-				} else if (yval < ymin) {
+				}
+				if (yval < ymin) {
 					ymin = yval;
 				}
 			}
@@ -186,12 +188,14 @@ namespace GLPL {
 				float yval = (*dataVecPt)[2*i+1];
 				if (xval > xmax) {
 					xmax = xval;
-				} else if (xval < xmin) {
+				}
+				if (xval < xmin) {
 					xmin = xval;
 				}
 				if (yval > ymax) {
 					ymax = yval;
-				} else if (yval < ymin) {
+				}
+				if (yval < ymin) {
 					ymin = yval;
 				}
 			}
@@ -268,12 +272,14 @@ namespace GLPL {
 				float yval = (internalData)[2*i+1];
 				if (xval > xmax) {
 					xmax = xval;
-				} else if (xval < xmin) {
+				}
+				if (xval < xmin) {
 					xmin = xval;
 				}
 				if (yval > ymax) {
 					ymax = yval;
-				} else if (yval < ymin) {
+				}
+				if (yval < ymin) {
 					ymin = yval;
 				}
 			}
@@ -283,7 +289,7 @@ namespace GLPL {
 	};
 
 	/* ====================================================================== */
-	/*						 Line of vector of glm::vec3s					  */
+	/*						 Line of vector of glm::dvec3s					  */
 	/* ====================================================================== */
 	class Line2DVecGLMV3 {
 	public:
@@ -350,12 +356,102 @@ namespace GLPL {
 				float yval = (internalData)[2*i+1];
 				if (xval > xmax) {
 					xmax = xval;
-				} else if (xval < xmin) {
+				}
+				if (xval < xmin) {
 					xmin = xval;
 				}
 				if (yval > ymax) {
 					ymax = yval;
-				} else if (yval < ymin) {
+				}
+				if (yval < ymin) {
+					ymin = yval;
+				}
+			}
+
+			return vector<float> {xmin,xmax,ymin,ymax};
+		}
+	};
+
+	/* ====================================================================== */
+	/*			   Line of vector<float> vs vector of glm::dvec3s		  	  */
+	/* ====================================================================== */
+	class Line2DVecfVecGLMV3 {
+	// For plotting a vector of floats against an index selected form a vector of glm::dvec3s
+	// For example plotting a vector of time data against a vector of glm::dvec3.
+	public:
+		/* Buffers */
+		GLuint VAO, VBO;
+		int nPts = 0;
+
+		/* Data */
+		vector<float>*	dataVecfPt;
+		vector<glm::dvec3>* dataVecGLMV3Pt;
+		vector<float> internalData;
+
+		/* Selection */
+		int indexGLM;
+
+		Line2DVecfVecGLMV3(vector<float>* dataVecfPt, vector<glm::dvec3>* dataVecGLMV3Pt, int indexGLM = 0) {
+			this->dataVecfPt = dataVecfPt;
+			this->dataVecGLMV3Pt = dataVecGLMV3Pt;
+			this->indexGLM = indexGLM;
+
+			/* Setup Buffers */
+			updateInternalData();
+			int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
+			createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
+
+			/* Set Number of Points */
+			nPts = internalData.size()/2.0;
+
+		}
+
+		void updateInternalData() {
+			/* Creates an internal data store from the current dataVecPt */
+			// Clear Previous Data
+			internalData.clear();
+			// Get maximum length of both vectors
+			int len = std::min(dataVecfPt->size(),dataVecGLMV3Pt->size());
+			// Update With New Data
+			for(int i=0; i<len; i++) {
+				internalData.push_back((*dataVecfPt)[i]);
+				internalData.push_back((*dataVecGLMV3Pt)[i][indexGLM]);
+			}
+		}
+
+		void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
+			// Check if number of points changed
+			int newPts = (internalData).size()/2;
+			if (newPts != nPts) {
+				nPts = newPts;
+				// Update buffer and attributes
+				glBindBuffer(GL_ARRAY_BUFFER,VBO);
+				glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]),&internalData[0],GL_DYNAMIC_DRAW);
+			}
+
+			// Draw Plot
+			drawData(shader, axesLimitViewportTrans, &VAO, nPts);
+		}
+
+		vector<float> getMinMax() {
+			// Gets the minimum and maximum values of both x and y for the data
+			float xmin = maxFloat;
+			float xmax = -maxFloat;
+			float ymin = maxFloat;
+			float ymax = -maxFloat;
+			for (unsigned int i = 0; i<internalData.size()/2.0; i++) {
+				float xval = (internalData)[2*i];
+				float yval = (internalData)[2*i+1];
+				if (xval > xmax) {
+					xmax = xval;
+				}
+				if (xval < xmin) {
+					xmin = xval;
+				}
+				if (yval > ymax) {
+					ymax = yval;
+				}
+				if (yval < ymin) {
 					ymin = yval;
 				}
 			}

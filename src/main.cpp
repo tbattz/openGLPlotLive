@@ -73,6 +73,9 @@ int main(int argc, char* argv[]) {
 	// Graph 6 - Vector of glm::dvec3
 	vector<glm::dvec3> data6;
 
+	// Graph 7 - Vector of floats - time
+	vector<float> data7;
+
 
 	/* ======================================================
 	 *                	    Create Plot
@@ -87,6 +90,7 @@ int main(int argc, char* argv[]) {
 	Line2DVec line4(&data4);
 	Line2DVecVec line5(&data5);
 	Line2DVecGLMV3 line6(&data6,2,1);
+	Line2DVecfVecGLMV3 line7(&data7, &data6, 0);
 
 	// Add lines to axes
 	myplot.axes.addLine(&line1);
@@ -95,6 +99,7 @@ int main(int argc, char* argv[]) {
 	myplot.axes.addLine(&line4);
 	myplot.axes.addLine(&line5);
 	myplot.axes.addLine(&line6);
+	myplot.axes.addLine(&line7);
 	myplot.axes.autoScaleRound = false;
 
 
@@ -133,6 +138,14 @@ int main(int argc, char* argv[]) {
 			i += 1;
 		}
 		line6.updateInternalData();
+
+		// Update graph 7 - time
+		i-=10;
+		for(int j=0; j<10; j++) {
+			data7.push_back(i/1000.0);
+			i += 1;
+		}
+		line7.updateInternalData();
 
 		// Update Axes Limits
 		//if(i > 500) {
