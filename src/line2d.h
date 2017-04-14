@@ -51,14 +51,14 @@ namespace GLPL {
 	}
 
 
-	void drawData(Shader shader, glm::mat4 axesLimitViewportTrans,GLuint* VAOPt, glm::vec3 colour, int nPts) {
+	void drawData(Shader shader, glm::mat4 axesLimitViewportTrans,GLuint* VAOPt, glm::vec3 colour, int nPts, GLenum mode) {
 		// Draws the data currently stored in the line corresponding to the given VAO
 		shader.Use();
 		glUniformMatrix4fv(glGetUniformLocation(shader.Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(axesLimitViewportTrans));
 		glm::vec4 inColor = glm::vec4(colour, 1.0);
 		glUniform4fv(glGetUniformLocation(shader.Program,"inColor"),1,glm::value_ptr(inColor));
 		glBindVertexArray(*VAOPt);
-		glDrawArrays(GL_LINE_STRIP,0,nPts);
+		glDrawArrays(mode,0,nPts);
 		glBindVertexArray(0);
 	}
 
@@ -79,9 +79,11 @@ namespace GLPL {
 
 		/* Attributes */
 		glm::vec3 colour = LC_WHITE;
+		GLenum mode; // Mode, line or points
 
-		Line2DPts(vector<pt2D>* dataPtPt) {
+		Line2DPts(vector<pt2D>* dataPtPt, GLenum mode = GL_LINE_STRIP) {
 			this->dataPtPt = dataPtPt;
+			this->mode = mode;
 
 			/* Setup Buffers */
 			int dataSizeBytes = dataPtPt->size()*2*sizeof(GLfloat);
@@ -103,7 +105,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts, mode);
 		}
 
 		void appendPt(pt2D pt) {
@@ -153,9 +155,11 @@ namespace GLPL {
 
 		/* Attributes */
 		glm::vec3 colour = LC_WHITE;
+		GLenum mode; // Mode, line or points
 
-		Line2DVec(vector<float>* dataVecPt) {
+		Line2DVec(vector<float>* dataVecPt, GLenum mode = GL_LINE_STRIP) {
 			this->dataVecPt = dataVecPt;
+			this->mode = mode;
 
 			/* Setup Buffers */
 			int dataSizeBytes = dataVecPt->size()*sizeof((*dataVecPt)[0]);
@@ -177,7 +181,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts, mode);
 		}
 
 		void appendVec(float x, float y) {
@@ -232,9 +236,11 @@ namespace GLPL {
 
 		/* Attributes */
 		glm::vec3 colour = LC_WHITE;
+		GLenum mode; // Mode, line or points
 
-		Line2DVecVec(vector<vector<float>>* dataVecPt, int indexX = 0, int indexY = 1) {
+		Line2DVecVec(vector<vector<float>>* dataVecPt, int indexX = 0, int indexY = 1, GLenum mode = GL_LINE_STRIP) {
 			this->dataVecPt = dataVecPt;
+			this->mode = mode;
 			this->indexX = indexX;
 			this->indexY = indexY;
 
@@ -270,7 +276,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts, mode);
 		}
 
 		vector<float> getMinMax() {
@@ -319,9 +325,11 @@ namespace GLPL {
 
 		/* Attributes */
 		glm::vec3 colour = LC_WHITE;
+		GLenum mode; // Mode, line or points
 
-		Line2DVecGLMV3(vector<glm::dvec3>* dataVecPt, int indexX = 0, int indexY = 1) {
+		Line2DVecGLMV3(vector<glm::dvec3>* dataVecPt, int indexX = 0, int indexY = 1, GLenum mode = GL_LINE_STRIP) {
 			this->dataVecPt = dataVecPt;
+			this->mode = mode;
 			this->indexX = indexX;
 			this->indexY = indexY;
 
@@ -357,7 +365,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts, mode);
 		}
 
 		vector<float> getMinMax() {
@@ -408,9 +416,11 @@ namespace GLPL {
 
 		/* Attributes */
 		glm::vec3 colour = LC_WHITE;
+		GLenum mode; // Mode, line or points
 
-		Line2DVecfVecGLMV3(vector<float>* dataVecfPt, vector<glm::dvec3>* dataVecGLMV3Pt, int indexGLM = 0) {
+		Line2DVecfVecGLMV3(vector<float>* dataVecfPt, vector<glm::dvec3>* dataVecGLMV3Pt, int indexGLM = 0, GLenum mode = GL_LINE_STRIP) {
 			this->dataVecfPt = dataVecfPt;
+			this->mode = mode;
 			this->dataVecGLMV3Pt = dataVecGLMV3Pt;
 			this->indexGLM = indexGLM;
 
@@ -448,7 +458,7 @@ namespace GLPL {
 			}
 
 			// Draw Plot
-			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts);
+			drawData(shader, axesLimitViewportTrans, &VAO, colour, nPts, mode);
 		}
 
 		vector<float> getMinMax() {
