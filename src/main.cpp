@@ -105,7 +105,8 @@ int main(int argc, char* argv[]) {
 	myplot.axes.addLine(&line6);
 	myplot.axes.addLine(&line7);
 	myplot.axes.autoScaleRound = false;
-	myplot.axes.maxXRange = 5;
+	myplot.axes.equalAxes = true;
+	//myplot.axes.maxXRange = 5;
 
 
 	/* ======================================================

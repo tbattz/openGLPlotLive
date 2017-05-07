@@ -42,6 +42,7 @@ namespace GLPL {
 		bool autoScaleY = true; // True if the y-axes are to sale to the given data
 		bool autoScaleRound = true; // True to round auto scale limits to the nearest significant value
 		float maxXRange = 0; // Plot will adjust to xmax-maxXRange if set to something other than 0 (useful for time scrolling)
+		bool equalAxes = false; // Will adjust the plot limits so that the xrange and yrange are the same
 		// Axes Ticks
 		float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
 		float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
@@ -337,6 +338,8 @@ namespace GLPL {
 			return scale;
 		}
 
+
+
 		void drawMajorAxesTickLabels(glm::mat4 axesViewportTrans) {
 			// Draws the number labelling for the major axes ticks
 			// Set Uniform
@@ -460,6 +463,25 @@ namespace GLPL {
 						// Odd, maximum
 						dataMinMax[i] = ceil(dataMinMax[i]/(pow(10.0,tens)))*(pow(10.0,tens));
 					}
+				}
+			}
+
+			// Max axes equal if required
+			if (equalAxes) {
+				// Get biggest range
+				float xRange = dataMinMax[1] - dataMinMax[0];
+				float yRange = dataMinMax[3] - dataMinMax[2];
+				float maxRange = std::max(xRange,yRange);
+				if (xRange > yRange) {
+					// Adjust yrange
+					float midY = (dataMinMax[2]+dataMinMax[3])/2.0;
+					dataMinMax[2] = midY - (maxRange/2.0);
+					dataMinMax[3] = midY + (maxRange/2.0);
+				} else {
+					// Adjust xrange
+					float midX = (dataMinMax[0]+dataMinMax[1])/2.0;
+					dataMinMax[0] = midX - (maxRange/2.0);
+					dataMinMax[1] = midX + (maxRange/2.0);
 				}
 			}
 
