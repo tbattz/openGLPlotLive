@@ -471,14 +471,17 @@ namespace GLPL {
 				// Get biggest range
 				float xRange = dataMinMax[1] - dataMinMax[0];
 				float yRange = dataMinMax[3] - dataMinMax[2];
-				float maxRange = std::max(xRange,yRange);
-				if (xRange > yRange) {
+				float w = width*screenWidth;
+				float h = height*screenHeight;
+				if (xRange > (w/h)*yRange) {
 					// Adjust yrange
+					float maxRange = (h/w)*xRange;
 					float midY = (dataMinMax[2]+dataMinMax[3])/2.0;
 					dataMinMax[2] = midY - (maxRange/2.0);
 					dataMinMax[3] = midY + (maxRange/2.0);
 				} else {
 					// Adjust xrange
+					float maxRange = (w/h)*xRange;
 					float midX = (dataMinMax[0]+dataMinMax[1])/2.0;
 					dataMinMax[0] = midX - (maxRange/2.0);
 					dataMinMax[1] = midX + (maxRange/2.0);
