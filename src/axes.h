@@ -17,6 +17,7 @@
 #include <math.h>
 
 // GLPL Includes
+#include "../src/line2d.h"
 #include "../src/transforms.h"
 #include "../src/window.h"
 #include "../src/plot.h"
