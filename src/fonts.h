@@ -479,16 +479,6 @@ namespace GLPL {
 	private:
 	};
 
-	Shader setupFontShader(GLchar* vertexShaderPath,GLchar* fragmentShaderPath, GLuint screenWidth, GLuint screenHeight) {
-		/* Compile and setup shader. */
-		Shader textShader("../Shaders/font.vs","../Shaders/font.frag");
-		textShader.Use();
-		glm::mat4 textProjection = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight);
-		glUniformMatrix4fv(glGetUniformLocation(textShader.Program, "textProjection"), 1, GL_FALSE, glm::value_ptr(textProjection));
-
-
-		return textShader;
-	}
 }
 
 #endif /* P_FONTS_H_ */

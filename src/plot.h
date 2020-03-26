@@ -27,10 +27,9 @@ namespace GLPL {
 		vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
 		// Window Dimensions
 		WinDimensions* winDimPt;
-		// Axes Ticks Shader
-		Shader textShader = Shader("../Shaders/font.vs", "../Shaders/font.frag");
 
-		Plot(float x, float y, float width, float height, WinDimensions* winDimPt) : axes(0.15,0.15,0.80,0.75,winDimPt,&textShader) {
+		Plot(float x, float y, float width, float height, WinDimensions* winDimPt, Shader* textShaderPt) :
+		    axes(0.15,0.15,0.80,0.75,winDimPt,textShaderPt) {
 			// Set Size and Position
 			this->x = x;
 			this->y = y;
@@ -64,9 +63,9 @@ namespace GLPL {
 
 		void setupFontShader(GLuint screenWidth, GLuint screenHeight) {
 			// Sets up the uniforms for the font shader
-			textShader.Use();
+			this->axes.textShaderPt->Use();
 			glm::mat4 textProjection = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight);
-			glUniformMatrix4fv(glGetUniformLocation(textShader.Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(textProjection));
+			glUniformMatrix4fv(glGetUniformLocation(this->axes.textShaderPt->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(textProjection));
 		}
 
 		void Draw(Shader shader) {

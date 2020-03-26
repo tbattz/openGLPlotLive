@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
 	   ====================================================== */
 	// Setup and compile shaders
 	Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
+	Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
 
 	/* ======================================================
 	 *                	  Create Plot Data
@@ -81,7 +82,7 @@ int main(int argc, char* argv[]) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim);
+	Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim, &textShader);
 
 	// Create Lines
 	Line2DPts line1(&data1);

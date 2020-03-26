@@ -24,11 +24,12 @@ WinDimensions winDim(window);
 initGLEW();
 ```
 
-## Create Shader
-A shader is required to plot the lines, currently this needs to be manually created.
+## Create Shaders
+Shaders are required to plot the lines, currently this needs to be manually created.
 ```c++
 // Setup and compile shaders
 Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
+Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
 ```
 
 ## Create Data
@@ -55,7 +56,7 @@ vector<vector<float>> data5;
 You will need to create a plot to add the lines to. Creating a plot that starts at x=0.0, y=0.25 (proportion of the window), and has width and height of 0.75 the respective lengths,
 ```c++
 // Create Plot
-Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim);
+Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim, &textShader);
 // Create Lines
 Line2Dpts line2(&data2);
 Line2DVecVec line5(&data5);
