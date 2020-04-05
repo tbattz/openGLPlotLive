@@ -8,9 +8,15 @@
 #ifndef P_TRANSFORMS_H_
 #define P_TRANSFORMS_H_
 
+// GLM Mathematics
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 namespace GLPL {
 	// Transform to custom viewports
-	glm::mat4 viewportTransform(float x, float y, float width, float height) {
+	static glm::mat4 viewportTransform(float x, float y, float width, float height) {
 		// Creates transform matrix for a custom sized viewport
 		// x:			The bottom left corner x coordinate (in 0 to 1)
 		// y:			The bottom left corner y coordinate (in 0 to 1)

@@ -7,120 +7,132 @@
  *  Based on tutorials from http://www.learnopengl.com/#!Introduction
  */
 
-// openGL Includes
-#include "../src/fonts.h"
-#include "../src/line2d.h"
-#include "../src/plot.h"
-#include "../src/window.h"
 
-using namespace GLPL;
+// GLEW (OpenGL Extension Wrangler Library)
+#include <GL/glew.h>
+
+// GLFW (Multi-platform library for OpenGL)
+#include <GLFW/glfw3.h>
+
+// Standard Includes
+#include <memory>
+
+// Project Includes
+#include "../src/fonts.h"
+#include "window/window.h"
+#include "plot/plot.h"
+#include "lines/Line2DPts.h"
+#include "lines/Line2DVecVec.h"
+#include "lines/Line2DVec.h"
+#include "lines/Line2DVecGLMV3.h"
+#include "lines/Line2DVecfVecGLMV3.h"
+
+
 
 int main(int argc, char* argv[]) {
 	/* ======================================================
 	 *                     Setup Window
 	   ====================================================== */
+    // Window Size
+    int windowWidth  = 800;
+    int windowHeight = 800;
+
 	// Init GLFW
-	GLFWwindow* window = initGLFW();
-
-	// Create Window Dimensions Class
-	WinDimensions winDim(window);
-
-	// Initialise GLEW - setup OpenGL pointers
-	initGLEW();
+	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight));
+	std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 
 	/* ======================================================
 	 *                  	  Shaders
 	   ====================================================== */
 	// Setup and compile shaders
-	Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
-	Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
+	GLPL::Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
+    GLPL::Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
 
 	/* ======================================================
 	 *                	  Create Plot Data
    	   ====================================================== */
 	// Create Data
 	// Graph 1
-	vector<pt2D> data1;
+	std::vector<GLPL::pt2D> data1;
 	for(int i = 0; i < 2000; i++) {
-		pt2D pt;
+        GLPL::pt2D pt;
 		float x = i/1000.0;
 		pt.x = x;
 		pt.y = x*x;
 		data1.push_back(pt);
 	}
 	// Graph 2
-	vector<pt2D> data2;
+    std::vector<GLPL::pt2D> data2;
 	for(int i=-1000; i<1000; i++) {
-		pt2D pt2;
+        GLPL::pt2D pt2;
 		float x = i/1000.0;
 		pt2.x = x;
 		pt2.y = -x-1;
 		data2.push_back(pt2);
 	}
 	// Graph 3
-	vector<pt2D> data3;
+    std::vector<GLPL::pt2D> data3;
 	float i = -2000.0;
 
 	// Graph 4 - Vector
-	vector<float> data4;
+    std::vector<float> data4;
 	for(int i=-1000; i<1500; i++) {
 		data4.push_back(i/1000.0);
 		data4.push_back(-i/1000.0);
  	}
 
 	// Graph 5 - Vector of Vectors
-	vector<vector<float>> data5;
+    std::vector<std::vector<float>> data5;
 
 	// Graph 6 - Vector of glm::dvec3
-	vector<glm::dvec3> data6;
+    std::vector<glm::dvec3> data6;
 
 	// Graph 7 - Vector of floats - time
-	vector<float> data7;
+    std::vector<float> data7;
 
 
 	/* ======================================================
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim, &textShader);
+	GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window, &textShader);
 
 	// Create Lines
-	Line2DPts line1(&data1);
-	Line2DPts line2(&data2);
-	Line2DPts line3(&data3);
-	Line2DVec line4(&data4);
-	Line2DVecVec line5(&data5);
-	Line2DVecGLMV3 line6(&data6,2,1);
-	Line2DVecfVecGLMV3 line7(&data7, &data6, 0);
-	line4.colour = LC_MAGENTA;
-	line5.colour = LC_CYAN;
-	line6.colour = LC_YELLOW;
-	line7.colour = LC_RED;
+	std::shared_ptr<GLPL::Line2DPts> line1 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data1));
+    std::shared_ptr<GLPL::Line2DPts> line2 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data2));
+    std::shared_ptr<GLPL::Line2DPts> line3 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data3));
+    std::shared_ptr<GLPL::Line2DVec> line4 = std::shared_ptr<GLPL::Line2DVec>(new GLPL::Line2DVec(&data4));
+    std::shared_ptr<GLPL::Line2DVecVec> line5 = std::shared_ptr<GLPL::Line2DVecVec>(new GLPL::Line2DVecVec(&data5));
+    std::shared_ptr<GLPL::Line2DVecGLMV3> line6 = std::shared_ptr<GLPL::Line2DVecGLMV3>(new GLPL::Line2DVecGLMV3(&data6, 2, 1));
+    std::shared_ptr<GLPL::Line2DVecfVecGLMV3> line7 = std::shared_ptr<GLPL::Line2DVecfVecGLMV3>(new GLPL::Line2DVecfVecGLMV3(&data7, &data6, 0));
+	line4->setLineColour(LC_MAGENTA);
+    line5->setLineColour(LC_CYAN);
+	line6->setLineColour(LC_YELLOW);
+	line7->setLineColour(LC_RED);
 
 	// Add lines to axes
-	myplot.axes.addLine(&line1);
-	myplot.axes.addLine(&line2);
-	myplot.axes.addLine(&line3);
-	myplot.axes.addLine(&line4);
-	myplot.axes.addLine(&line5);
-	myplot.axes.addLine(&line6);
-	myplot.axes.addLine(&line7);
-	myplot.axes.autoScaleRound = false;
-	myplot.axes.equalAxes = true;
-	//myplot.axes.maxXRange = 5;
+    myplot.addLine(line1);
+	myplot.addLine(line2);
+	myplot.addLine(line3);
+	myplot.addLine(line4);
+	myplot.addLine(line5);
+	myplot.addLine(line6);
+	myplot.addLine(line7);
+	myplot.setAutoScaleRound(false);
+	myplot.setEqualAxes(true);
 
 
 	/* ======================================================
 	 *                     Drawing Loop
 	   ====================================================== */
 	// Game Loop
-	while(!glfwWindowShouldClose(window)) {
+	while(!glfwWindowShouldClose(window->getWindow())) {
 
 		// Pre-loop draw
-		preLoopDraw(true, &winDim);
+		window2->preLoopDraw(true);
 
 		// Update Plot Data
-		pt2D pt3;
+		GLPL::pt2D pt3;
 		for(int j=0; j<10; j++) {
 			float x = i/1000.0;
 			pt3.x = x;
@@ -131,11 +143,11 @@ int main(int argc, char* argv[]) {
 		// Update Graph 5
 		i -= 10;
 		for(int j=0; j < 10; j++) {
-			vector<float> tempVec = {i/2000.0, i/1000.0};
+            std::vector<float> tempVec = {i/2000.0, i/1000.0};
 			data5.push_back(tempVec);
 			i += 1;
 		}
-		line5.updateInternalData();
+		line5->updateInternalData();
 
 		// Update Graph 6
 		i -= 10;
@@ -144,7 +156,7 @@ int main(int argc, char* argv[]) {
 			data6.push_back(tempVec);
 			i += 1;
 		}
-		line6.updateInternalData();
+		line6->updateInternalData();
 
 		// Update graph 7 - time
 		i-=10;
@@ -152,7 +164,7 @@ int main(int argc, char* argv[]) {
 			data7.push_back(i/1000.0);
 			i += 1;
 		}
-		line7.updateInternalData();
+		line7->updateInternalData();
 
 		// Update Axes Limits
 		//if(i > 500) {
@@ -163,7 +175,7 @@ int main(int argc, char* argv[]) {
 		myplot.Draw(plot2dShader);
 
 		// Post-loop draw
-		postLoopDraw(window);
+		window2->postLoopDraw();
 
 	}
 

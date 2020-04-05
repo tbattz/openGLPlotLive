@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.0)
 # Project Name
 project(openGLPlotLive)
 
+# Set OpenGL Policy
+set(OpenGL_GL_PREFERENCE "GLVND")
+
 # Add c11++ flag to compiler
 list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing")
 
@@ -21,6 +24,12 @@ endif(WIN32)
 
 # Add Sources
 file(GLOB SOURCES "*.cpp" "*.h")
+file(GLOB SOURCES_AXES axes/*.cpp axes/*.h)
+file(GLOB SOURCES_LINES lines/*.cpp lines/*.h)
+file(GLOB SOURCES_PLOT plot/*.cpp plot/*.h)
+file(GLOB SOURCES_WINDOW window/*.cpp window/*.h)
+file(GLOB SOURCES_TYPES dataTypes/*.cpp dataTypes/*.h)
+set(SOURCES ${SOURCES} ${SOURCES_AXES} ${SOURCES_LINES} ${SOURCES_PLOT} ${SOURCES_WINDOW} ${SOURCES_TYPES})
 
 if(WIN32)
 	link_directories(${CMAKE_SOURCE_DIR}/../Includes)
@@ -55,7 +64,7 @@ elseif(UNIX)
 endif(WIN32)
 
 # Define executables
-MESSAGE( STATUS "Sources: " ${SOURCES} )
+MESSAGE( STATUS "Sources: " ${SOURCES})
 add_executable(openGLPlotLive ${SOURCES})
 target_link_libraries(openGLPlotLive ${LIBS})
 

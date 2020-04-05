@@ -31,7 +31,6 @@
 // Standard Includes
 #include <map>
 #include <vector>
-using std::vector;
 
 namespace GLPL {
 	// Character Structure
@@ -300,7 +299,7 @@ namespace GLPL {
 			float yoffset = 0;
 			float xoffset = 0;
 			float currWidth = 0;
-			vector<float> lineWidth;
+            std::vector<float> lineWidth;
 			float xstart = 0;
 
 			xstart = -this->Characters[0].Bearing.x;
@@ -390,7 +389,7 @@ namespace GLPL {
 				float yoffset = 0;
 				float xoffset = 0;
 				float currWidth = 0;
-				vector<float> lineWidth;
+                std::vector<float> lineWidth;
 				float xstart = 0;
 
 				xstart = -this->Characters[0].Bearing.x;
