@@ -11,7 +11,7 @@ find_library(FREETYPE_LIBRARY freetype
 	/usr/lib
 	/usr/local/lib
 	/opt/local/lib
-	${CMAKE_SOURCE_DIR}/lib
+	${CMAKE_SOURCE_DIR}/Lib
 )
 
 IF(FREETYPE_LIBRARY)

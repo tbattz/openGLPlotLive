@@ -149,7 +149,8 @@ rm -r *
 ```
 Run cmake to generate a makefile.
 ```
-cmake ../src/						# Linux
+cmake ../src/                       # Linux
+cmake -G "MinGW Makefiles" ../src/  # Windows
 ```
 Compile the program.
 ```

@@ -107,7 +107,7 @@ namespace GLPL {
 		// Font Shader
 		Shader* textShaderPt;
 		// Font Pointer
-		const GLchar* fontPath = "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf";
+		const GLchar* fontPath = FONTPATH;
 		GLFont axesTicksFont;
 	};
 }
