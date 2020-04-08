@@ -80,7 +80,7 @@ namespace GLPL {
 
         // Calculate Viewport Transformation
         //glm::mat4 axesAreaViewportTrans = plotViewportTrans * viewportTransform(x, y, width, height);
-        glm::mat4 axesViewportTrans = plotViewportTrans * GLPL::viewportTransform(x+majorTickSizeW, y+majorTickSizeH, width - majorTickSizeW, height - majorTickSizeH);
+        glm::mat4 axesViewportTrans = plotViewportTrans * GLPL::Transforms::viewportTransform(x+majorTickSizeW, y+majorTickSizeH, width - majorTickSizeW, height - majorTickSizeH);
         glm::mat4 axesLimitsViewportTrans = axesViewportTrans * scale2AxesLimits();
 
         // Draw Axes Box Outline

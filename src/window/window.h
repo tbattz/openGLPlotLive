@@ -8,12 +8,14 @@
 #ifndef P_WINDOW_H_
 #define P_WINDOW_H_
 
-// GLEW (OpenGL Extension Wrangler Library)
-#define GLEW_STATIC
-#include <GL/glew.h>
+// GLAD - Multi Language GL Loader-Generator
+#include <glad/glad.h>
 
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
+
+// Standard Includes
+#include <iostream>
 
 // Project Includes
 #include "IWindow.h"
@@ -45,7 +47,7 @@ namespace GLPL {
 	    // Functions
         void initGLFW();
         void updateStoredSize();
-        void initGLEW();
+        void initGLAD();
 
 	    // Data
         GLFWwindow* window;

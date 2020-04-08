@@ -5,10 +5,6 @@
 #ifndef OPENGLPLOTLIVE_ILINE2D_H
 #define OPENGLPLOTLIVE_ILINE2D_H
 
-// GLEW (OpenGL Extension Wrangler Library)
-#define GLEW_STATIC
-#include <GL/glew.h>
-
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
 

@@ -1,5 +1,9 @@
 /Debug/
 /build/
-/Includes/
+/Includes/*
+!/Includes/glad/
+!/Includes/KHR/
+!Includes/glad.c
 /Lib/
 *.swp
+*.idea

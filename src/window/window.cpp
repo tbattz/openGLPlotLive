@@ -18,9 +18,6 @@ namespace GLPL {
         // Update Stored Size
         Window::updateStoredSize();
 
-        // Initialise GLEW
-        Window::initGLEW();
-
     }
 
     void Window::initGLFW() {
@@ -33,6 +30,9 @@ namespace GLPL {
         // Screen Properties
         window = glfwCreateWindow(windowWidth,windowHeight,"openGLPlotLive",nullptr,nullptr);
         glfwMakeContextCurrent(window);
+
+        // Initialise GLAD
+        Window::initGLAD();
 
         // Setup Callbacks for user input
         glfwSetKeyCallback(window, GLPL::key_callback);
@@ -56,10 +56,11 @@ namespace GLPL {
         glViewport(0, 0, windowWidth, windowHeight);
     }
 
-    void Window::initGLEW() {
-        // Initialise GLEW - setup OpenGL pointers
-        glewExperimental = GL_TRUE;
-        glewInit();
+    void Window::initGLAD() {
+        // Initialise GLAD - setup OpenGL pointers
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+        }
     }
 
     void Window::setKeysByIndex(int index, bool boolean) {

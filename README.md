@@ -19,9 +19,6 @@ GLFWwindow* window = initGLFW();
 
 // Create Window Dimensions Class
 WinDimensions winDim(window);
-
-// Initialise GLEW - setup OpenGL pointers
-initGLEW();
 ```
 
 ## Create Shaders
@@ -124,12 +121,6 @@ sudo chmod +x installDependicies.sh
 	cmake -G "Unix Makefiles"
 	make -j4
 	sudo make install
-	```
-
-* GLEW (The OpenGL Extension Wrangler Library)
-	* Install the development library
-	```
-	sudo apt-get install libglew-dev
 	```
 
 * GLM (The OpenGL Mathematics Library)

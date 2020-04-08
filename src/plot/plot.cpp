@@ -64,7 +64,7 @@ namespace GLPL {
 
     void Plot::Draw(Shader shader) {
         // Calculate Viewport Transformation
-        glm::mat4 plotViewportTrans = GLPL::viewportTransform(x, y, width, height);
+        glm::mat4 plotViewportTrans = GLPL::Transforms::viewportTransform(x, y, width, height);
 
         // Draw Plot Box Obutline
         drawPlotOutline(shader,plotViewportTrans);

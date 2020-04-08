@@ -5,8 +5,7 @@
 #ifndef OPENGLPLOTLIVE_INPUTCALLBACKS_H
 #define OPENGLPLOTLIVE_INPUTCALLBACKS_H
 
-// GLEW (OpenGL Extension Wrangler Library)
-#include <GL/glew.h>
+// GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
 
 // Project Includes

@@ -5,9 +5,8 @@
 #ifndef OPENGLPLOTLIVE_DATATYPES_H
 #define OPENGLPLOTLIVE_DATATYPES_H
 
-// GLEW (OpenGL Extension Wrangler Library)
-#define GLEW_STATIC
-#include <GL/glew.h>
+// GLAD - Multi Language GL Loader-Generator
+#include <glad/glad.h>
 
 
 namespace GLPL {
