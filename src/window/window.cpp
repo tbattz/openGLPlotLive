@@ -7,10 +7,11 @@
 
 namespace GLPL {
 
-    Window::Window(int windowWidth, int windowHeight) {
+    Window::Window(int windowWidth, int windowHeight, int transparentBackground) {
         // Set window size
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
+        this->transparentBackground = transparentBackground;
 
         // Initialise GLFW
         Window::initGLFW();
@@ -26,6 +27,11 @@ namespace GLPL {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
         glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE); // Set core profile
+
+        // Make background transparent
+        if (transparentBackground) {
+            glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+        }
 
         // Screen Properties
         window = glfwCreateWindow(windowWidth,windowHeight,"openGLPlotLive",nullptr,nullptr);
@@ -92,7 +98,7 @@ namespace GLPL {
 
         if (clearBuffer) {
             // Clear the colour buffer
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
     }
@@ -109,6 +115,14 @@ namespace GLPL {
 
     int Window::getHeight() {
         return windowHeight;
+    }
+
+    void Window::setFrameless(bool framelessOn) {
+        glfwSetWindowAttrib(window, GLFW_DECORATED, !framelessOn);
+    }
+
+    void Window::setAlwaysOnTop(bool alwaysOnTop) {
+        glfwSetWindowAttrib(window, GLFW_FLOATING , alwaysOnTop);
     }
 
 };

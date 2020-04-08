@@ -32,7 +32,7 @@ namespace GLPL {
 	class Window : public IWindow {
 	public:
 	    // Constructor
-	    Window(int windowWidth, int windowHeight);
+	    Window(int windowWidth, int windowHeight, int transparentBackground=GLFW_FALSE);
 	    // Functions
 	    void setKeysByIndex(int index, bool boolean);
 	    void setToggleKeysByIndex(int index, bool boolean);
@@ -42,6 +42,8 @@ namespace GLPL {
 	    void postLoopDraw();
 	    int getWidth();
 	    int getHeight();
+	    void setFrameless(bool framelessOn);
+	    void setAlwaysOnTop(bool alwaysOnTop);
 
 	private:
 	    // Functions
@@ -53,6 +55,7 @@ namespace GLPL {
         GLFWwindow* window;
 	    int windowWidth;
 	    int windowHeight;
+	    int transparentBackground;
 
         // Keys
         bool keys[1024];
