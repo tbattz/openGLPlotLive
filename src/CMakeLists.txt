@@ -17,26 +17,21 @@ if(WIN32)
 	include_directories("${CMAKE_SOURCE_DIR}/../Includes/")
 	include_directories("${CMAKE_SOURCE_DIR}/../Includes/freetype")
 elseif(UNIX)
-	include_directories(/usr/local/include/)
-	include_directories(/usr/include/)
-	include_directories(/usr/local/include/freetype/)
 	include_directories("${CMAKE_SOURCE_DIR}/../Includes/")
 endif(WIN32)
 
 # Add Sources
-file(GLOB SOURCES "*.cpp" "*.h")
+file(GLOB SOURCES_RENDERING rendering/*.cpp rendering/*.h)
 file(GLOB SOURCES_WINDOW window/*.cpp window/*.h)
 file(GLOB SOURCES_PLOT plot/*.cpp plot/*.h)
 file(GLOB SOURCES_AXES axes/*.cpp axes/*.h)
 file(GLOB SOURCES_LINES lines/*.cpp lines/*.h)
 file(GLOB SOURCES_TYPES dataTypes/*.cpp dataTypes/*.h)
-set(SOURCES ${SOURCES} ${SOURCES_AXES} ${SOURCES_LINES} ${SOURCES_PLOT} ${SOURCES_WINDOW} ${SOURCES_TYPES} ../Includes/glad.c)
+set(SOURCES ${SOURCES_RENDERING} ${SOURCES_AXES} ${SOURCES_LINES} ${SOURCES_PLOT} ${SOURCES_WINDOW} ${SOURCES_TYPES} ../Includes/glad.c)
 
 if(WIN32)
 	link_directories(${CMAKE_SOURCE_DIR}/../Includes)
 elseif(UNIX)
-	link_directories(/usr/local/lib /usr/lib /usr/local)
-	link_directories(${CMAKE_SOURCE_DIR}/../Includes)
 endif(WIN32)
 
 # Find Packages
@@ -65,9 +60,15 @@ endif(WIN32)
 # Stop conflicting order of GLAD and GLFW
 add_definitions(-DGLFW_INCLUDE_NONE)
 
+# Create library for external use
+add_library(openGLPlotLiveLib STATIC ${SOURCES})
+
 # Define executables
 MESSAGE( STATUS "Sources: " ${SOURCES})
-add_executable(openGLPlotLive ${SOURCES})
-target_link_libraries(openGLPlotLive ${LIBS})
+add_executable(openGLPlotLive examplePlot.cpp)
+target_link_libraries(openGLPlotLive openGLPlotLiveLib ${LIBS})
+
+# Copy Shader files to build directory
+add_custom_command(TARGET openGLPlotLive PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/../Shaders $<TARGET_FILE_DIR:openGLPlotLive>/Shaders)
 
 

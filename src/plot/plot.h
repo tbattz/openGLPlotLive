@@ -15,7 +15,7 @@
 #include <memory>
 
 // Project Includes
-#include "../shader.h"
+#include "../rendering/shader.h"
 #include "../axes/axes.h"
 
 

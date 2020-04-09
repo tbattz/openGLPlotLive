@@ -18,11 +18,10 @@
 #include <math.h>
 
 // GLPL Includes
-//#include "../src/line2d.h"
-#include "../transforms.h"
+#include "../rendering/transforms.h"
 #include "../window/window.h"
-#include "../shader.h"
-#include "../fonts.h"
+#include "../rendering/shader.h"
+#include "../rendering/fonts.h"
 
 // Project Includes
 #include "../lines/Line2DPts.h"

@@ -25,8 +25,8 @@ WinDimensions winDim(window);
 Shaders are required to plot the lines, currently this needs to be manually created.
 ```c++
 // Setup and compile shaders
-Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
-Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
+Shader plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag");
+Shader textShader("Shaders/font.vs", "Shaders/font.frag");
 ```
 
 ## Create Data

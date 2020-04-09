@@ -15,7 +15,7 @@
 #include <memory>
 
 // Project Includes
-#include "../src/fonts.h"
+#include "rendering/fonts.h"
 #include "window/window.h"
 #include "plot/plot.h"
 #include "lines/Line2DPts.h"
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
 	 *                  	  Shaders
 	   ====================================================== */
 	// Setup and compile shaders
-	GLPL::Shader plot2dShader("../Shaders/plot2d.vs","../Shaders/plot2d.frag");
-    GLPL::Shader textShader("../Shaders/font.vs", "../Shaders/font.frag");
+	GLPL::Shader plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag");
+    GLPL::Shader textShader("Shaders/font.vs", "Shaders/font.frag");
 
 	/* ======================================================
 	 *                	  Create Plot Data

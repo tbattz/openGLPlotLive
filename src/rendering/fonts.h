@@ -22,12 +22,12 @@
 
 #include "glm/ext.hpp"
 
-// Other Includes
-#include "../src/shader.h"
-
 // Standard Includes
 #include <map>
 #include <vector>
+
+// Project Includes
+#include "shader.h"
 
 namespace GLPL {
 	// Character Structure

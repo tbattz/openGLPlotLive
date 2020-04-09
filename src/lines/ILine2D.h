@@ -14,7 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Project Includes
-#include "../../src/shader.h"
+#include "../rendering/shader.h"
 #include "lineColours.h"
 
 // Standard Includes
