@@ -1,21 +1,23 @@
 # cmake version
 cmake_minimum_required(VERSION 3.0)
 # Project Name
-project(openGLPlotLive)
+project(examplePlot)
 
 # Set OpenGL Policy
 set(OpenGL_GL_PREFERENCE "GLVND")
 
 # Add c11++ flag to compiler
 list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 
 # Add Cmake Module Path
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake/")
 
+
 # Add Include Directory
 if(WIN32)
 	include_directories("${CMAKE_SOURCE_DIR}/../Includes/")
-	include_directories("${CMAKE_SOURCE_DIR}/../Includes/freetype")
+	include_directories("${CMAKE_SOURCE_DIR}/../Includes/freetype") # TODO - Check if this can be removed
 elseif(UNIX)
 	include_directories("${CMAKE_SOURCE_DIR}/../Includes/")
 endif(WIN32)
@@ -30,7 +32,7 @@ file(GLOB SOURCES_TYPES dataTypes/*.cpp dataTypes/*.h)
 set(SOURCES ${SOURCES_RENDERING} ${SOURCES_AXES} ${SOURCES_LINES} ${SOURCES_PLOT} ${SOURCES_WINDOW} ${SOURCES_TYPES} ../Includes/glad.c)
 
 if(WIN32)
-	link_directories(${CMAKE_SOURCE_DIR}/../Includes)
+	link_directories(${CMAKE_SOURCE_DIR}/../Includes) # Todo - Check if this can be removed
 elseif(UNIX)
 endif(WIN32)
 
@@ -42,12 +44,11 @@ MESSAGE(STATUS "Found FREETYPE: ${FREETYPE_LIBRARY}")
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found Glfw3: ${GLFW3_LIBRARY}")
 if(WIN32)
-	set(FREETYPE_LIBRARY "${CMAKE_SOURCE_DIR}/../Lib/freetype.a")
+	set(FREETYPE_LIBRARY "${CMAKE_SOURCE_DIR}/../Lib/freetype.a") # TODO - Check where this is created in the installer
 ENDIF(WIN32)
 
 
-# Set Flags
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+# Setup Libraries
 find_package(OpenGL REQUIRED)
 add_definitions(${OPENGL_DEFINITIONS})
 find_package(X11 REQUIRED)
@@ -61,14 +62,18 @@ endif(WIN32)
 add_definitions(-DGLFW_INCLUDE_NONE)
 
 # Create library for external use
-add_library(openGLPlotLiveLib STATIC ${SOURCES})
-
-# Define executables
 MESSAGE( STATUS "Sources: " ${SOURCES})
-add_executable(openGLPlotLive examplePlot.cpp)
-target_link_libraries(openGLPlotLive openGLPlotLiveLib ${LIBS})
+add_library(openGLPlotLive STATIC ${SOURCES})
+
+# Define example executable
+add_executable(examplePlot examplePlot.cpp)
+target_link_libraries(examplePlot openGLPlotLive ${LIBS})
 
 # Copy Shader files to build directory
-add_custom_command(TARGET openGLPlotLive PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/../Shaders $<TARGET_FILE_DIR:openGLPlotLive>/Shaders)
+add_custom_command(TARGET examplePlot PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/../Shaders $<TARGET_FILE_DIR:examplePlot>/Shaders)
+
+# Install to location
+#install(TARGETS examplePlot DESTINATION ${CMAKE_SOURCE_DIR}/../bin)
+#install(DIRECTORY ${CMAKE_SOURCE_DIR}/../Shaders DESTINATION ${CMAKE_SOURCE_DIR}/../bin)
 
 
