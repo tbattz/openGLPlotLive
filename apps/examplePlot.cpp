@@ -15,14 +15,14 @@
 #include <memory>
 
 // Project Includes
-#include "rendering/fonts.h"
-#include "window/window.h"
-#include "plot/plot.h"
-#include "lines/Line2DPts.h"
-#include "lines/Line2DVecVec.h"
-#include "lines/Line2DVec.h"
-#include "lines/Line2DVecGLMV3.h"
-#include "lines/Line2DVecfVecGLMV3.h"
+#include "../src/rendering/fonts.h"
+#include "../src/window/window.h"
+#include "../src/plot/plot.h"
+#include "../src/lines/Line2DPts.h"
+#include "../src/lines/Line2DVecVec.h"
+#include "../src/lines/Line2DVec.h"
+#include "../src/lines/Line2DVecGLMV3.h"
+#include "../src/lines/Line2DVecfVecGLMV3.h"
 
 
 
