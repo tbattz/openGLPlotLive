@@ -41,8 +41,8 @@ if [ ! -d ~/Downloads/glm/ ]; then
 else
 	echo "GLM directory exists! Not cloning."
 fi
-# Make includes folder
-echo "Copying GLM to" $curDIR"/Includes/"
+# Make include folder
+echo "Copying GLM to" $curDIR"/include/"
 sudo cp -r ~/Downloads/glm/glm /usr/local/include
 
 echo -e "\e[44m ======================= FreeType - Font Rendering Library ========================= \e[49m"

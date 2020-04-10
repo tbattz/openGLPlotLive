@@ -16,15 +16,15 @@ if exist "%UserProfile%\Downloads\glfw\" (
 	echo Downloading GLFW.
 	git clone https://github.com/glfw/glfw.git
 )
-:: Copy Required Includes and Libraries
+:: Copy Required includes and Libraries
 cd glfw
 mkdir build
 cd build
 cmake -DBUILD_SHARED_LIBS=OFF -G "MinGW Makefiles" ..
 make -j4
 cd ..
-if not exist %ORIGINAL%\Includes\ mkdir %ORIGINAL%\Includes\
-xcopy include\GLFW\* %ORIGINAL%\Includes\GLFW\ /s/h/e/k/f/c/y
+if not exist %ORIGINAL%\include\ mkdir %ORIGINAL%\include\
+xcopy include\GLFW\* %ORIGINAL%\include\GLFW\ /s/h/e/k/f/c/y
 if not exist %ORIGINAL%\Lib\ mkdir %ORIGINAL%\Lib\
 xcopy build\src\libglfw3.a %ORIGINAL%\Lib\ /s/h/e/k/f/c/y
 cd ..
@@ -37,8 +37,9 @@ if exist "%UserProfile%\Downloads\GLM\" (
 ) else (
 	echo Downloading GLM.
 	git clone https://github.com/g-truc/glm.git
+	cd glm && git checkout 0.9.7 && cd ..
 )
-xcopy /E/I/y glm\glm %ORIGINAL%\includes\glm
+xcopy /E/I/y glm\glm %ORIGINAL%\include\glm
 
 
 :: Download FreeType

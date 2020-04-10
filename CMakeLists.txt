@@ -14,6 +14,14 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 # Add Cmake Module Path
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/")
 
+# Windows specific setup
+if(WIN32)
+    message(${CMAKE_SOURCE_DIR}/include/)
+    include_directories("${CMAKE_SOURCE_DIR}/include")
+    set(GLFW3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/GLFW/glfw3.h")
+    set(GLFW3_LIBRARY "${CMAKE_SOURCE_DIR}/Lib/libglfw3.a")
+    set(FREETYPE_LIBRARY "${CMAKE_SOURCE_DIR}/Lib/freetype.a")
+endif(WIN32)
 
 # Find Packages
 # GLM
@@ -22,9 +30,6 @@ message(STATUS "GLM found: ${GLM_INCLUDE_DIR}")
 # FREETYPE
 find_package(FREETYPE REQUIRED)
 MESSAGE(STATUS "Found FREETYPE: ${FREETYPE_LIBRARY}")
-if(WIN32)
-    set(FREETYPE_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/../Lib/freetype.a") # TODO - Check where this is created in the installer
-ENDIF(WIN32)
 # GLFW3
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found Glfw3: ${GLFW3_LIBRARY}")
