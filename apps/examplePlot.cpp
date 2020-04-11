@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     std::vector<GLPL::pt2D> data3;
 	float i = -2000.0;
 
-	// Graph 4 - Vector
+	// Graph 4 - Vector (Line uses template types)
     std::vector<float> data4;
 	for(int i=-1000; i<1500; i++) {
 		data4.push_back(i/1000.0);
@@ -87,6 +87,13 @@ int main(int argc, char **argv) {
 	// Graph 7 - Vector of floats - time
     std::vector<float> data7;
 
+    // Graph 8 - Vector (Line uses template types)
+    std::vector<double> data8;
+    for(int i=-1000; i<1500; i++) {
+        data8.push_back(-pow(i/1000.0,2));
+        data8.push_back(i/1000.0);
+    }
+
 
 	/* ======================================================
 	 *                	    Create Plot
@@ -98,10 +105,11 @@ int main(int argc, char **argv) {
 	std::shared_ptr<GLPL::Line2DPts> line1 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data1));
     std::shared_ptr<GLPL::Line2DPts> line2 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data2));
     std::shared_ptr<GLPL::Line2DPts> line3 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data3));
-    std::shared_ptr<GLPL::Line2DVec> line4 = std::shared_ptr<GLPL::Line2DVec>(new GLPL::Line2DVec(&data4));
+    std::shared_ptr<GLPL::Line2DVec<float>> line4 = std::shared_ptr<GLPL::Line2DVec<float>>(new GLPL::Line2DVec<float>(&data4));
     std::shared_ptr<GLPL::Line2DVecVec> line5 = std::shared_ptr<GLPL::Line2DVecVec>(new GLPL::Line2DVecVec(&data5));
     std::shared_ptr<GLPL::Line2DVecGLMV3> line6 = std::shared_ptr<GLPL::Line2DVecGLMV3>(new GLPL::Line2DVecGLMV3(&data6, 2, 1));
     std::shared_ptr<GLPL::Line2DVecfVecGLMV3> line7 = std::shared_ptr<GLPL::Line2DVecfVecGLMV3>(new GLPL::Line2DVecfVecGLMV3(&data7, &data6, 0));
+    std::shared_ptr<GLPL::Line2DVec<double>> line8 = std::shared_ptr<GLPL::Line2DVec<double>>(new GLPL::Line2DVec<double>(&data8));
 	line4->setLineColour(LC_MAGENTA);
     line5->setLineColour(LC_CYAN);
 	line6->setLineColour(LC_YELLOW);
@@ -115,6 +123,7 @@ int main(int argc, char **argv) {
 	myplot.addLine(line5);
 	myplot.addLine(line6);
 	myplot.addLine(line7);
+    myplot.addLine(line8);
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);
 

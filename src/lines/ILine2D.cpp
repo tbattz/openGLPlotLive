@@ -13,7 +13,7 @@ namespace GLPL {
     }
 
     void ILine2D::createAndSetupBuffers(GLuint *VAOPt, GLuint *VBOPt, int dataSizeBytes, const void *dataAddress,
-                                        int strideBytes) {
+                                        int strideBytes, int glType) {
         /* Create Buffers */
         glGenVertexArrays(1, VAOPt);
         glGenBuffers(1, VBOPt);
@@ -26,7 +26,7 @@ namespace GLPL {
 
         /* Position Attributes */
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, strideBytes, (GLvoid *) 0);
+        glVertexAttribPointer(0, 2, glType, GL_FALSE, strideBytes, (GLvoid *) 0);
 
         glBindVertexArray(0); // Unbind VAO
 

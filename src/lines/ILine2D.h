@@ -27,7 +27,7 @@ namespace GLPL {
         ILine2D();
 
         void createAndSetupBuffers(GLuint *VAOPt, GLuint *VBOPt, int dataSizeBytes, const void *dataAddress,
-                                   int strideBytes);
+                                   int strideBytes, int glType=GL_FLOAT);
 
         void drawData(Shader shader, glm::mat4 axesLimitViewportTrans, GLuint *VAOPt, glm::vec3 colour, int nPts,
                       GLenum mode);

@@ -12,15 +12,25 @@
 
 
 namespace GLPL {
+    // Template the vector type
+    // Set mappings from Type T to GL Types
+    template <class T> constexpr int getGLType();
+
+    template <> constexpr int getGLType<int>() { return GL_INT; }
+    template <> constexpr int getGLType<float>() { return GL_FLOAT; }
+    template <> constexpr int getGLType<double>() { return GL_DOUBLE; }
+
+    // Class template
+    template <typename T>
     class Line2DVec : public ILine2D {
         // Line of 2-length vectors
     public:
         /* Constructor */
-        Line2DVec(std::vector<float>* dataVecPt, GLenum mode = GL_LINE_STRIP);
+        Line2DVec(std::vector<T>* dataVecPt, GLenum mode = GL_LINE_STRIP);
 
         /* Functions */
         void Draw(Shader shader, glm::mat4 axesLimitViewportTrans);
-        void appendVec(float x, float y);
+        void appendVec(T x, T y);
         std::vector<float> getMinMax();
 
     private:
@@ -29,7 +39,7 @@ namespace GLPL {
         int nPts = 0;
 
         /* Data */
-        std::vector<float>* dataVecPt;
+        std::vector<T>* dataVecPt;
     };
 }
 
