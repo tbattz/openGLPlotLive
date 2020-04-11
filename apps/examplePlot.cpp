@@ -1,5 +1,5 @@
 /*
- * main.cpp
+ * examplePlot.cpp
  *
  *  Created on: 1Jan.,2017
  *      Author: bcub3d-desktop
@@ -26,7 +26,7 @@
 
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char **argv) {
 	/* ======================================================
 	 *                     Setup Window
 	   ====================================================== */
