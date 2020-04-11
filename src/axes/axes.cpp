@@ -16,9 +16,9 @@ namespace GLPL {
         this->textShaderPt = textShaderPt;
 
         // Setup Buffers
-        createAndSetupBuffers();
-        createAndSetupAxesLineBuffers();
-        createAndSetupAxesTickBuffers();
+        Axes::createAndSetupBuffers();
+        Axes::createAndSetupAxesLineBuffers();
+        Axes::createAndSetupAxesTickBuffers();
     }
 
     void Axes::createAndSetupBuffers() {
@@ -87,7 +87,9 @@ namespace GLPL {
         //drawAxesAreaOutline(shader, axesAreaViewportTrans);
 
         // Draw Axes Box
-        drawAxesBox(shader, axesViewportTrans);
+        if (axesAreaOutlineOn) {
+            drawAxesBox(shader, axesViewportTrans);
+        }
 
         // Scissor Test
         glEnable(GL_SCISSOR_TEST);
@@ -95,7 +97,9 @@ namespace GLPL {
         glScissor(xy[0]*(windowPt->getWidth()),xy[1]*(windowPt->getHeight()),(xy[2]-xy[0])*(windowPt->getWidth()),(xy[3]-xy[1])*(windowPt->getHeight()));
 
         // Draw Axes Lines
-        drawAxesLines(shader, axesLimitsViewportTrans);
+        if(xyAxesOn) {
+            drawAxesLines(shader, axesLimitsViewportTrans);
+        }
 
         // Draw All Lines
         drawLines(shader, axesLimitsViewportTrans);
@@ -106,7 +110,9 @@ namespace GLPL {
         drawAxesTickMarks(shader,axesViewportTrans);
 
         // Draw Tick Mark Labels
-        drawMajorAxesTickLabels(axesViewportTrans);
+        if (axesLabelsOn) {
+            drawMajorAxesTickLabels(axesViewportTrans);
+        }
     }
 
     std::vector<float> Axes::calculateScissor(glm::mat4 axesLimitsViewportTrans) {
@@ -414,5 +420,40 @@ namespace GLPL {
         }
 
     }
+
+    void Axes::setMinorTickSize(float newMinorTickSize) {
+        this->minorTickSizeW = newMinorTickSize;
+        this->minorTickSizeH = newMinorTickSize;
+    }
+
+    void Axes::setMajorTickSize(float newMajorTickSize) {
+        this->majorTickSizeW = newMajorTickSize;
+        this->majorTickSizeH = newMajorTickSize;
+    }
+
+    void Axes::setAxesAreaOutlineOn(bool axesAreaOutlineOn) {
+        this->axesAreaOutlineOn = axesAreaOutlineOn;
+    }
+
+    void Axes::setXYAxesOn(bool showXYAxes) {
+        this->xyAxesOn = showXYAxes;
+    }
+
+    void Axes::setPositionSize(float x, float y, float width, float height) {
+        this->x = x;
+        this->y = y;
+        this->width = width;
+        this->height = height;
+    }
+
+    void Axes::setAutoScale(bool autoScaleOn) {
+        this->autoScaleX = autoScaleOn;
+        this->autoScaleY = autoScaleOn;
+    }
+
+    void Axes::setAxesLabelsOn(bool axesLabelsOn) {
+        this->axesLabelsOn = axesLabelsOn;
+    }
+
 
 }

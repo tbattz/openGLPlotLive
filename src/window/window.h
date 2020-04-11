@@ -16,6 +16,7 @@
 
 // Standard Includes
 #include <iostream>
+#include <array>
 
 // Project Includes
 #include "IWindow.h"
@@ -44,6 +45,7 @@ namespace GLPL {
 	    int getHeight();
 	    void setFrameless(bool framelessOn);
 	    void setAlwaysOnTop(bool alwaysOnTop);
+	    void setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 
 	private:
 	    // Functions
@@ -55,6 +57,7 @@ namespace GLPL {
         GLFWwindow* window;
 	    int windowWidth;
 	    int windowHeight;
+	    std::array<GLfloat, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	    int transparentBackground;
 
         // Keys

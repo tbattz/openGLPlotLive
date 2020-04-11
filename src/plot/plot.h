@@ -32,11 +32,8 @@ namespace GLPL {
         // Functions
         void Draw(Shader shader);
         void addLine(std::shared_ptr<ILine2D> linePt);
-        void setAutoScaleRound(bool newAutoScaleRound);
-        void setEqualAxes(bool equalAxesBool);
-
-        // Data
-        Axes axes;
+        std::shared_ptr<GLPL::Axes> getAxes();
+        void setPlotOutlineOn(bool plotOutlineOn);
 
 	private:
 	    // Functions
@@ -49,6 +46,10 @@ namespace GLPL {
 		float y;			// Location of bottom left corner y position of plot in current window in 0 to 1
 		float width;  		// Width of plot as a proportion of the current window width
 		float height;		// Height of plot as a proportion of the current window height
+        std::shared_ptr<Axes> axes;
+
+        // Outlines
+        bool plotOutlineOn = true;
 
 		// Buffers
 		GLuint VAO, VBO;

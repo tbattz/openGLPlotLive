@@ -5,16 +5,20 @@
 
 #include "plot.h"
 
+#include <memory>
+
 namespace GLPL {
 
-    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt) :
-            axes(0.15,0.15,0.80,0.75,windowPt,textShaderPt) {
+    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt) {
         // Set Size and Position
         this->x = x;
         this->y = y;
         this->width = width;
         this->height = height;
         this->windowPt = windowPt;
+
+        // Create axes
+        axes = std::make_shared<Axes>(0.15,0.15,0.80,0.75,windowPt,textShaderPt);
 
         // Setup Buffers
         createAndSetupBuffers();
@@ -46,9 +50,9 @@ namespace GLPL {
 
     void Plot::setupFontShader(GLuint screenWidth, GLuint screenHeight) {
         // Sets up the uniforms for the font shader
-        this->axes.getTextShaderPt()->Use();
+        this->axes->getTextShaderPt()->Use();
         glm::mat4 textProjection = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight);
-        glUniformMatrix4fv(glGetUniformLocation(this->axes.getTextShaderPt()->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(textProjection));
+        glUniformMatrix4fv(glGetUniformLocation(this->axes->getTextShaderPt()->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(textProjection));
     }
 
     void Plot::drawPlotOutline(Shader shader, glm::mat4 plotViewportTrans) {
@@ -66,24 +70,25 @@ namespace GLPL {
         // Calculate Viewport Transformation
         glm::mat4 plotViewportTrans = GLPL::Transforms::viewportTransform(x, y, width, height);
 
-        // Draw Plot Box Obutline
-        drawPlotOutline(shader,plotViewportTrans);
+        // Draw Plot Box Outline
+        if (plotOutlineOn) {
+            drawPlotOutline(shader, plotViewportTrans);
+        }
 
         // Draw Axes
-        axes.Draw(shader, plotViewportTrans);
+        axes->Draw(shader, plotViewportTrans);
     }
 
     void Plot::addLine(std::shared_ptr<ILine2D> linePt) {
-        this->axes.addLine(linePt);
+        this->axes->addLine(linePt);
     }
 
-    void Plot::setAutoScaleRound(bool newAutoScaleRound) {
-        this->axes.setAutoScaleRound(newAutoScaleRound);
-
+    std::shared_ptr<Axes> Plot::getAxes() {
+        return this->axes;
     }
 
-    void Plot::setEqualAxes(bool equalAxesBool) {
-        this->axes.setEqualAxes(equalAxesBool);
+    void Plot::setPlotOutlineOn(bool plotOutlineOn) {
+        this->plotOutlineOn = plotOutlineOn;
     }
 
 

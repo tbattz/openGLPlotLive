@@ -98,7 +98,11 @@ namespace GLPL {
 
         if (clearBuffer) {
             // Clear the colour buffer
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            GLfloat red = backgroundColor[0];
+            GLfloat green = backgroundColor[1];
+            GLfloat blue = backgroundColor[2];
+            GLfloat alpha = backgroundColor[3];
+            glClearColor(red, green, blue, alpha);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
     }
@@ -123,6 +127,10 @@ namespace GLPL {
 
     void Window::setAlwaysOnTop(bool alwaysOnTop) {
         glfwSetWindowAttrib(window, GLFW_FLOATING , alwaysOnTop);
+    }
+
+    void Window::setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
+        this->backgroundColor = {red, green, blue, alpha};
     }
 
 };

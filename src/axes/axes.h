@@ -35,16 +35,31 @@ namespace GLPL {
         Axes(float x,float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt);
 
 	    // Functions
+	    // Text Shader
+        Shader* getTextShaderPt();
+	    // Drawing
         void Draw(Shader shader,glm::mat4 plotViewportTrans);
+        void addLine(std::shared_ptr<ILine2D> linePt);
+        // Position
+        void setPositionSize(float x, float y, float width, float height);
+        // Tick marks
+        void setMajorTickSize(float newMajorTickSize);
+        void setMinorTickSize(float newMinorTickSize);
+        // Labels
+        void setAxesLabelsOn(bool axesLabelsOn);
+        // Limits
         void updateAxesLimits(float xmin, float xmax, float ymin, float ymax,bool autoChange = true);
         void updateAxesLimits(std::vector<float> minMax, bool autoChange = true);
         void updateXAxesLimits(float xmin, float xmax, bool autoChange = true);
-        void updateYAxesLimits(float ymin, float ymax, bool autoChange);
+        void updateYAxesLimits(float ymin, float ymax, bool autoChange = true);
         void updateAxesLimitsAutoscale();
-        Shader* getTextShaderPt();
-        void addLine(std::shared_ptr<ILine2D> linePt);
+        // Scaling
+        void setAutoScale(bool autoScaleOn);
         void setAutoScaleRound(bool newAutoScaleRond);
         void setEqualAxes(bool equalAxesBool);
+        // Outlines
+        void setAxesAreaOutlineOn(bool axesAreaOutlineOn);
+        void setXYAxesOn(bool showXYAxes);
 
     private:
 	    // Functions
@@ -89,6 +104,11 @@ namespace GLPL {
 		int minorTickNum = 3;		 // The number of minor tick marks between each set of major tick marks
 		int maxMajorTickNum = 20;	 // The maximum number of major tick marks (used to preallocate buffer)
 		int maxMinorTickNum = 5;	 // The maximum number of minor tick marks (used to preallocate buffer)
+		// Axes Labels
+		bool axesLabelsOn = true;
+		// Outlines
+		bool axesAreaOutlineOn = true;
+		bool xyAxesOn = true;
 		// Buffers
 		GLuint VAO, VBO;
 		GLuint axVAO, axVBO;

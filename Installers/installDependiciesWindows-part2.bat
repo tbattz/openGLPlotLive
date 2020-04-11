@@ -15,6 +15,7 @@ if exist "%UserProfile%\Downloads\glfw\" (
 ) else (
 	echo Downloading GLFW.
 	git clone https://github.com/glfw/glfw.git
+	cd glm && git checkout 0.9.7 && cd ..
 )
 :: Copy Required includes and Libraries
 cd glfw

@@ -115,8 +115,8 @@ int main(int argc, char **argv) {
 	myplot.addLine(line5);
 	myplot.addLine(line6);
 	myplot.addLine(line7);
-	myplot.setAutoScaleRound(false);
-	myplot.setEqualAxes(true);
+	myplot.getAxes()->setAutoScaleRound(false);
+	myplot.getAxes()->setEqualAxes(true);
 
 
 	/* ======================================================
