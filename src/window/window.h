@@ -34,6 +34,7 @@ namespace GLPL {
 	public:
 	    // Constructor
 	    Window(int windowWidth, int windowHeight, int transparentBackground=GLFW_FALSE);
+	    ~Window();
 	    // Functions
 	    void setKeysByIndex(int index, bool boolean);
 	    void setToggleKeysByIndex(int index, bool boolean);

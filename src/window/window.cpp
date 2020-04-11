@@ -21,6 +21,10 @@ namespace GLPL {
 
     }
 
+    Window::~Window() {
+
+    }
+
     void Window::initGLFW() {
         // Init GLFW
         glfwInit();
@@ -42,6 +46,7 @@ namespace GLPL {
 
         // Setup Callbacks for user input
         glfwSetKeyCallback(window, GLPL::key_callback);
+        glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
 
         // Set viewport size
