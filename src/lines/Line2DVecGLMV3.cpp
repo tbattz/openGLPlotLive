@@ -24,12 +24,12 @@ namespace GLPL {
 
     void Line2DVecGLMV3::updateInternalData() {
         /* Creates an internal data store from the current dataVecPt */
-        // Clear Previous Data
-        internalData.clear();
+        // Resize vector to data
+        internalData.resize(2*dataVecPt->size());
         // Update With New Data
         for(unsigned int i=0; i<dataVecPt->size(); i++) {
-            internalData.push_back((*dataVecPt)[i][indexX]);
-            internalData.push_back((*dataVecPt)[i][indexY]);
+            internalData[2*i] = (*dataVecPt)[i][indexX];
+            internalData[2*i + 1] = (*dataVecPt)[i][indexY];
         }
     }
 

@@ -1,55 +1,56 @@
 //
-// Created by bcub3d-desktop on 29/3/20.
+// Created by tbatt on 11/04/2020.
 //
 
-#include "Line2DVecfVecGLMV3.h"
-
+#include "Line2D2Vecs.h"
 
 namespace GLPL {
-    Line2DVecfVecGLMV3::Line2DVecfVecGLMV3(std::vector<float>* dataVecfPt, std::vector<glm::dvec3>* dataVecGLMV3Pt, int indexGLM, GLenum mode) {
-        this->dataVecfPt = dataVecfPt;
+    Line2D2Vecs::Line2D2Vecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY, GLenum mode) {
+        this->dataPtX = dataPtX;
+        this->dataPtY = dataPtY;
         this->setMode(mode);
-        this->dataVecGLMV3Pt = dataVecGLMV3Pt;
-        this->indexGLM = indexGLM;
 
         /* Setup Buffers */
         updateInternalData();
         int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
         createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
 
-        /* Set Number of Points */
+        /* Set number of Points */
         nPts = internalData.size()/2.0;
+    }
+
+    Line2D2Vecs::~Line2D2Vecs() {
 
     }
 
-    void Line2DVecfVecGLMV3::updateInternalData() {
+    void Line2D2Vecs::updateInternalData() {
         /* Creates an internal data store from the current dataVecPt */
         // Get minimum length of both vectors
-        int len = std::min(dataVecfPt->size(),dataVecGLMV3Pt->size());
+        int len = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
         internalData.resize(2*len);
-        // Update With New Data
+        // Update with new data
         for(int i=0; i<len; i++) {
-            internalData[2*i] = (*dataVecfPt)[i];
-            internalData[2*i + 1] = (*dataVecGLMV3Pt)[i][indexGLM];
+            internalData[2*i] = (*dataPtX)[i];
+            internalData[2*i + 1] = (*dataPtY)[i];
         }
     }
 
-    void Line2DVecfVecGLMV3::Draw(Shader shader, glm::mat4 axesLimitViewportTrans) {
-        // Check if number of points changed
+    void Line2D2Vecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans) {
+        // Check if the number of points changed
         int newPts = (internalData).size()/2;
         if (newPts != nPts) {
             nPts = newPts;
             // Update buffer and attributes
-            glBindBuffer(GL_ARRAY_BUFFER,VBO);
-            glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]),&internalData[0],GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
         }
 
-        // Draw Plot
+        // Draw plot
         drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nPts, getMode());
     }
 
-    std::vector<float> Line2DVecfVecGLMV3::getMinMax() {
+    std::vector<float> Line2D2Vecs::getMinMax() {
         // Gets the minimum and maximum values of both x and y for the data
         float maxFloat = std::numeric_limits<float>::max();
         float xmin = maxFloat;
@@ -75,5 +76,4 @@ namespace GLPL {
 
         return std::vector<float> {xmin,xmax,ymin,ymax};
     }
-
 }

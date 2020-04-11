@@ -18,12 +18,11 @@ namespace GLPL {
         /* Constructor */
         Line2DPts(std::vector<GLPL::pt2D>* dataPtPt, GLenum mode = GL_LINE_STRIP);
 
-        /* Desctructor */
+        /* Destructor */
         ~Line2DPts();
 
         /* Functions */
         void Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans);
-
         std::vector<float> getMinMax();
 
 

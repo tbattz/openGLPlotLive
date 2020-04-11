@@ -12,23 +12,23 @@ namespace GLPL {
             this->indexY = indexY;
 
             /* Setup Buffers */
-                    updateInternalData();
+            updateInternalData();
             int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
             createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
 
             /* Set Number of Points */
-                    nPts = dataVecPt->size()/2.0;
+            nPts = dataVecPt->size()/2.0;
 
         }
 
         void Line2DVecVec::updateInternalData() {
             /* Creates an internal data store from the current dataVecPt */
-            // Clear Previous Data
-            internalData.clear();
+            // Resize vector to data
+            internalData.resize(2*dataVecPt->size());
             // Update With New Data
             for(unsigned int i=0; i<dataVecPt->size(); i++) {
-                internalData.push_back((*dataVecPt)[i][indexX]);
-                internalData.push_back((*dataVecPt)[i][indexY]);
+                internalData[2*i] = (*dataVecPt)[i][indexX];
+                internalData[2*i + 1] = (*dataVecPt)[i][indexY];
             }
         }
 

@@ -22,6 +22,7 @@ namespace GLPL {
         glBindVertexArray(*VAOPt);
         glBindBuffer(GL_ARRAY_BUFFER, *VBOPt);
 
+        /* Copy data into buffer */
         glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_DYNAMIC_DRAW);
 
         /* Position Attributes */

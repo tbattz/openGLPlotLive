@@ -23,6 +23,7 @@
 #include "../src/lines/Line2DVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
 #include "../src/lines/Line2DVecfVecGLMV3.h"
+#include "../src/lines/Line2D2Vecs.h"
 
 
 
@@ -51,6 +52,7 @@ int main(int argc, char **argv) {
 	// Create Data
 	// Graph 1
 	std::vector<GLPL::pt2D> data1;
+	data1.reserve(2000);
 	for(int i = 0; i < 2000; i++) {
         GLPL::pt2D pt;
 		float x = i/1000.0;
@@ -73,6 +75,7 @@ int main(int argc, char **argv) {
 
 	// Graph 4 - Vector (Line uses template types)
     std::vector<float> data4;
+    data4.reserve(2*2500);
 	for(int i=-1000; i<1500; i++) {
 		data4.push_back(i/1000.0);
 		data4.push_back(-i/1000.0);
@@ -89,9 +92,20 @@ int main(int argc, char **argv) {
 
     // Graph 8 - Vector (Line uses template types)
     std::vector<double> data8;
+    data8.reserve(2*2500);
     for(int i=-1000; i<1500; i++) {
         data8.push_back(-pow(i/1000.0,2));
         data8.push_back(i/1000.0);
+    }
+
+    // Graph 9 - X and Y vectors
+    std::vector<float> xVec9;
+    std::vector<float> yVec9;
+    xVec9.reserve(2500);
+    yVec9.reserve(2500);
+    for(int i=-1000; i<1500; i++) {
+        xVec9.push_back(i/500.0);
+        yVec9.push_back(0.75*sin(i/500.0));
     }
 
 
@@ -110,10 +124,12 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Line2DVecGLMV3> line6 = std::shared_ptr<GLPL::Line2DVecGLMV3>(new GLPL::Line2DVecGLMV3(&data6, 2, 1));
     std::shared_ptr<GLPL::Line2DVecfVecGLMV3> line7 = std::shared_ptr<GLPL::Line2DVecfVecGLMV3>(new GLPL::Line2DVecfVecGLMV3(&data7, &data6, 0));
     std::shared_ptr<GLPL::Line2DVec<double>> line8 = std::shared_ptr<GLPL::Line2DVec<double>>(new GLPL::Line2DVec<double>(&data8));
+    std::shared_ptr<GLPL::Line2D2Vecs> line9 = std::shared_ptr<GLPL::Line2D2Vecs>(new GLPL::Line2D2Vecs(&xVec9, &yVec9));
 	line4->setLineColour(LC_MAGENTA);
     line5->setLineColour(LC_CYAN);
 	line6->setLineColour(LC_YELLOW);
 	line7->setLineColour(LC_RED);
+	line9->setLineColour(LC_PURPLE);
 
 	// Add lines to axes
     myplot.addLine(line1);
@@ -124,6 +140,7 @@ int main(int argc, char **argv) {
 	myplot.addLine(line6);
 	myplot.addLine(line7);
     myplot.addLine(line8);
+    myplot.addLine(line9);
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);
 
