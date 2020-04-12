@@ -103,6 +103,8 @@ namespace GLPL {
 
         // Draw All Lines
         drawLines(shader, axesLimitsViewportTrans);
+        // Draw All Shaded Lines
+        drawShadedLines(shader, axesLimitsViewportTrans);
         // Disable Scissor Testing
         glDisable(GL_SCISSOR_TEST);
 
@@ -171,6 +173,13 @@ namespace GLPL {
         // Draw the lines on the axes
         for(unsigned int i=0; i<lines2D.size(); i++) {
             lines2D[i]->Draw(shader, axesLimitsViewportTrans);
+        }
+    }
+
+    void Axes::drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
+        // Draw the shaded lines on the axes
+        for(unsigned int i=0; i<shadedLines2D.size(); i++) {
+            shadedLines2D[i]->Draw(shader, axesLimitsViewportTrans);
         }
     }
 
@@ -355,6 +364,10 @@ namespace GLPL {
         this->lines2D.push_back(linePt);
     }
 
+    void Axes::addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt) {
+        this->shadedLines2D.push_back(shadedLinePt);
+    }
+
     void Axes::setAutoScaleRound(bool newAutoScaleRound) {
         this->autoScaleRound = newAutoScaleRound;
     }
@@ -454,6 +467,5 @@ namespace GLPL {
     void Axes::setAxesLabelsOn(bool axesLabelsOn) {
         this->axesLabelsOn = axesLabelsOn;
     }
-
 
 }

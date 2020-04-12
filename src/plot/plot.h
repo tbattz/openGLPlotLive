@@ -32,6 +32,7 @@ namespace GLPL {
         // Functions
         void Draw(Shader shader);
         void addLine(std::shared_ptr<ILine2D> linePt);
+        void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         std::shared_ptr<GLPL::Axes> getAxes();
         void setPlotOutlineOn(bool plotOutlineOn);
 

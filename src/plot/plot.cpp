@@ -83,6 +83,10 @@ namespace GLPL {
         this->axes->addLine(linePt);
     }
 
+    void Plot::addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt) {
+        this->axes->addShadedLine(shadedLinePt);
+    }
+
     std::shared_ptr<Axes> Plot::getAxes() {
         return this->axes;
     }

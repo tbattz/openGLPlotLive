@@ -24,7 +24,7 @@
 #include "../src/lines/Line2DVecfVecGLMV3.h"
 #include "../src/lines/Line2D2Vecs.h"
 #include "../src/lines/Line2D2CircularVecs.h"
-
+#include "../src/shadedLines/ShadedLine2D2CircularVecs.h"
 
 
 int main(int argc, char **argv) {
@@ -136,6 +136,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Line2DVecfVecGLMV3> line7 = std::shared_ptr<GLPL::Line2DVecfVecGLMV3>(new GLPL::Line2DVecfVecGLMV3(&data7, &data6, 0));
     std::shared_ptr<GLPL::Line2DVec<double>> line8 = std::shared_ptr<GLPL::Line2DVec<double>>(new GLPL::Line2DVec<double>(&data8));
     std::shared_ptr<GLPL::Line2D2Vecs> line9 = std::shared_ptr<GLPL::Line2D2Vecs>(new GLPL::Line2D2Vecs(&xVec9, &yVec9));
+    std::shared_ptr<GLPL::ShadedLine2D2CircularVecs> shaded9 = std::shared_ptr<GLPL::ShadedLine2D2CircularVecs>(new GLPL::ShadedLine2D2CircularVecs(&xVec9, &yVec9));
     std::shared_ptr<GLPL::Line2D2CircularVecs> line10 = std::shared_ptr<GLPL::Line2D2CircularVecs>(new GLPL::Line2D2CircularVecs(&xVec10, &yVec10));
 	line4->setLineColour(LC_MAGENTA);
     line5->setLineColour(LC_CYAN);
@@ -143,6 +144,7 @@ int main(int argc, char **argv) {
 	line7->setLineColour(LC_RED);
 	line9->setLineColour(LC_PURPLE);
 	line10->setLineColour(LC_SILVER);
+	shaded9->setShadeColour(LC_PURPLE);
 
 	// Add lines to axes
     myplot.addLine(line1);
@@ -155,6 +157,7 @@ int main(int argc, char **argv) {
     myplot.addLine(line8);
     myplot.addLine(line9);
     myplot.addLine(line10);
+    myplot.addShadedLine(shaded9);
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);
 

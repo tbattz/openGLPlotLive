@@ -25,6 +25,7 @@
 
 // Project Includes
 #include "../lines/Line2DPts.h"
+#include "../shadedLines/IShadedLine2D.h"
 
 namespace GLPL {
 
@@ -40,6 +41,7 @@ namespace GLPL {
 	    // Drawing
         void Draw(Shader shader,glm::mat4 plotViewportTrans);
         void addLine(std::shared_ptr<ILine2D> linePt);
+        void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         // Position
         void setPositionSize(float x, float y, float width, float height);
         // Tick marks
@@ -70,7 +72,8 @@ namespace GLPL {
         void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans);
         void drawAxesBox(Shader shader, glm::mat4 axesViewportTrans);
         void drawAxesLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
-        void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans);;
+        void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
+        void drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
         void drawAxesTickMarks(Shader shader, glm::mat4 axesViewportTrans);
         glm::mat4 scale2AxesLimits();
         void drawMajorAxesTickLabels(glm::mat4 axesViewportTrans);
@@ -121,6 +124,8 @@ namespace GLPL {
         std::vector<GLfloat> axesTicks = {0, 0, -1, 1};
 		// Line Data
 		std::vector<std::shared_ptr<ILine2D>> lines2D;
+		// Shaded Line Data
+		std::vector<std::shared_ptr<IShadedLine2D>> shadedLines2D;
 		// Window Dimensions
 		std::shared_ptr<IWindow> windowPt;
 		// Font Shader
