@@ -33,6 +33,7 @@ namespace GLPL  {
         int nPts = 0;
 
         /* Data */
+        bool updated = false;
         std::vector<float>* dataPtX;
         std::vector<float>* dataPtY;
         std::vector<float> internalData;

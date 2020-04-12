@@ -26,31 +26,34 @@ namespace GLPL {
     void Line2D2CircularVecs::updateInternalData(unsigned int currIndex) {
         /* Creates an internal data store from the current dataVecPt */
         // Get minimum length of both vectors
-        unsigned int len = std::min(this->dataPtX->size(), this->dataPtY->size());
+        unsigned int totLen = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
-        internalData.resize(2*len);
+        internalData.resize(2*totLen);
         // Update with new data
         // First slice
-        for(unsigned int i=currIndex; i<len; i++) {
-            internalData[2*i] = (*dataPtX)[i];
-            internalData[2*i + 1] = (*dataPtY)[i];
+        unsigned int len1 = totLen - currIndex;
+        for(unsigned int i=0; i<len1; i++) {
+            internalData[2*i] = (*dataPtX)[currIndex + i];
+            internalData[2*i + 1] = (*dataPtY)[currIndex + i];
         }
         // Second slice
-        unsigned int len2 = 2*(len - currIndex);
-        for(unsigned int i=0; i<currIndex; i++) {
-            internalData[2*i + len2] = (*dataPtX)[i];
-            internalData[2*i + len2 + 1] = (*dataPtY)[i];
+        unsigned int len2 = currIndex;
+        for(unsigned int i=0; i<len2; i++) {
+            internalData[2*i + 2*len1] = (*dataPtX)[i];
+            internalData[2*i + 2*len1 + 1] = (*dataPtY)[i];
         }
+        updated = true;
     }
 
     void Line2D2CircularVecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans) {
         // Check if the number of points changed
-        int newPts = (internalData).size()/2;
-        if (newPts != nPts) {
+        if (updated) {
+            int newPts = (internalData).size()/2;
             nPts = newPts;
             // Update buffer and attributes
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
+            updated = false;
         }
 
         // Draw plot
