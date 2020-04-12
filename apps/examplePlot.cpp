@@ -18,12 +18,12 @@
 #include "../src/rendering/fonts.h"
 #include "../src/window/window.h"
 #include "../src/plot/plot.h"
-#include "../src/lines/Line2DPts.h"
 #include "../src/lines/Line2DVecVec.h"
 #include "../src/lines/Line2DVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
 #include "../src/lines/Line2DVecfVecGLMV3.h"
 #include "../src/lines/Line2D2Vecs.h"
+#include "../src/lines/Line2D2CircularVecs.h"
 
 
 
@@ -108,6 +108,17 @@ int main(int argc, char **argv) {
         yVec9.push_back(0.75*sin(i/500.0));
     }
 
+    // Graph 10 - X and Y circular vectors
+    std::vector<float> xVec10;
+    std::vector<float> yVec10;
+    int j = 0;
+    xVec10.reserve(2500);
+    yVec10.reserve(2500);
+    for(int i=-1000; i<1500; i++) {
+        xVec10.push_back(i/500.0);
+        yVec10.push_back(5 - 0.25*pow(i/500.0, 2));
+    }
+
 
 	/* ======================================================
 	 *                	    Create Plot
@@ -125,11 +136,13 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Line2DVecfVecGLMV3> line7 = std::shared_ptr<GLPL::Line2DVecfVecGLMV3>(new GLPL::Line2DVecfVecGLMV3(&data7, &data6, 0));
     std::shared_ptr<GLPL::Line2DVec<double>> line8 = std::shared_ptr<GLPL::Line2DVec<double>>(new GLPL::Line2DVec<double>(&data8));
     std::shared_ptr<GLPL::Line2D2Vecs> line9 = std::shared_ptr<GLPL::Line2D2Vecs>(new GLPL::Line2D2Vecs(&xVec9, &yVec9));
+    std::shared_ptr<GLPL::Line2D2CircularVecs> line10 = std::shared_ptr<GLPL::Line2D2CircularVecs>(new GLPL::Line2D2CircularVecs(&xVec10, &yVec10));
 	line4->setLineColour(LC_MAGENTA);
     line5->setLineColour(LC_CYAN);
 	line6->setLineColour(LC_YELLOW);
 	line7->setLineColour(LC_RED);
 	line9->setLineColour(LC_PURPLE);
+	line10->setLineColour(LC_SILVER);
 
 	// Add lines to axes
     myplot.addLine(line1);
@@ -141,6 +154,7 @@ int main(int argc, char **argv) {
 	myplot.addLine(line7);
     myplot.addLine(line8);
     myplot.addLine(line9);
+    myplot.addLine(line10);
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);
 
@@ -188,6 +202,13 @@ int main(int argc, char **argv) {
 			i += 1;
 		}
 		line7->updateInternalData();
+
+		// Update graph 10 index
+		j += 10;
+		if (j>2499) {
+		    j = 0;
+		}
+		line10->updateInternalData(j);
 
 		// Update Axes Limits
 		//if(i > 500) {
