@@ -104,6 +104,9 @@ namespace GLPL {
         // Check Events
         glfwPollEvents();
 
+        // Make this windows context current
+        glfwMakeContextCurrent(this->getWindow());
+
         // Update window size
         Window::updateStoredSize();
 
