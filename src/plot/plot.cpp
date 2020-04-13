@@ -9,7 +9,10 @@
 
 namespace GLPL {
 
-    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt) {
+    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt) :
+            textShader("Shaders/font.vs", "Shaders/font.frag"),
+            plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag"),
+            plotTransparent2dShader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag") {
         // Set Size and Position
         this->x = x;
         this->y = y;
@@ -18,7 +21,7 @@ namespace GLPL {
         this->windowPt = windowPt;
 
         // Create axes
-        axes = std::make_shared<Axes>(0.15,0.15,0.80,0.75,windowPt,textShaderPt);
+        axes = std::make_shared<Axes>(0.15,0.15,0.80,0.75,windowPt,&textShader);
 
         // Setup Buffers
         createAndSetupBuffers();
@@ -66,17 +69,17 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
-    void Plot::Draw(Shader shader) {
+    void Plot::Draw() {
         // Calculate Viewport Transformation
         glm::mat4 plotViewportTrans = GLPL::Transforms::viewportTransform(x, y, width, height);
 
         // Draw Plot Box Outline
         if (plotOutlineOn) {
-            drawPlotOutline(shader, plotViewportTrans);
+            drawPlotOutline(plot2dShader, plotViewportTrans);
         }
 
         // Draw Axes
-        axes->Draw(shader, plotViewportTrans);
+        axes->Draw(plot2dShader, plotTransparent2dShader, plotViewportTrans);
     }
 
     void Plot::addLine(std::shared_ptr<ILine2D> linePt) {

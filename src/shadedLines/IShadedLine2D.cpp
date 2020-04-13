@@ -37,14 +37,16 @@ namespace GLPL {
     }
 
     void IShadedLine2D::drawData(Shader shader, glm::mat4 axesLimitViewportTrans,
-            GLuint *VAOPt, glm::vec3 colour, int numIndices, GLenum mode) {
+            GLuint *VAOPt, glm::vec3 colour, int numIndices, float zDepth, GLenum mode) {
         // Draws the data currently stored in the shaded line corresponding to the given VAO
         // The VAO is bound to the EBO from earlier
         shader.Use();
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "transformViewport"), 1, GL_FALSE,
                 glm::value_ptr(axesLimitViewportTrans));
-        glm::vec4 inColor = glm::vec4(colour, 1.0);
+        glm::vec4 inColor = glm::vec4(colour, opacityRatio);
+        GLfloat zDepthVal = zDepth;
         glUniform4fv(glGetUniformLocation(shader.Program, "inColor"), 1, glm::value_ptr(inColor));
+        glUniform1f(glGetUniformLocation(shader.Program, "z"), zDepthVal);
         glBindVertexArray(*VAOPt);
         glDrawElements(mode, numIndices, GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
@@ -56,6 +58,10 @@ namespace GLPL {
 
     void IShadedLine2D::setMode(GLenum newMode) {
         this->mode = newMode;
+    }
+
+    void IShadedLine2D::setOpacityRatio(float newOpacityRatio) {
+        this->opacityRatio = newOpacityRatio;
     }
 
     glm::vec3 IShadedLine2D::getColour() {

@@ -55,6 +55,12 @@ namespace GLPL {
         // Test for objects in front of each other
         glEnable(GL_DEPTH_TEST);
 
+        // Depth testing to ensure transparency works for shaded lines
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDepthMask(GL_FALSE);
+        glDepthFunc(GL_LESS);
+
         // Line Width
         glLineWidth(1);
     }

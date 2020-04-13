@@ -72,7 +72,7 @@ namespace GLPL {
         glBindVertexArray(0); // Unbind VAO
     }
 
-    void Axes::Draw(Shader shader,glm::mat4 plotViewportTrans) {
+    void Axes::Draw(Shader shader, Shader transparentShader, glm::mat4 plotViewportTrans) {
         // Check for autoscaling of axes
         if(autoScaleX || autoScaleY) {
             updateAxesLimitsAutoscale();
@@ -104,7 +104,7 @@ namespace GLPL {
         // Draw All Lines
         drawLines(shader, axesLimitsViewportTrans);
         // Draw All Shaded Lines
-        drawShadedLines(shader, axesLimitsViewportTrans);
+        drawShadedLines(transparentShader, axesLimitsViewportTrans);
         // Disable Scissor Testing
         glDisable(GL_SCISSOR_TEST);
 
@@ -178,8 +178,10 @@ namespace GLPL {
 
     void Axes::drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
         // Draw the shaded lines on the axes
+        float zDepth = 0.0;
         for(unsigned int i=0; i<shadedLines2D.size(); i++) {
-            shadedLines2D[i]->Draw(shader, axesLimitsViewportTrans);
+            zDepth += 1.0/((float)(shadedLines2D.size() + 1));
+            shadedLines2D[i]->Draw(shader, axesLimitsViewportTrans, zDepth);
         }
     }
 

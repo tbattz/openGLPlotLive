@@ -31,19 +31,21 @@ namespace GLPL {
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
         void drawData(Shader shader, glm::mat4 axesLimitViewportTrans, GLuint *VAOPt, glm::vec3 colour,
-                int numIndices, GLenum mode);
+                int numIndices, float zDepth, GLenum mode);
         void setShadeColour(glm::vec3 shadeColour);
         void setMode(GLenum newMode);
+        void setOpacityRatio(float newOpacityRatio);
         glm::vec3 getColour();
         GLenum getMode();
 
-        virtual void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) = 0;
+        virtual void Draw(Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth) = 0;
 
         virtual std::vector<float> getMinMax() = 0;
 
     private:
         /* Data */
         glm::vec3 colour = LC_WHITE;
+        float opacityRatio = 1.0;
         GLenum mode; // Mode, shaded or line
     };
 }

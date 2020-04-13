@@ -24,7 +24,7 @@ namespace GLPL {
 
         /* Functions */
         void updateInternalData(unsigned int currIndex);
-        void Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans);
+        void Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth);
         std::vector<float> getMinMax();
 
     private:

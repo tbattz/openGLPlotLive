@@ -40,13 +40,6 @@ int main(int argc, char **argv) {
 	std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 
 	/* ======================================================
-	 *                  	  Shaders
-	   ====================================================== */
-	// Setup and compile shaders
-	GLPL::Shader plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag");
-    GLPL::Shader textShader("Shaders/font.vs", "Shaders/font.frag");
-
-	/* ======================================================
 	 *                	  Create Plot Data
    	   ====================================================== */
 	// Create Data
@@ -124,7 +117,7 @@ int main(int argc, char **argv) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window, &textShader);
+	GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 
 	// Create Lines
 	std::shared_ptr<GLPL::Line2DPts> line1 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data1));
@@ -219,7 +212,7 @@ int main(int argc, char **argv) {
 		//}
 
 		// Draw Plot
-		myplot.Draw(plot2dShader);
+		myplot.Draw();
 
 		// Post-loop draw
 		window2->postLoopDraw();

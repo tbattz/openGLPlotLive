@@ -73,7 +73,7 @@ namespace GLPL {
         updated = true;
     }
 
-    void ShadedLine2D2CircularVecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans) {
+    void ShadedLine2D2CircularVecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth) {
         // Check if the number of points changed
         if (updated) {
             nIndices = internalIndices.size();
@@ -88,7 +88,7 @@ namespace GLPL {
         }
 
         // Draw plot
-        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nIndices, getMode());
+        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nIndices, zDepth, getMode());
     }
 
     std::vector<float> ShadedLine2D2CircularVecs::getMinMax() {

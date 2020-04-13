@@ -39,7 +39,7 @@ namespace GLPL {
 	    // Text Shader
         Shader* getTextShaderPt();
 	    // Drawing
-        void Draw(Shader shader,glm::mat4 plotViewportTrans);
+        void Draw(Shader shader, Shader transparentShader, glm::mat4 plotViewportTrans);
         void addLine(std::shared_ptr<ILine2D> linePt);
         void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         // Position

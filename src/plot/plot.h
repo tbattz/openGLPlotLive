@@ -25,12 +25,12 @@ namespace GLPL {
 		// Plots contain sets of axes, labels and titles
     public:
 	    // Constructor
-        Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt);
+        Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt);
 	    // Destructor
 	    ~Plot();
 
         // Functions
-        void Draw(Shader shader);
+        void Draw();
         void addLine(std::shared_ptr<ILine2D> linePt);
         void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         std::shared_ptr<GLPL::Axes> getAxes();
@@ -48,6 +48,11 @@ namespace GLPL {
 		float width;  		// Width of plot as a proportion of the current window width
 		float height;		// Height of plot as a proportion of the current window height
         std::shared_ptr<Axes> axes;
+
+        // Shaders
+        GLPL::Shader textShader;
+        GLPL::Shader plot2dShader;
+        GLPL::Shader plotTransparent2dShader;
 
         // Outlines
         bool plotOutlineOn = true;
