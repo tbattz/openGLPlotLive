@@ -256,7 +256,7 @@ namespace GLPL {
             float x = (axesTicks[i*4]+1)/2.0 * windowPt->getWidth();
             float y = (axesTicks[i*4+1]+1)/2.0 * windowPt->getHeight() - 60;
             // Draw Label
-            axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),2);
+            axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,fontScaling,glm::vec3(1.0f,1.0f,1.0f),2);
         }
         // y Axes
         for(int i=0; i<majorTickNum; i++) {
@@ -269,7 +269,7 @@ namespace GLPL {
             float x = (axesTicks[j*4]+1)/2.0 * windowPt->getWidth() - 80;
             float y = (axesTicks[j*4+1]+1)/2.0 * windowPt->getHeight();
             // Draw Label
-            axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,1.0f,glm::vec3(1.0f,1.0f,1.0f),3);
+            axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,fontScaling,glm::vec3(1.0f,1.0f,1.0f),3);
         }
     }
 
@@ -378,6 +378,10 @@ namespace GLPL {
         this->equalAxes = equalAxesBool;
         this->autoScaleX = true;
         this->autoScaleY = true;
+    }
+
+    void Axes::setFontScaling(float newFontScaling) {
+        this->fontScaling = newFontScaling;
     }
 
     std::vector<float> Axes::getOverallMinMax() {

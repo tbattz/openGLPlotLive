@@ -59,6 +59,7 @@ namespace GLPL {
         void setAutoScale(bool autoScaleOn);
         void setAutoScaleRound(bool newAutoScaleRond);
         void setEqualAxes(bool equalAxesBool);
+        void setFontScaling(float newFontScaling);
         // Outlines
         void setAxesAreaOutlineOn(bool axesAreaOutlineOn);
         void setXYAxesOn(bool showXYAxes);
@@ -133,6 +134,8 @@ namespace GLPL {
 		// Font Pointer
 		const GLchar* fontPath = FONTPATH;
 		GLFont axesTicksFont;
+		// Font Size
+		float fontScaling = 1.0;
 	};
 }
 
