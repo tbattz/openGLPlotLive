@@ -14,19 +14,13 @@ Current data formats:
 ## Window Setup
 To create a window for plotting, you will need the following
 ```c++
+// Window Size
+int windowWidth  = 800;
+int windowHeight = 800;
+
 // Init GLFW
-GLFWwindow* window = initGLFW();
-
-// Create Window Dimensions Class
-WinDimensions winDim(window);
-```
-
-## Create Shaders
-Shaders are required to plot the lines, currently this needs to be manually created.
-```c++
-// Setup and compile shaders
-Shader plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag");
-Shader textShader("Shaders/font.vs", "Shaders/font.frag");
+std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight));
+std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 ```
 
 ## Create Data
@@ -53,7 +47,7 @@ vector<vector<float>> data5;
 You will need to create a plot to add the lines to. Creating a plot that starts at x=0.0, y=0.25 (proportion of the window), and has width and height of 0.75 the respective lengths,
 ```c++
 // Create Plot
-Plot myplot(0.0, 0.25, 0.75, 0.75, &winDim, &textShader);
+GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 // Create Lines
 Line2Dpts line2(&data2);
 Line2DVecVec line5(&data5);
@@ -66,9 +60,9 @@ myplot.axes.addLine(&line5);
 To draw in real time you will require a drawing loop.
 The following draws the plot, axes and lines, updates the plot data for plot 5 and prepares the plot for the next draw call.
 ```c++
-while(!glfwWindowShouldClose(window)) {
+while(!glfwWindowShouldClose(window->getWindow())) {
 	// Pre-loop draw
-	preLoopDraw(true, &winDim);
+	window2->preLoopDraw(true);
 
 	// Update Graph 5
 	i -= 10;
@@ -80,10 +74,10 @@ while(!glfwWindowShouldClose(window)) {
 	line5.updateInternalData();
 
 	// Draw Plot
-	myplot.Draw(plot2dShader);
+	myplot.Draw();
 
 	// Post-loop draw
-	postLoopDraw(window);
+	window2->postLoopDraw();
 }
 ```
 ## After the draw loop, handle closing the window
@@ -92,6 +86,11 @@ while(!glfwWindowShouldClose(window)) {
 glfwTerminate();
 ```
 
+## Shader Directory
+When including in another project, you'll need to copy the Shader directory to the root of your project. Provided the openGLPlotLive directory is in the top level of your project, this can be done in cmake with the following,
+```cmake
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/../openGLPlotLive/Shaders $<TARGET_FILE_DIR:${PROJECT_NAME}>/Shaders)
+```
 
 # Dependencies
 ##  Automated Install
@@ -163,6 +162,13 @@ To enable debugging, when running cmake, enable the debugging flag.
 cmake -DCMAKE_BUILD_TYPE=Debug
 ```
 
+# Runnning an Example
+An example binary is created, examplePlot. To run this
+```
+cd build/apps
+./examplePlot
+```
+
 # Compiling an Eclipse Project
 To generate an Eclipse project, from the root directory,
 ```
@@ -172,9 +178,3 @@ cmake -G "Eclipse CDT4 - Unix Makefiles" ../src
 ```
 Then import the project into Eclipse using File >> Import >> General >> Existing Projects into Workspace. Click next and set the root directory to <workspace>/openGLMap/build. Click Finish. The project can now be built with Eclipse using the 'all' Build Target. The source files will be inside the "[Source Directory]" and are linked to their actual counterpats.
 
-# Runnning an Example
-An example binary is created, examplePlot. To run this
-```
-cd build/apps
-./examplePlot
-```

@@ -138,6 +138,7 @@ int main(int argc, char **argv) {
 	line9->setLineColour(LC_PURPLE);
 	line10->setLineColour(LC_SILVER);
 	shaded9->setShadeColour(LC_PURPLE);
+	shaded9->setOpacityRatio(0.5);
 
 	// Add lines to axes
     myplot.addLine(line1);
