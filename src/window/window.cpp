@@ -7,11 +7,12 @@
 
 namespace GLPL {
 
-    Window::Window(int windowWidth, int windowHeight, int transparentBackground) {
+    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) {
         // Set window size
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
         this->transparentBackground = transparentBackground;
+        this->focusOnShow = focusOnShow;
 
         // Initialise GLFW
         Window::initGLFW();
@@ -35,6 +36,11 @@ namespace GLPL {
         // Make background transparent
         if (transparentBackground) {
             glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+        }
+
+        // Set window to not steal focus
+        if (!focusOnShow) {
+            glfwWindowHint(GLFW_FOCUS_ON_SHOW, false);
         }
 
         // Screen Properties

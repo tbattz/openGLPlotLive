@@ -7,7 +7,7 @@
 namespace GLPL {
 
     FramelessDraggableWindow::FramelessDraggableWindow(int windowWidth, int windowHeight, bool transparentBackground, bool alwaysOnTop) :
-            GLPL::Window(windowWidth, windowHeight, transparentBackground) {
+            GLPL::Window(windowWidth, windowHeight, transparentBackground, false) {
         // Set background color
         this->setFrameless(true);
         this->setAlwaysOnTop(alwaysOnTop);

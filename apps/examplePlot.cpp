@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     int windowHeight = 800;
 
 	// Init GLFW
-	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight));
+	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight, false, false));
 	std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 
 	/* ======================================================

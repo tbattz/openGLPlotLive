@@ -33,8 +33,8 @@ namespace GLPL {
 	class Window : public IWindow {
 	public:
 	    // Constructor
-	    Window(int windowWidth, int windowHeight, int transparentBackground=GLFW_FALSE);
-	    ~Window();
+        Window(int windowWidth, int windowHeight, bool transparentBackground = GLFW_FALSE, bool focusOnShow = GLFW_FALSE);
+        ~Window();
 	    // Functions
 	    void setKeysByIndex(int index, bool boolean);
 	    void setToggleKeysByIndex(int index, bool boolean);
@@ -59,7 +59,8 @@ namespace GLPL {
 	    int windowWidth;
 	    int windowHeight;
 	    std::array<GLfloat, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f};
-	    int transparentBackground;
+	    bool transparentBackground;
+	    bool focusOnShow;
 
         // Keys
         bool keys[1024];
