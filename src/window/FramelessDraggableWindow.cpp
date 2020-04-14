@@ -18,6 +18,14 @@ namespace GLPL {
 
     }
 
+    void FramelessDraggableWindow::showWindow() {
+        glfwShowWindow(this->getWindow());
+    }
+
+    void FramelessDraggableWindow::hideWindow() {
+        glfwHideWindow(this->getWindow());
+    }
+
     void FramelessDraggableWindow::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
         // Get Window class
         GLPL::FramelessDraggableWindow* windowPt = (GLPL::FramelessDraggableWindow*) glfwGetWindowUserPointer(window);

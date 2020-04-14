@@ -19,6 +19,10 @@ namespace GLPL {
         FramelessDraggableWindow(int windowWidth, int windowHeight, bool transparentBackground,
                                  bool alwaysOnTop);
 
+        // Functions
+        void showWindow();
+        void hideWindow();
+
     private:
         // Functions
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
