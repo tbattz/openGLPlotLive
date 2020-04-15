@@ -39,8 +39,9 @@ namespace GLPL {
 	    // Text Shader
         Shader* getTextShaderPt();
 	    // Drawing
-        void Draw(Shader shader, Shader transparentShader, glm::mat4 plotViewportTrans);
+        void Draw(Shader shader, Shader posNegShader, Shader transparentShader, glm::mat4 plotViewportTrans);
         void addLine(std::shared_ptr<ILine2D> linePt);
+        void addPosNegLine(std::shared_ptr<ILine2D> linePt);
         void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         // Position
         void setPositionSize(float x, float y, float width, float height);
@@ -74,6 +75,7 @@ namespace GLPL {
         void drawAxesBox(Shader shader, glm::mat4 axesViewportTrans);
         void drawAxesLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
         void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
+        void drawPosNegLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
         void drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
         void drawAxesTickMarks(Shader shader, glm::mat4 axesViewportTrans);
         glm::mat4 scale2AxesLimits();
@@ -125,6 +127,8 @@ namespace GLPL {
         std::vector<GLfloat> axesTicks = {0, 0, -1, 1};
 		// Line Data
 		std::vector<std::shared_ptr<ILine2D>> lines2D;
+		// PosNeg Line Data
+		std::vector<std::shared_ptr<ILine2D>> linesPosNeg2D;
 		// Shaded Line Data
 		std::vector<std::shared_ptr<IShadedLine2D>> shadedLines2D;
 		// Window Dimensions

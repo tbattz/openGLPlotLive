@@ -27,7 +27,7 @@ namespace GLPL  {
         void Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans);
         std::vector<float> getMinMax();
 
-    private:
+    protected:
         /* Buffers */
         GLuint VAO, VBO;
         int nPts = 0;

@@ -43,6 +43,9 @@ namespace GLPL {
             glfwWindowHint(GLFW_FOCUS_ON_SHOW, false);
         }
 
+        // Use 4 samples for MSAA Anti-aliasing
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
         // Screen Properties
         window = glfwCreateWindow(windowWidth,windowHeight,"openGLPlotLive",nullptr,nullptr);
         glfwMakeContextCurrent(window);
@@ -60,6 +63,9 @@ namespace GLPL {
 
         // Test for objects in front of each other
         glEnable(GL_DEPTH_TEST);
+
+        // Enable Anti-aliasing
+        glEnable(GL_MULTISAMPLE);
 
         // Depth testing to ensure transparency works for shaded lines
         glEnable(GL_DEPTH_TEST);

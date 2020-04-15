@@ -12,7 +12,8 @@ namespace GLPL {
     Plot::Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt) :
             textShader("Shaders/font.vs", "Shaders/font.frag"),
             plot2dShader("Shaders/plot2d.vs","Shaders/plot2d.frag"),
-            plotTransparent2dShader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag") {
+            plotPosNeg2DShader("Shaders/plotPosNeg2d.vs", "Shaders/plotPosNeg2d.frag"),
+            plotTransparent2dShader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag")  {
         // Set Size and Position
         this->x = x;
         this->y = y;
@@ -79,11 +80,15 @@ namespace GLPL {
         }
 
         // Draw Axes
-        axes->Draw(plot2dShader, plotTransparent2dShader, plotViewportTrans);
+        axes->Draw(plot2dShader, plotPosNeg2DShader, plotTransparent2dShader, plotViewportTrans);
     }
 
     void Plot::addLine(std::shared_ptr<ILine2D> linePt) {
         this->axes->addLine(linePt);
+    }
+
+    void Plot::addPosNegLine(std::shared_ptr<ILine2D> linePt) {
+        this->axes->addPosNegLine(linePt);
     }
 
     void Plot::addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt) {

@@ -72,7 +72,7 @@ namespace GLPL {
         glBindVertexArray(0); // Unbind VAO
     }
 
-    void Axes::Draw(Shader shader, Shader transparentShader, glm::mat4 plotViewportTrans) {
+    void Axes::Draw(Shader shader, Shader posNegShader, Shader transparentShader, glm::mat4 plotViewportTrans) {
         // Check for autoscaling of axes
         if(autoScaleX || autoScaleY) {
             updateAxesLimitsAutoscale();
@@ -105,6 +105,8 @@ namespace GLPL {
         drawLines(shader, axesLimitsViewportTrans);
         // Draw All Shaded Lines
         drawShadedLines(transparentShader, axesLimitsViewportTrans);
+        // Draw All PosNeg Lines
+        drawPosNegLines(posNegShader, axesLimitsViewportTrans);
         // Disable Scissor Testing
         glDisable(GL_SCISSOR_TEST);
 
@@ -173,6 +175,13 @@ namespace GLPL {
         // Draw the lines on the axes
         for(unsigned int i=0; i<lines2D.size(); i++) {
             lines2D[i]->Draw(shader, axesLimitsViewportTrans);
+        }
+    }
+
+    void Axes::drawPosNegLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
+        // Draw the lines on the axes
+        for(unsigned int i=0; i<linesPosNeg2D.size(); i++) {
+            linesPosNeg2D[i]->Draw(shader, axesLimitsViewportTrans);
         }
     }
 
@@ -364,6 +373,10 @@ namespace GLPL {
 
     void Axes::addLine(std::shared_ptr<ILine2D> linePt) {
         this->lines2D.push_back(linePt);
+    }
+
+    void Axes::addPosNegLine(std::shared_ptr<ILine2D> linePt) {
+        this->linesPosNeg2D.push_back(linePt);
     }
 
     void Axes::addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt) {

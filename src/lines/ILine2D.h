@@ -33,6 +33,7 @@ namespace GLPL {
                       GLenum mode);
         void setLineColour(glm::vec3 lineColor);
         void setMode(GLenum newMode);
+        void setLineWidth(unsigned int newLineWidth);
         glm::vec3 getColour();
         GLenum getMode();
 
@@ -40,8 +41,9 @@ namespace GLPL {
 
         virtual std::vector<float> getMinMax() = 0;
 
-    private:
+    protected:
         /* Attributes */
+        unsigned int lineWidth = 1;
         glm::vec3 colour = LC_WHITE;
         GLenum mode; // Mode, line or points
     };

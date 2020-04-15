@@ -38,6 +38,7 @@ namespace GLPL {
                       GLenum mode) {
         // Draws the data currently stored in the line corresponding to the given VAO
         shader.Use();
+        glLineWidth(lineWidth);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "transformViewport"), 1, GL_FALSE,
                            glm::value_ptr(axesLimitViewportTrans));
         glm::vec4 inColor = glm::vec4(colour, 1.0);
@@ -45,6 +46,7 @@ namespace GLPL {
         glBindVertexArray(*VAOPt);
         glDrawArrays(mode, 0, nPts);
         glBindVertexArray(0);
+        glLineWidth(1);
     }
 
     void ILine2D::setLineColour(glm::vec3 lineColor) {
@@ -53,6 +55,10 @@ namespace GLPL {
 
     void ILine2D::setMode(GLenum newMode) {
         this->mode = newMode;
+    }
+
+    void ILine2D::setLineWidth(unsigned int newLineWidth) {
+        this->lineWidth = newLineWidth;
     }
 
     glm::vec3 ILine2D::getColour() {

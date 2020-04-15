@@ -47,7 +47,7 @@ namespace GLPL {
 				vertexCode = vShaderStream.str();
 				fragmentCode = fShaderStream.str();
 			} catch(std::ifstream::failure & e) {
-				std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << '\n';
+				std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ:\n" << vertexPath << ", " << fragmentPath << '\n';
 			}
 			const GLchar* vShaderCode = vertexCode.c_str();
 			const GLchar* fShaderCode = fragmentCode.c_str();
@@ -65,7 +65,7 @@ namespace GLPL {
 			glGetShaderiv(vertex,GL_COMPILE_STATUS,&success);
 			if(!success) {
 				glGetShaderInfoLog(vertex,512,NULL,infoLog);
-				std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << '\n';
+				std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << vertexPath << ", " << fragmentPath << "\n" << infoLog << '\n';
 			}
 
 			// Fragment Shader
@@ -76,7 +76,7 @@ namespace GLPL {
 			glGetShaderiv(fragment,GL_COMPILE_STATUS,&success);
 			if(!success) {
 				glGetShaderInfoLog(fragment,512,NULL,infoLog);
-				std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << '\n';
+				std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << vertexPath << ", " << fragmentPath << "\n" << infoLog << '\n';
 			}
 
 			// Shader Program
@@ -88,7 +88,7 @@ namespace GLPL {
 			glGetProgramiv(this->Program,GL_LINK_STATUS,&success);
 			if(!success) {
 				glGetProgramInfoLog(this->Program,512,NULL,infoLog);
-				std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << '\n';
+				std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << vertexPath << ", " << fragmentPath << "\n" << infoLog << '\n';
 			}
 
 			// Delete Shaders (no longer needed)

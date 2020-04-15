@@ -32,6 +32,7 @@ namespace GLPL {
         // Functions
         void Draw();
         void addLine(std::shared_ptr<ILine2D> linePt);
+        void addPosNegLine(std::shared_ptr<ILine2D> linePt);
         void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
         std::shared_ptr<GLPL::Axes> getAxes();
         void setPlotOutlineOn(bool plotOutlineOn);
@@ -52,6 +53,7 @@ namespace GLPL {
         // Shaders
         GLPL::Shader textShader;
         GLPL::Shader plot2dShader;
+        GLPL::Shader plotPosNeg2DShader;
         GLPL::Shader plotTransparent2dShader;
 
         // Outlines
