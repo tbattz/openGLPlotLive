@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Line2DVec<double>> line8 = std::shared_ptr<GLPL::Line2DVec<double>>(new GLPL::Line2DVec<double>(&data8));
     std::shared_ptr<GLPL::Line2D2Vecs> line9 = std::shared_ptr<GLPL::Line2D2Vecs>(new GLPL::Line2D2Vecs(&xVec9, &yVec9));
     std::shared_ptr<GLPL::ShadedLine2D2CircularVecs> shaded9 = std::shared_ptr<GLPL::ShadedLine2D2CircularVecs>(new GLPL::ShadedLine2D2CircularVecs(&xVec9, &yVec9));
-    std::shared_ptr<GLPL::Line2D2CircularVecs> line10 = std::shared_ptr<GLPL::Line2D2CircularVecs>(new GLPL::Line2D2CircularVecs(&xVec10, &yVec10));
+    std::shared_ptr<GLPL::Line2D2CircularVecs<float, float>> line10 = std::shared_ptr<GLPL::Line2D2CircularVecs<float, float>>(new GLPL::Line2D2CircularVecs<float, float>(&xVec10, &yVec10));
 	line4->setLineColour(LC_MAGENTA);
     line5->setLineColour(LC_CYAN);
 	line6->setLineColour(LC_YELLOW);

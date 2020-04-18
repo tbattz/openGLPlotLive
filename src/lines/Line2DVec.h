@@ -12,14 +12,6 @@
 
 
 namespace GLPL {
-    // Template the vector type
-    // Set mappings from Type T to GL Types
-    template <class T> constexpr int getGLType();
-
-    template <> constexpr int getGLType<int>() { return GL_INT; }
-    template <> constexpr int getGLType<float>() { return GL_FLOAT; }
-    template <> constexpr int getGLType<double>() { return GL_DOUBLE; }
-
     // Class template
     template <typename T>
     class Line2DVec : public ILine2D {

@@ -9,7 +9,7 @@
 
 
 namespace GLPL  {
-    class Line2D2CircularVecsPosNeg : public Line2D2CircularVecs {
+    class Line2D2CircularVecsPosNeg : public Line2D2CircularVecs<float, float> {
         // Alters Line2D2CircularVecs to plot parts of the line that are above and below the line in different colours
     public:
         /* Constructor */

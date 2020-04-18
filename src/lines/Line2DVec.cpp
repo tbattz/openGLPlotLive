@@ -3,6 +3,7 @@
 //
 
 #include "Line2DVec.h"
+#include "GLTypes.h"
 
 
 namespace GLPL {
@@ -14,7 +15,7 @@ namespace GLPL {
 
         /* Setup Buffers */
         int dataSizeBytes = dataVecPt->size()*sizeof((*dataVecPt)[0]);
-        int glType = getGLType<T>();
+        int glType = GLPL::getGLType<T>();
         createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, dataVecPt->data(), 2*sizeof((*dataVecPt)[0]), glType); // dataVecPt->data() gives the address of the first element of the vector
 
         /* Set Number of Points */
@@ -71,7 +72,7 @@ namespace GLPL {
         return std::vector<float> {xmin,xmax,ymin,ymax};
     }
 
-    // Force the compiler to generate templates of these types
+    // Force the compiler to generate templates of these types - fixes undefined reference error
     template class Line2DVec<int>;
     template class Line2DVec<float>;
     template class Line2DVec<double>;
