@@ -12,10 +12,7 @@
 #include <GLFW/glfw3.h>
 
 // Standard Includes
-#include <iomanip>
-#include <sstream>
 #include <memory>
-#include <math.h>
 
 // GLPL Includes
 #include "../rendering/transforms.h"

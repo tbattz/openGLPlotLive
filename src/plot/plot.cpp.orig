@@ -3,7 +3,7 @@
 //
 
 
-#include "plot.h"
+#include "plot.h.orig"
 
 #include <memory>
 
@@ -28,7 +28,7 @@ namespace GLPL {
         createAndSetupBuffers();
 
         // Setup Font Shader
-        setupFontShader(windowPt->getWidth(),windowPt->getHeight());
+        //setupFontShader(windowPt->getWidth(),windowPt->getHeight());
     }
 
     Plot::~Plot() {

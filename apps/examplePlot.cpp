@@ -8,8 +8,6 @@
  */
 
 
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
 
 // Standard Includes
 #include <memory>
@@ -17,14 +15,9 @@
 // Project Includes
 #include "../src/rendering/fonts.h"
 #include "../src/window/window.h"
-#include "../src/plot/plot.h"
 #include "../src/lines/Line2DVecVec.h"
-#include "../src/lines/Line2DVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
-#include "../src/lines/Line2DVecfVecGLMV3.h"
-#include "../src/lines/Line2D2Vecs.h"
-#include "../src/lines/Line2D2CircularVecs.h"
-#include "../src/shadedLines/ShadedLine2D2CircularVecs.h"
+#include "../src/plot/plot2.h"
 
 
 int main(int argc, char **argv) {
@@ -36,7 +29,7 @@ int main(int argc, char **argv) {
     int windowHeight = 800;
 
 	// Init GLFW
-	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight, false, false));
+	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight,  false, false));
 	std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 
 	/* ======================================================
@@ -64,7 +57,7 @@ int main(int argc, char **argv) {
 	}
 	// Graph 3
     std::vector<GLPL::pt2D> data3;
-	float i = -2000.0;
+	//float i = -2000.0;
 
 	// Graph 4 - Vector (Line uses template types)
     std::vector<float> data4;
@@ -104,7 +97,7 @@ int main(int argc, char **argv) {
     // Graph 10 - X and Y circular vectors
     std::vector<float> xVec10;
     std::vector<float> yVec10;
-    int j = 0;
+    //int j = 0;
     xVec10.reserve(2500);
     yVec10.reserve(2500);
     for(int i=-1000; i<1500; i++) {
@@ -117,7 +110,9 @@ int main(int argc, char **argv) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
+	std::shared_ptr<glm::mat4> parentTransform = std::make_shared<glm::mat4>(1.0f);
+	GLPL::Plot2 myplot2(0.0, 0.25, 0.75, 0.75, window2->getParentPointers());
+	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 
 	// Create Lines
 	std::shared_ptr<GLPL::Line2DPts> line1 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data1));
@@ -153,7 +148,7 @@ int main(int argc, char **argv) {
     myplot.addLine(line10);
     myplot.addShadedLine(shaded9);
 	myplot.getAxes()->setAutoScaleRound(false);
-	myplot.getAxes()->setEqualAxes(true);
+	myplot.getAxes()->setEqualAxes(true);*/
 
 
 	/* ======================================================
@@ -166,7 +161,7 @@ int main(int argc, char **argv) {
 		window2->preLoopDraw(true);
 
 		// Update Plot Data
-		GLPL::pt2D pt3;
+		/*GLPL::pt2D pt3;
 		for(int j=0; j<10; j++) {
 			float x = i/1000.0;
 			pt3.x = x;
@@ -213,7 +208,10 @@ int main(int argc, char **argv) {
 		//}
 
 		// Draw Plot
-		myplot.Draw();
+		myplot.Draw();*/
+		myplot2.axesList[0]->setPosition(myplot2.axesList[0]->getLeft()+0.01, myplot2.axesList[0]->getBottom()+0.01);
+		myplot2.Draw();
+		myplot2.drawBoundingBox();
 
 		// Post-loop draw
 		window2->postLoopDraw();

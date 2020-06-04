@@ -5,13 +5,13 @@
 #ifndef OPENGLPLOTLIVE_ILINE2D_H
 #define OPENGLPLOTLIVE_ILINE2D_H
 
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
-
 // GLM Mathematics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// GLFW (Multi-platform library for OpenGL)
+#include <GLFW/glfw3.h>
 
 // Project Includes
 #include "../rendering/shader.h"

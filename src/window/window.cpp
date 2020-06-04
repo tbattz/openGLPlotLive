@@ -3,6 +3,8 @@
 //
 
 #include "window.h"
+
+#include <utility>
 #include "inputCallbacks.h"
 
 namespace GLPL {
@@ -11,11 +13,15 @@ namespace GLPL {
         // Set window size
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
+        this->shaderSetPt = std::move(shaderSetPt);
         this->transparentBackground = transparentBackground;
         this->focusOnShow = focusOnShow;
 
         // Initialise GLFW
         Window::initGLFW();
+
+        // Create Shader Set
+        shaderSetPt = std::make_shared<ShaderSet>();
 
         // Update Stored Size
         Window::updateStoredSize();
@@ -70,8 +76,7 @@ namespace GLPL {
         // Depth testing to ensure transparency works for shaded lines
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDepthMask(GL_FALSE);
-        glDepthFunc(GL_LESS);
+        glDepthFunc(GL_LEQUAL);
 
         // Line Width
         glLineWidth(1);
@@ -157,6 +162,32 @@ namespace GLPL {
 
     void Window::setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
         this->backgroundColor = {red, green, blue, alpha};
+    }
+
+    std::shared_ptr<ShaderSet> Window::getShaderSet() {
+        return shaderSetPt;
+    }
+
+    ParentPointers Window::getParentPointers() {
+        // Create parent pointers
+        std::shared_ptr<int> parentWidthPx = std::make_shared<int>(windowWidth);
+        std::shared_ptr<int> parentHeightPx = std::make_shared<int>(windowHeight);
+        ParentPointers parentPointers = ParentPointers({transformPt, parentWidthPx, parentHeightPx, shaderSetPt});
+
+        return parentPointers;
+    }
+
+    void Window::updateStoredSize(int newWidth, int newHeight) {
+        this->windowWidth = newWidth;
+        this->windowHeight = newHeight;
+        // Update children
+        for(unsigned int i = 0; i < children.size(); i++) {
+            this->children[i].setParentInformation(this->getParentPointers());
+        }
+    }
+
+    void Window::Draw() {
+
     }
 
 };

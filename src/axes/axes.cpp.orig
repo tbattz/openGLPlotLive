@@ -2,7 +2,7 @@
 // Created by bcub3d-desktop on 28/3/20.
 //
 
-#include "axes.h"
+#include "axes.h.orig"
 
 namespace GLPL {
 
@@ -94,7 +94,7 @@ namespace GLPL {
         // Scissor Test
         glEnable(GL_SCISSOR_TEST);
         std::vector<float> xy = calculateScissor(axesLimitsViewportTrans);
-        glScissor(xy[0]*(windowPt->getWidth()),xy[1]*(windowPt->getHeight()),(xy[2]-xy[0])*(windowPt->getWidth()),(xy[3]-xy[1])*(windowPt->getHeight()));
+        //glScissor(xy[0]*(windowPt->getWidth()),xy[1]*(windowPt->getHeight()),(xy[2]-xy[0])*(windowPt->getWidth()),(xy[3]-xy[1])*(windowPt->getHeight()));
 
         // Draw Axes Lines
         if(xyAxesOn) {
@@ -187,9 +187,8 @@ namespace GLPL {
 
     void Axes::drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans) {
         // Draw the shaded lines on the axes
-        float zDepth = 0.0;
+        float zDepth = 0.5;
         for(unsigned int i=0; i<shadedLines2D.size(); i++) {
-            zDepth += 1.0/((float)(shadedLines2D.size() + 1));
             shadedLines2D[i]->Draw(shader, axesLimitsViewportTrans, zDepth);
         }
     }
@@ -252,7 +251,7 @@ namespace GLPL {
         // Draws the number labelling for the major axes ticks
         // Set Uniform
         textShaderPt->Use();
-        glm::mat4 textProjection = glm::ortho(0.0f, (float)windowPt->getWidth(), 0.0f, (float)windowPt->getHeight());
+        /*glm::mat4 textProjection = glm::ortho(0.0f, (float)windowPt->getWidth(), 0.0f, (float)windowPt->getHeight());
         glUniformMatrix4fv(glGetUniformLocation(textShaderPt->Program,"textProjection"), 1, GL_FALSE, glm::value_ptr(axesViewportTrans*textProjection));
         // Draw Labels
         // x Axes
@@ -279,7 +278,7 @@ namespace GLPL {
             float y = (axesTicks[j*4+1]+1)/2.0 * windowPt->getHeight();
             // Draw Label
             axesTicksFont.RenderText(textShaderPt,ss.str(),x,y,fontScaling,glm::vec3(1.0f,1.0f,1.0f),3);
-        }
+        }*/
     }
 
     void Axes::updateAxesLimits(float xmin, float xmax, float ymin, float ymax,bool autoChange) {
@@ -435,7 +434,7 @@ namespace GLPL {
         // Get biggest range
         float xRange = (*dataMinMaxPt)[1] - (*dataMinMaxPt)[0];
         float yRange = (*dataMinMaxPt)[3] - (*dataMinMaxPt)[2];
-        float w = width*(float)(windowPt->getWidth());
+        /*float w = width*(float)(windowPt->getWidth());
         float h = height*(float)(windowPt->getHeight());
         if (xRange/w < yRange/h) {
             // Adjust xRange
@@ -449,7 +448,7 @@ namespace GLPL {
             double midY = ((*dataMinMaxPt)[2]+(*dataMinMaxPt)[3])/2.0;
             (*dataMinMaxPt)[2] = midY - (maxRange/2.0);
             (*dataMinMaxPt)[3] = midY + (maxRange/2.0);
-        }
+        }*/
 
     }
 

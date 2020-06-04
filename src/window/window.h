@@ -20,6 +20,7 @@
 
 // Project Includes
 #include "IWindow.h"
+#include "../rendering/IDrawable.h"
 
 
 namespace GLPL {
@@ -47,6 +48,10 @@ namespace GLPL {
 	    void setFrameless(bool framelessOn);
 	    void setAlwaysOnTop(bool alwaysOnTop);
 	    void setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+	    std::shared_ptr<ShaderSet> getShaderSet();
+	    ParentPointers getParentPointers();
+	    void updateStoredSize(int newWidth, int newHeight);
+	    void Draw();
 
 	private:
 	    // Functions
@@ -56,11 +61,16 @@ namespace GLPL {
 
 	    // Data
         GLFWwindow* window;
-	    int windowWidth;
-	    int windowHeight;
+	    int windowWidth;        // In Pixels
+	    int windowHeight;       // In Pixels
 	    std::array<GLfloat, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	    bool transparentBackground;
 	    bool focusOnShow;
+	    std::shared_ptr<glm::mat4> transformPt = std::make_shared<glm::mat4>(1.0f);
+	    std::shared_ptr<ShaderSet> shaderSetPt;
+
+	    // Children widgets
+	    std::vector<IDrawable> children;
 
         // Keys
         bool keys[1024];

@@ -31,7 +31,7 @@
 
 namespace GLPL {
 	// Character Structure
-	struct Character {
+	struct Character2 {
 		GLuint		TextureID;	// ID handle of the glyph texture
 		glm::ivec2	Size;		// size of glyph
 		glm::ivec2	Bearing;	// Offset from baseline to left/top of glyph
@@ -40,7 +40,7 @@ namespace GLPL {
 
 	class GLFont {
 	public:
-		std::map<GLchar, Character> Characters;
+		std::map<GLchar, Character2> Characters;
 		GLuint VAO, VBO;
 
 		GLFont(const GLchar* fontPath) {
@@ -85,10 +85,10 @@ namespace GLPL {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				// Store characters
-				Character character = {texture,glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                Character2 character = {texture,glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 										glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 										static_cast<unsigned int>(face->glyph->advance.x)};
-				this->Characters.insert(std::pair<GLchar, Character>(c,character));
+				this->Characters.insert(std::pair<GLchar, Character2>(c,character));
 			}
 			glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -149,7 +149,7 @@ namespace GLPL {
 
 			// Get Offsets Height
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Find y starting position
 					if(!firstRow) {
@@ -172,7 +172,7 @@ namespace GLPL {
 
 			// Draw glyphs
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Calculate offset
 					yoffset += ymax*1.25;
@@ -225,7 +225,7 @@ namespace GLPL {
 
 			// Get Offsets Height
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Find y starting position
 					if(!firstRow) {
@@ -247,7 +247,7 @@ namespace GLPL {
 
 			// Draw glyphs
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Calculate offset
 					yoffset += ymax*1.25;
@@ -303,7 +303,7 @@ namespace GLPL {
 
 			// Get Offsets Height
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Find y starting position
 					if(!firstRow) {
@@ -334,7 +334,7 @@ namespace GLPL {
 			// Draw glyphs
 			int i=0;
 			for(c=text.begin(); c != text.end(); c++) {
-				Character ch = this->Characters[*c];
+                Character2 ch = this->Characters[*c];
 				if(*c=='\n') {
 					// Increment row
 					i += 1;
@@ -393,7 +393,7 @@ namespace GLPL {
 
 				// Get Offsets Height
 				for(c=text.begin(); c != text.end(); c++) {
-					Character ch = this->Characters[*c];
+                    Character2 ch = this->Characters[*c];
 					if(*c=='\n') {
 						// Find y starting position
 						if(!firstRow) {
@@ -424,7 +424,7 @@ namespace GLPL {
 				// Draw glyphs
 				int i=0;
 				for(c=text.begin(); c != text.end(); c++) {
-					Character ch = this->Characters[*c];
+                    Character2 ch = this->Characters[*c];
 					if(*c=='\n') {
 						// Increment row
 						i += 1;

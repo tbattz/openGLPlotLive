@@ -31,7 +31,10 @@ namespace GLPL {
     }
 
     static void reDraw(GLFWwindow *window, int width, int height) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
         // Redraw window on resize
+        windowPt->updateStoredSize(width, height);
 
     }
 }
