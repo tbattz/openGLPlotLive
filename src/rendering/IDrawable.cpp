@@ -3,7 +3,6 @@
 //
 
 // GLM Mathematics
-#include <utility>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -12,31 +11,9 @@
 #include "transforms.h"
 
 
-GLPL::IDrawable::IDrawable(float x, float y, int widthPx, int heightPx) {
-    // Assuming the widget is the top level, no parent
-    this->isTopLevel = true;
+GLPL::IDrawable::IDrawable() {
 
-    // Set 1-to-1 transform for top level
-    parentTransform = std::make_shared<glm::mat4>(1.0f);
-
-    // Initialise data
-    IDrawable::setPosition(x, y);
-    IDrawable::setSizePx(widthPx, heightPx);
-    IDrawable::createAndSetupBuffers();
-}
-
-GLPL::IDrawable::IDrawable(float x, float y, float width, float height, ParentPointers parentPointers) {
-    // Assuming the widget is a child of another widget
-    this->isTopLevel = false;
-
-    // Only set shader and parent attributes if we aren't the top level
-    IDrawable::setParentInformation(parentPointers);
-
-    // Initialise data
-    IDrawable::setPosition(x, y);
-    IDrawable::setSize(width, height);
-    IDrawable::createAndSetupBuffers();
-}
+};
 
 std::array<float, 2> GLPL::IDrawable::getPosition() {
     return std::array<float, 2> {x, y};
@@ -86,81 +63,22 @@ void GLPL::IDrawable::drawBoundingBox() {
     //std::cout << overallTransform[0][0] << ", " << overallTransform[1][1] << ", " << overallTransform[2][2] << ", " << overallTransform[3][3] << std::endl;
 
     // Draw bounding box of children
-    for(unsigned int i=0; i < children.size(); i++) {
-        children[i]->drawBoundingBox();
+    for(auto & i : children) {
+        i->drawBoundingBox();
     }
 }
 
-void GLPL::IDrawable::setPosition(float newX, float newY) {
-    this->x = newX;
-    this->y = newY;
-    // Update Transforms
-    IDrawable::updateTransforms();
-}
+GLPL::ParentDimensions GLPL::IDrawable::createParentDimensions() {
+    ParentDimensions newParentDimensions({overallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
 
-void GLPL::IDrawable::setSize(float newWidth, float newHeight) {
-    if (isTopLevel) {
-        // Overwrite
-        this->width = 1.0f;
-        this->height = 1.0f;
-        std::cout << "IDrawable - This is the top level! Ignoring setting size" << std::endl;
-    } else {
-        // Update Size
-        this->width = newWidth;
-        this->height = newHeight;
-        // Update in pixels
-        this->widthPx = (int) this->width * (*parentWidthPx);
-        this->heightPx = (int) this->height * (*parentHeightPx);
-    }
-    // Update Transforms
-    IDrawable::updateTransforms();
-}
-
-void GLPL::IDrawable::setSizePx(int newWidthPx, int newHeightPx) {
-    this->widthPx = newWidthPx;
-    this->heightPx = newHeightPx;
-    if (!isTopLevel) {
-        // Update relative width, height to parent
-        this->width = (float)widthPx / (*parentWidthPx);
-        this->height = (float)heightPx / (*parentHeightPx);
-    }
-
-    // Update Transforms
-    IDrawable::updateTransforms();
-}
-
-void GLPL::IDrawable::setParentInformation(std::shared_ptr<glm::mat4> newParentTransform,
-                                           std::shared_ptr<int> newParentWidthPx,
-                                           std::shared_ptr<int> newParentHeightPx) {
-    this->parentWidthPx = std::move(newParentWidthPx);
-    this->parentHeightPx = std::move(newParentHeightPx);
-    this->parentTransform = std::move(newParentTransform);
-    IDrawable::updateTransforms();
-}
-
-void GLPL::IDrawable::setParentInformation(ParentPointers parentPointers) {
-    this->parentTransform = parentPointers.parentTransform;
-    this->parentWidthPx = parentPointers.parentWidthPx;
-    this->parentHeightPx = parentPointers.parentHeightPx;
-    this->shaderSetPt = parentPointers.shaderSet;
-    IDrawable::updateTransforms();
-    IDrawable::updateChildren();
-}
-
-GLPL::ParentPointers GLPL::IDrawable::createParentPointers() {
-    std::shared_ptr<int> newWidthPx = std::shared_ptr<int>(parentWidthPx);
-    std::shared_ptr<int> newHeightPx = std::shared_ptr<int>(parentHeightPx);
-    std::shared_ptr<glm::mat4> newOverallTransform = std::make_shared<glm::mat4>(overallTransform);
-    ParentPointers newParentPointers({newOverallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
-
-    return newParentPointers;
+    return newParentDimensions;
 }
 
 void GLPL::IDrawable::registerChild(std::shared_ptr<IDrawable> newChildPt) {
     children.push_back(newChildPt);
     // Update parent information for child
-    ParentPointers newParentPointers = IDrawable::createParentPointers();
-    children.back()->setParentInformation(newParentPointers);
+    ParentDimensions newParentDimensions = IDrawable::createParentDimensions();
+    children.back()->setParentDimensions(newParentDimensions);
 }
 
 void GLPL::IDrawable::createAndSetupBuffers() {
@@ -183,17 +101,15 @@ void GLPL::IDrawable::createAndSetupBuffers() {
 void GLPL::IDrawable::updateTransforms() {
     // Update the transforms
     this->viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
-    this->overallTransform = (*parentTransform) * viewportTransform;
-    std::cout << overallTransform[0][0] << ", " << overallTransform[1][1] << ", " << overallTransform[2][2] << ", " << overallTransform[3][3] << std::endl;
+    this->overallTransform = parentTransform * viewportTransform;
+
+    IDrawable::updateChildren();
 }
 
 void GLPL::IDrawable::updateChildren() {
     for(auto & i : children) {
         // Update parent information for child
-        std::shared_ptr<int> newWidthPx = std::shared_ptr<int>(parentWidthPx);
-        std::shared_ptr<int> newHeightPx = std::shared_ptr<int>(parentHeightPx);
-        std::shared_ptr<glm::mat4> newOverallTransform = std::make_shared<glm::mat4>(overallTransform);
-        i->setParentInformation(newOverallTransform, newWidthPx, newHeightPx);
+        i->setParentDimensions(overallTransform, parentWidthPx, parentHeightPx);
     }
 }
 

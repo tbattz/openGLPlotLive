@@ -7,13 +7,12 @@
 #include <utility>
 #include "inputCallbacks.h"
 
+
 namespace GLPL {
 
-    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) {
-        // Set window size
-        this->windowWidth = windowWidth;
-        this->windowHeight = windowHeight;
-        this->shaderSetPt = std::move(shaderSetPt);
+    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) :
+    TopLevelDrawable(0.0f, 0.0f, windowWidth, windowHeight) {
+        // Set window options
         this->transparentBackground = transparentBackground;
         this->focusOnShow = focusOnShow;
 
@@ -25,7 +24,6 @@ namespace GLPL {
 
         // Update Stored Size
         Window::updateStoredSize();
-
     }
 
     Window::~Window() {
@@ -53,7 +51,7 @@ namespace GLPL {
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Screen Properties
-        window = glfwCreateWindow(windowWidth,windowHeight,"openGLPlotLive",nullptr,nullptr);
+        window = glfwCreateWindow(getWidthPx(),getHeightPx(),"openGLPlotLive",nullptr,nullptr);
         glfwMakeContextCurrent(window);
 
         // Initialise GLAD
@@ -65,7 +63,7 @@ namespace GLPL {
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
 
         // Set viewport size
-        glViewport(0,0,windowWidth,windowHeight); // Origin is bottom left
+        glViewport(0,0,getWidthPx(),getHeightPx()); // Origin is bottom left
 
         // Test for objects in front of each other
         glEnable(GL_DEPTH_TEST);
@@ -85,9 +83,21 @@ namespace GLPL {
     void Window::updateStoredSize() {
         // Updates the stored window size used for scaling and
         // transformations with the current window size.
+        int windowWidth, windowHeight;
         glfwGetWindowSize(window,&windowWidth,&windowHeight);
         // Update Viewport Dimensions
         glViewport(0, 0, windowWidth, windowHeight);
+        // Update the stored size
+        TopLevelDrawable::setSize(windowWidth, windowHeight);
+    }
+
+    void Window::updateStoredSize(int newWidth, int newHeight) {
+        // Set new size
+        TopLevelDrawable::setSize((float)newWidth, (float)newHeight);
+        // Update children
+        for(unsigned int i = 0; i < children.size(); i++) {
+            this->children[i]->setParentDimensions(this->getParentDimensions());
+        }
     }
 
     void Window::initGLAD() {
@@ -144,14 +154,6 @@ namespace GLPL {
         glfwSwapBuffers(Window::getWindow());
     }
 
-    int Window::getWidth() {
-        return windowWidth;
-    }
-
-    int Window::getHeight() {
-        return windowHeight;
-    }
-
     void Window::setFrameless(bool framelessOn) {
         glfwSetWindowAttrib(window, GLFW_DECORATED, !framelessOn);
     }
@@ -168,26 +170,20 @@ namespace GLPL {
         return shaderSetPt;
     }
 
-    ParentPointers Window::getParentPointers() {
+    ParentDimensions Window::getParentDimensions() {
         // Create parent pointers
-        std::shared_ptr<int> parentWidthPx = std::make_shared<int>(windowWidth);
-        std::shared_ptr<int> parentHeightPx = std::make_shared<int>(windowHeight);
-        ParentPointers parentPointers = ParentPointers({transformPt, parentWidthPx, parentHeightPx, shaderSetPt});
+        ParentDimensions parentDimensions = ParentDimensions({transform, getWidthPx(), getHeightPx(), shaderSetPt});
 
-        return parentPointers;
-    }
-
-    void Window::updateStoredSize(int newWidth, int newHeight) {
-        this->windowWidth = newWidth;
-        this->windowHeight = newHeight;
-        // Update children
-        for(unsigned int i = 0; i < children.size(); i++) {
-            this->children[i].setParentInformation(this->getParentPointers());
-        }
+        return parentDimensions;
     }
 
     void Window::Draw() {
 
+    }
+
+    void Window::addPlot(const std::shared_ptr<IDrawable>& plotPt) {
+        // Store plot pointer
+        children.push_back(plotPt);
     }
 
 };

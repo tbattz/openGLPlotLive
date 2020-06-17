@@ -21,6 +21,8 @@
 // Project Includes
 #include "IWindow.h"
 #include "../rendering/IDrawable.h"
+#include "../plot/plot.h"
+#include "../rendering/TopLevelDrawable.h"
 
 
 namespace GLPL {
@@ -31,7 +33,7 @@ namespace GLPL {
 		#define FONTPATH "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf"
 	#endif
 
-	class Window : public IWindow {
+	class Window : public IWindow, TopLevelDrawable {
 	public:
 	    // Constructor
         Window(int windowWidth, int windowHeight, bool transparentBackground = GLFW_FALSE, bool focusOnShow = GLFW_FALSE);
@@ -43,15 +45,15 @@ namespace GLPL {
 	    GLFWwindow* getWindow();
 	    void preLoopDraw(bool clearBuffer);
 	    void postLoopDraw();
-	    int getWidth();
-	    int getHeight();
 	    void setFrameless(bool framelessOn);
 	    void setAlwaysOnTop(bool alwaysOnTop);
 	    void setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 	    std::shared_ptr<ShaderSet> getShaderSet();
-	    ParentPointers getParentPointers();
+	    ParentDimensions getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
 	    void Draw();
+
+	    void addPlot(const std::shared_ptr<IDrawable>& plotPt);
 
 	private:
 	    // Functions
@@ -60,17 +62,18 @@ namespace GLPL {
         void initGLAD();
 
 	    // Data
+	    // Base Window
         GLFWwindow* window;
-	    int windowWidth;        // In Pixels
-	    int windowHeight;       // In Pixels
+	    //int windowWidth;        // In Pixels
+	    //int windowHeight;       // In Pixels
 	    std::array<GLfloat, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	    bool transparentBackground;
 	    bool focusOnShow;
-	    std::shared_ptr<glm::mat4> transformPt = std::make_shared<glm::mat4>(1.0f);
+	    glm::mat4 transform = glm::mat4(1.0f);
 	    std::shared_ptr<ShaderSet> shaderSetPt;
 
 	    // Children widgets
-	    std::vector<IDrawable> children;
+        std::vector<std::shared_ptr<IDrawable>> children;
 
         // Keys
         bool keys[1024];

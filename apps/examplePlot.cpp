@@ -17,7 +17,7 @@
 #include "../src/window/window.h"
 #include "../src/lines/Line2DVecVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
-#include "../src/plot/plot2.h"
+#include "../src/plot/plot.h"
 
 
 int main(int argc, char **argv) {
@@ -110,8 +110,9 @@ int main(int argc, char **argv) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	std::shared_ptr<glm::mat4> parentTransform = std::make_shared<glm::mat4>(1.0f);
-	GLPL::Plot2 myplot2(0.0, 0.25, 0.75, 0.75, window2->getParentPointers());
+	std::shared_ptr<GLPL::Plot> myplot2 = std::make_shared<GLPL::Plot>(0.0, 0.25, 0.75, 0.75, window2->getParentDimensions());
+	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot2);
+	window2->addPlot(myPlotPt);
 	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 
 	// Create Lines
@@ -209,9 +210,9 @@ int main(int argc, char **argv) {
 
 		// Draw Plot
 		myplot.Draw();*/
-		myplot2.axesList[0]->setPosition(myplot2.axesList[0]->getLeft()+0.01, myplot2.axesList[0]->getBottom()+0.01);
-		myplot2.Draw();
-		myplot2.drawBoundingBox();
+		myplot2->axesList[0]->setPosition(myplot2->axesList[0]->getLeft() + 0.001, myplot2->axesList[0]->getBottom() + 0.001);
+		myplot2->Draw();
+		myplot2->drawBoundingBox();
 
 		// Post-loop draw
 		window2->postLoopDraw();

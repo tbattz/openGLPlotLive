@@ -8,9 +8,9 @@
 
 namespace GLPL {
 
-    TextString::TextString(std::string textString, float x, float y, float fontSize,
-                           ParentPointers parentPointers) :
-            IDrawable(x, y, 0.0f, 0.0f, std::move(parentPointers)) {
+    TextString::TextString(const std::string& textString, float x, float y, float fontSize,
+                           const ParentDimensions& parentDimensions) :
+            ConstantSizeDrawable(x, y, 0.0f, 0.0f, parentDimensions) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
@@ -26,13 +26,15 @@ namespace GLPL {
         textFontDimensions = characterLoader->getStringFontDimensions(textString);
 
         // Calculate text dimensions in pixels
-        IDrawable::setSizePx(fontPixelFactor[0] * textFontDimensions.width, fontPixelFactor[1] * textFontDimensions.height);
+        ConstantSizeDrawable::setSize(fontPixelFactor[0] * (float)textFontDimensions.width, fontPixelFactor[1] * (float)textFontDimensions.height);
 
         // Setup Buffers
         TextString::createAndSetupFontBuffers();
     }
 
     void TextString::Draw() {
+        // Update text attributes
+        TextString::updateTextDimensions();
         // Use text shader
         std::shared_ptr<Shader> shader = this->shaderSetPt->getTextShader();
         shader->Use();
@@ -112,11 +114,11 @@ namespace GLPL {
 
         // Convert font space to pixel space
         fontPixelFactor = characterLoader->getFontSpaceToPixelSpaceFactor(this->fontSize);
-        IDrawable::setSizePx((int)(fontPixelFactor[0] * (float)textFontDimensions.width),
-                             (int)(fontPixelFactor[1] * (float)textFontDimensions.height));
+        ConstantSizeDrawable::setSize((fontPixelFactor[0] * (float)textFontDimensions.width),
+                             (fontPixelFactor[1] * (float)textFontDimensions.height));
 
         // Convert pixel space to axes relative space
-        pixelRelativeFactor = glm::vec2(1./(*parentWidthPx), 1./(*parentHeightPx));
+        pixelRelativeFactor = glm::vec2(1./parentWidthPx, 1./parentHeightPx);
 
         // Generate Vertices
         TextString::generateVertices();
@@ -137,9 +139,6 @@ namespace GLPL {
         // Get largest negative y offset
         yOrigin = -textFontDimensions.yOffset;
 
-
-
-
         // Draw glyphs
         for(unsigned int i=0; i < textString.size(); i++) {
             // Get the corresponding character
@@ -152,18 +151,10 @@ namespace GLPL {
             h = (float)(ch.height);
 
             // Conversions - Normalise by font coordinate width and height
-            /*float xPosRel = (pixelRelativeFactor[0] * fontPixelFactor[0] * xPos) + x;
-            float wRel = pixelRelativeFactor[0] * fontPixelFactor[0] * w;
-            float yPosRel = (pixelRelativeFactor[1] * fontPixelFactor[1] * yPos) + y;
-            float hRel = pixelRelativeFactor[1] * fontPixelFactor[1] * h;*/
             float xPosRel = xPos/textFontDimensions.width;
             float wRel = w/textFontDimensions.width;
             float yPosRel = yPos/textFontDimensions.height;
             float hRel = h/textFontDimensions.height;
-
-            if (i < 1) {
-                std::cout << xPosRel << ", " << yPosRel << ", " << wRel << ", " << hRel << std::endl;
-            }
 
             // Calculate vertices for current character
             std::array<std::array<GLfloat, 4>, 6> vertices = {{
