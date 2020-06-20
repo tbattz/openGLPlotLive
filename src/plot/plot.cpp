@@ -18,7 +18,7 @@ namespace GLPL {
 
     }
 
-    Plot::Plot::~Plot() {
+    Plot::~Plot() {
 
     }
 
@@ -33,7 +33,7 @@ namespace GLPL {
         axesList.push_back(axesPt);
     }
 
-    void Plot::Plot::Draw() {
+    void Plot::Draw() {
         for(auto & i : children) {
             i->Draw();
         }

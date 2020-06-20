@@ -17,7 +17,6 @@
 #include "../src/window/window.h"
 #include "../src/lines/Line2DVecVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
-#include "../src/plot/plot.h"
 
 
 int main(int argc, char **argv) {
@@ -210,7 +209,7 @@ int main(int argc, char **argv) {
 
 		// Draw Plot
 		myplot.Draw();*/
-		myplot2->axesList[0]->setPosition(myplot2->axesList[0]->getLeft() + 0.001, myplot2->axesList[0]->getBottom() + 0.001);
+		//myplot2->axesList[0]->setPosition(myplot2->axesList[0]->getLeft() + 0.001, myplot2->axesList[0]->getBottom() + 0.001);
 		myplot2->Draw();
 		myplot2->drawBoundingBox();
 
