@@ -12,7 +12,7 @@ namespace GLPL {
     class ConstantSizeDrawable : public IDrawable {
     public:
         // Constructor
-        ConstantSizeDrawable(float x, float y, float width, float height, const ParentDimensions& parentDimensions);
+        ConstantSizeDrawable(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
         void setPosition(float newX, float newY);
@@ -20,7 +20,7 @@ namespace GLPL {
         void setParentDimensions(glm::mat4 newParentTransform,
                                  int newParentWidthPx,
                                  int newParentHeightPx);
-        void setParentDimensions(const ParentDimensions& parentDimensions);
+        void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
     };
 }
 

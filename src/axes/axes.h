@@ -14,7 +14,7 @@ namespace GLPL {
     class Axes : public ConstantScaleDrawable {
     public:
         // Constructor
-        Axes(float x, float y, float width, float height, const ParentDimensions& parentDimensions);
+        Axes(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
         void addText(const char* textString, float x, float y, float fontSize);

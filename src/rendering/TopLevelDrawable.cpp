@@ -42,7 +42,7 @@ void GLPL::TopLevelDrawable::setParentDimensions(glm::mat4 newParentTransform,
     updateTransforms();
 }
 
-void GLPL::TopLevelDrawable::setParentDimensions(const ParentDimensions& parentDimensions) {
+void GLPL::TopLevelDrawable::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
     // This is already the top level
     parentTransform = glm::mat4(1.0f);
     parentWidthPx = getWidthPx();

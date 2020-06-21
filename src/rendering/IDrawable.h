@@ -52,11 +52,11 @@ namespace GLPL {
         virtual void setParentDimensions(glm::mat4 newParentTransform,
                                   int newParentWidthPx,
                                   int newParentHeightPx) = 0;
-        virtual void setParentDimensions(const ParentDimensions& parentDimensions) = 0;
-        ParentDimensions createParentDimensions();
+        virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
+        std::shared_ptr<ParentDimensions> createParentDimensions();
 
         virtual void Draw() = 0;
-        void registerChild(std::shared_ptr<IDrawable> newChildPt);
+        void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
         void drawBoundingBox();
 
     protected:

@@ -2,14 +2,17 @@
 // Created by tbatt on 17/06/2020.
 //
 
+// Standard Includes
+#include <utility>
+
 #include "ConstantScaleDrawable.h"
 
 
 GLPL::ConstantScaleDrawable::ConstantScaleDrawable(float x, float y, float width, float height,
-        const ParentDimensions& parentDimensions) : IDrawable() {
+                                                   std::shared_ptr<ParentDimensions> parentDimensions) : IDrawable() {
     // Width and height are relative to their parent
     // Only set shader and parent attributes if we aren't the top level
-    ConstantScaleDrawable::setParentDimensions(parentDimensions);
+    ConstantScaleDrawable::setParentDimensions(std::move(parentDimensions));
 
     // Initialise data
     ConstantScaleDrawable::setPosition(x, y);
@@ -46,11 +49,11 @@ void GLPL::ConstantScaleDrawable::setParentDimensions(glm::mat4 newParentTransfo
     updateTransforms();
 }
 
-void GLPL::ConstantScaleDrawable::setParentDimensions(const ParentDimensions& parentDimensions) {
-    this->parentTransform = parentDimensions.parentTransform;
-    this->parentWidthPx = parentDimensions.parentWidthPx;
-    this->parentHeightPx = parentDimensions.parentHeightPx;
-    this->shaderSetPt = parentDimensions.shaderSet;
+void GLPL::ConstantScaleDrawable::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
+    this->parentTransform = parentDimensions->parentTransform;
+    this->parentWidthPx = parentDimensions->parentWidthPx;
+    this->parentHeightPx = parentDimensions->parentHeightPx;
+    this->shaderSetPt = parentDimensions->shaderSet;
     updateTransforms();
 }
 

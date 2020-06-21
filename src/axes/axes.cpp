@@ -2,6 +2,9 @@
 // Created by tbatt on 19/04/2020.
 //
 
+// Standard Includes
+
+// Project Includes
 #include "axes.h"
 
 
@@ -9,8 +12,8 @@
 namespace GLPL {
 
     Axes::Axes(float x, float y, float width, float height,
-               const ParentDimensions& parentDimensions) :
-            ConstantScaleDrawable(x, y, width, height, parentDimensions) {
+               std::shared_ptr<ParentDimensions> parentDimensions) :
+            ConstantScaleDrawable(x, y, width, height, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -23,7 +26,7 @@ namespace GLPL {
 
     void Axes::addText(const char* textString, float x, float y, float fontSize) {
         // Create Text String
-        ParentDimensions newParentPointers = IDrawable::createParentDimensions();
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         std::shared_ptr<IDrawable> textStringPt = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
         // Register Child
         Axes::registerChild(textStringPt);

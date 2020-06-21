@@ -170,9 +170,9 @@ namespace GLPL {
         return shaderSetPt;
     }
 
-    ParentDimensions Window::getParentDimensions() {
+    std::shared_ptr<ParentDimensions> Window::getParentDimensions() {
         // Create parent pointers
-        ParentDimensions parentDimensions = ParentDimensions({transform, getWidthPx(), getHeightPx(), shaderSetPt});
+        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, getWidthPx(), getHeightPx(), shaderSetPt});
 
         return parentDimensions;
     }

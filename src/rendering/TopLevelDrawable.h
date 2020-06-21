@@ -20,7 +20,7 @@ namespace GLPL {
         void setParentDimensions(glm::mat4 newParentTransform,
                                  int newParentWidthPx,
                                  int newParentHeightPx);
-        void setParentDimensions(const ParentDimensions& parentDimensions);
+        void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
 
 
     };

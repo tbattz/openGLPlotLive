@@ -17,7 +17,7 @@ namespace GLPL {
         // Plot contains sets of axes, labels and titles
     public:
         // Constructor
-        Plot(float x, float y, float width, float height, const ParentDimensions& parentDimensions);
+        Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
         // Destructor
         ~Plot();
 

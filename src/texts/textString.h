@@ -21,7 +21,7 @@ namespace GLPL {
     class TextString : public ConstantSizeDrawable {
     public:
         // Constructor
-        TextString(const std::string& textString, float x, float y, float fontSize, const ParentDimensions& parentDimensions);
+        TextString(const std::string& textString, float x, float y, float fontSize, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
         void Draw();

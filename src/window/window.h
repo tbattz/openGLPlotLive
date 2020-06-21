@@ -49,7 +49,7 @@ namespace GLPL {
 	    void setAlwaysOnTop(bool alwaysOnTop);
 	    void setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 	    std::shared_ptr<ShaderSet> getShaderSet();
-	    ParentDimensions getParentDimensions();
+	    std::shared_ptr<ParentDimensions> getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
 	    void Draw();
 

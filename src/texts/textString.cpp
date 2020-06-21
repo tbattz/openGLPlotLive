@@ -2,15 +2,18 @@
 // Created by tbatt on 19/04/2020.
 //
 
+// Standard Includes
+#include <utility>
+
+// Project Includes
 #include "textString.h"
 
-#include <utility>
 
 namespace GLPL {
 
     TextString::TextString(const std::string& textString, float x, float y, float fontSize,
-                           const ParentDimensions& parentDimensions) :
-            ConstantSizeDrawable(x, y, 0.0f, 0.0f, parentDimensions) {
+                           std::shared_ptr<ParentDimensions> parentDimensions) :
+            ConstantSizeDrawable(x, y, 0.0f, 0.0f, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);

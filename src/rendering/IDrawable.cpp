@@ -68,16 +68,16 @@ void GLPL::IDrawable::drawBoundingBox() {
     }
 }
 
-GLPL::ParentDimensions GLPL::IDrawable::createParentDimensions() {
-    ParentDimensions newParentDimensions({overallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
+std::shared_ptr<GLPL::ParentDimensions> GLPL::IDrawable::createParentDimensions() {
+    std::shared_ptr<ParentDimensions> newParentDimensions = std::make_shared<GLPL::ParentDimensions>(ParentDimensions{overallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
 
     return newParentDimensions;
 }
 
-void GLPL::IDrawable::registerChild(std::shared_ptr<IDrawable> newChildPt) {
+void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt) {
     children.push_back(newChildPt);
     // Update parent information for child
-    ParentDimensions newParentDimensions = IDrawable::createParentDimensions();
+    std::shared_ptr<ParentDimensions> newParentDimensions = IDrawable::createParentDimensions();
     children.back()->setParentDimensions(newParentDimensions);
 }
 

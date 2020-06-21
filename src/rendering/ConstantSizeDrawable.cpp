@@ -2,15 +2,20 @@
 // Created by tbatt on 17/06/2020.
 //
 
+// Standard Includes
+#include <utility>
+
+// Project Includes
 #include "ConstantSizeDrawable.h"
 
+
 GLPL::ConstantSizeDrawable::ConstantSizeDrawable(float x, float y, float width, float height,
-                                                 const GLPL::ParentDimensions &parentDimensions) :
+                                                 std::shared_ptr<ParentDimensions> parentDimensions) :
                                                  IDrawable() {
     // Width and height are in pixels
 
     // Only set shader and parent attributes if we aren't the top level
-    ConstantSizeDrawable::setParentDimensions(parentDimensions);
+    ConstantSizeDrawable::setParentDimensions(std::move(parentDimensions));
 
     // Initialise data
     ConstantSizeDrawable::setPosition(x, y);
@@ -49,11 +54,11 @@ void GLPL::ConstantSizeDrawable::setParentDimensions(glm::mat4 newParentTransfor
     updateTransforms();
 }
 
-void GLPL::ConstantSizeDrawable::setParentDimensions(const ParentDimensions& parentDimensions) {
-    this->parentTransform = parentDimensions.parentTransform;
-    this->parentWidthPx = parentDimensions.parentWidthPx;
-    this->parentHeightPx = parentDimensions.parentHeightPx;
-    this->shaderSetPt = parentDimensions.shaderSet;
+void GLPL::ConstantSizeDrawable::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
+    this->parentTransform = parentDimensions->parentTransform;
+    this->parentWidthPx = parentDimensions->parentWidthPx;
+    this->parentHeightPx = parentDimensions->parentHeightPx;
+    this->shaderSetPt = parentDimensions->shaderSet;
     // When the parent size changes, the relative size of this widget needs to be recalculated, to keep the same pixel size
     ConstantSizeDrawable::setSize((float)getWidthPx(), (float)getHeightPx());
     updateTransforms();
