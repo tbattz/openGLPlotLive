@@ -6,8 +6,9 @@
 #define OPENGLPLOTLIVE_PROJ_IDRAWABLE_H
 
 // Standard Includes
-#include <array>
 #include <vector>
+#include <unordered_map>
+#include <algorithm>
 
 // GLAD - Multi Language GL Loader-Generator
 #include <glad/glad.h>
@@ -57,6 +58,7 @@ namespace GLPL {
 
         virtual void Draw() = 0;
         void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
+        void removeChild(const std::shared_ptr<IDrawable>& childPt);
         void drawBoundingBox();
 
     protected:

@@ -23,13 +23,14 @@ namespace GLPL {
 
         // Functions
         void addAxes(float x, float y, float width, float height);
+        std::shared_ptr<Axes> getAxes(unsigned int axesId);
+        void removeAxes(unsigned int axesId);
         void Draw();
 
-    //private:
+    private:
         // Axes
-        std::vector<std::shared_ptr<Axes>> axesList;
-
-
+        unsigned int axesCount = 0;
+        std::unordered_map<unsigned int, std::shared_ptr<Axes>> axesMap;
 
     };
 

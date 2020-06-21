@@ -2,9 +2,6 @@
 // Created by tbatt on 19/04/2020.
 //
 
-// Standard Includes
-#include <utility>
-
 // Project Includes
 #include "plot.h"
 
@@ -34,7 +31,29 @@ namespace GLPL {
         std::shared_ptr<Axes> axesPt = std::dynamic_pointer_cast<Axes>(axes);
         Plot::registerChild(axes);
         // Store axes
-        axesList.push_back(axesPt);
+        axesMap.insert(std::pair<unsigned int, std::shared_ptr<Axes>>(axesCount, axesPt));
+        axesCount += 1;
+    }
+
+    std::shared_ptr<Axes> Plot::getAxes(unsigned int axesId) {
+        if (axesMap.count(axesId) > 0) {
+            return axesMap.at(axesId);
+        } else {
+            std::cout << "Axes " << axesId << " does not exist!" << std::endl;
+            return nullptr;
+        }
+    }
+
+    void Plot::removeAxes(unsigned int axesId) {
+        if (axesMap.count(axesId) > 0) {
+            std::shared_ptr<Axes> axes2Remove = axesMap.at(axesId);
+            // Remove child
+            IDrawable::removeChild(axes2Remove);
+            // Remove axes
+            axesMap.erase(axesId);
+        } else {
+            std::cout << "Cannot remove Axes " << axesId << ", axes does not exist!" << std::endl;
+        }
     }
 
     void Plot::Draw() {

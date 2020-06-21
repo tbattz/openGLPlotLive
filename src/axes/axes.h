@@ -18,11 +18,15 @@ namespace GLPL {
 
         // Functions
         void addText(const char* textString, float x, float y, float fontSize);
+        std::shared_ptr<TextString> getText(unsigned int textStringId);
+        void removeTextString(unsigned int textStringId);
         void Draw();
 
     private:
         // Data
-        std::vector<std::shared_ptr<TextString>> textStringList;
+        // Text String
+        unsigned int textStringCount = 0;
+        std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
     };
 }
 

@@ -209,9 +209,12 @@ int main(int argc, char **argv) {
 
 		// Draw Plot
 		myplot.Draw();*/
-		//myplot2->axesList[0]->setPosition(myplot2->axesList[0]->getLeft() + 0.001, myplot2->axesList[0]->getBottom() + 0.001);
+		std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
+        axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
 		myplot2->Draw();
+		//myplot2->removeAxes(0);
 		myplot2->drawBoundingBox();
+		// TODO - Convert children vector to set, automatic ordering given the function
 
 		// Post-loop draw
 		window2->postLoopDraw();

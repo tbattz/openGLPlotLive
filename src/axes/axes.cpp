@@ -27,12 +27,34 @@ namespace GLPL {
     void Axes::addText(const char* textString, float x, float y, float fontSize) {
         // Create Text String
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
-        std::shared_ptr<IDrawable> textStringPt = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
         // Register Child
-        Axes::registerChild(textStringPt);
+        std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
+        std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
+        Axes::registerChild(textStringObj);
         // Store Text String
-        std::shared_ptr<TextString> textStringPt2 = std::dynamic_pointer_cast<TextString>(textStringPt);
-        textStringList.push_back(textStringPt2);
+        textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, textStringPt));
+        textStringCount += 1;
+    }
+
+    std::shared_ptr<TextString> Axes::getText(unsigned int textStringId) {
+        if (textStringMap.count(textStringId) > 0) {
+            return textStringMap.at(textStringId);
+        } else {
+            std::cout << "TextString " << textStringId << " does not exist!" << std::endl;
+            return nullptr;
+        }
+    }
+
+    void Axes::removeTextString(unsigned int textStringId) {
+        if (textStringMap.count(textStringId) > 0) {
+            std::shared_ptr<TextString> textString2Remove = textStringMap.at(textStringId);
+            // Remove child
+            IDrawable::removeChild(textString2Remove);
+            // Remove axes
+            textStringMap.erase(textStringId);
+        } else {
+            std::cout << "Cannot remove Axes " << textStringId << ", axes does not exist!" << std::endl;
+        }
     }
 
     void Axes::Draw() {
@@ -41,4 +63,6 @@ namespace GLPL {
         }
 
     }
+
+
 }

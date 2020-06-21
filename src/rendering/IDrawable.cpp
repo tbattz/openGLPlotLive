@@ -81,6 +81,11 @@ void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt
     children.back()->setParentDimensions(newParentDimensions);
 }
 
+void GLPL::IDrawable::removeChild(const std::shared_ptr<IDrawable>& childPt) {
+    // Remove a child by value
+    children.erase(std::remove(children.begin(), children.end(), childPt), children.end());
+}
+
 void GLPL::IDrawable::createAndSetupBuffers() {
     // Create Buffers
     glGenVertexArrays(1,&VAO);
