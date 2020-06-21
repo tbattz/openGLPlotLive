@@ -68,6 +68,15 @@ void GLPL::IDrawable::drawBoundingBox() {
     }
 }
 
+int GLPL::IDrawable::getZDepthValue() {
+    return zDepthValue;
+}
+
+void GLPL::IDrawable::setZDepthValue(int newZDepthValue) {
+    // Set value
+    zDepthValue = newZDepthValue;
+}
+
 std::shared_ptr<GLPL::ParentDimensions> GLPL::IDrawable::createParentDimensions() {
     std::shared_ptr<ParentDimensions> newParentDimensions = std::make_shared<GLPL::ParentDimensions>(ParentDimensions{overallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
 
@@ -75,10 +84,13 @@ std::shared_ptr<GLPL::ParentDimensions> GLPL::IDrawable::createParentDimensions(
 }
 
 void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt) {
-    children.push_back(newChildPt);
     // Update parent information for child
     std::shared_ptr<ParentDimensions> newParentDimensions = IDrawable::createParentDimensions();
-    children.back()->setParentDimensions(newParentDimensions);
+    newChildPt->setParentDimensions(newParentDimensions);
+    // Store child
+    children.push_back(newChildPt);
+    // Resort children
+    IDrawable::sortChildren();
 }
 
 void GLPL::IDrawable::removeChild(const std::shared_ptr<IDrawable>& childPt) {
@@ -118,12 +130,15 @@ void GLPL::IDrawable::updateChildren() {
     }
 }
 
+void GLPL::IDrawable::sortChildren() {
+    if (!std::is_sorted(children.begin(), children.end(), IDrawable::compareZDepthValue)) {
+        std::sort(children.begin(), children.end(), IDrawable::compareZDepthValue);
+    }
+}
 
-
-
-
-
-
+bool GLPL::IDrawable::compareZDepthValue(const std::shared_ptr<IDrawable>& left, const std::shared_ptr<IDrawable>& right) {
+    return left->getZDepthValue() < right->getZDepthValue();
+}
 
 
 

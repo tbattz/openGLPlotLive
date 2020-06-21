@@ -15,6 +15,7 @@
 
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
+#include <set>
 
 // Project Includes
 #include "transforms.h"
@@ -60,6 +61,8 @@ namespace GLPL {
         void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
         void removeChild(const std::shared_ptr<IDrawable>& childPt);
         void drawBoundingBox();
+        void setZDepthValue(int newZDepthValue);
+        int getZDepthValue();
 
     protected:
         // Dimensions
@@ -72,6 +75,7 @@ namespace GLPL {
         // Parent Dimensions
         int parentWidthPx = 0;    // Parent width in pixels
         int parentHeightPx = 0;   // Parent height in pixels
+        int zDepthValue = 0;      // The z buffer value
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables
@@ -92,6 +96,8 @@ namespace GLPL {
         void createAndSetupBuffers();
         void updateTransforms();
         void updateChildren();
+        void sortChildren();
+        static bool compareZDepthValue(const std::shared_ptr<IDrawable>& left, const std::shared_ptr<IDrawable>& right);
 
     };
 }

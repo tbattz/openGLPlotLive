@@ -57,6 +57,9 @@ namespace GLPL {
     }
 
     void Plot::Draw() {
+        // Sort children if required
+        IDrawable::sortChildren();
+        // Draw children
         for(auto & i : children) {
             i->Draw();
         }

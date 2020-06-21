@@ -21,7 +21,12 @@ namespace GLPL {
         // TODO - Remove text string creation
         //Axes2::addText("Test String", 0.1, 0.8, 50);
         Axes::addText("Test String", 0.0, 0.0, 50);
+        Axes::addText("2nd Test String", 0.0, 0.8, 25);
+        Axes::addText("3rd Test String", 0.0, 0.4, 25);
 
+        this->getText(0)->setZDepthValue(0);
+        this->getText(1)->setZDepthValue(10);
+        this->getText(2)->setZDepthValue(-10);
     }
 
     void Axes::addText(const char* textString, float x, float y, float fontSize) {
@@ -58,11 +63,12 @@ namespace GLPL {
     }
 
     void Axes::Draw() {
+        // Sort children if required
+        IDrawable::sortChildren();
+        // Draw children
         for(auto & i : children) {
             i->Draw();
         }
-
     }
-
 
 }
