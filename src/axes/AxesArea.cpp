@@ -14,6 +14,13 @@ namespace GLPL {
         // Set bounding box color
         boundingBoxColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
+        AxesArea::setParentDimensions(std::move(parentDimensions));
+
+        // Initialise data
+        AxesArea::setPosition(x, y);
+        AxesArea::setSize(width, height);
+        IDrawable::createAndSetupBuffers();
+
         // Calculate transform
         AxesArea::updateAxesViewportTransform();
     }
