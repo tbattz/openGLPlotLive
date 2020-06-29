@@ -10,7 +10,7 @@
 namespace GLPL {
 
     AxesArea::AxesArea(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions) :
-        ConstantScaleDrawable(x, y, width, height, std::move(parentDimensions)) {
+        IDrawable() {
         // Set bounding box color
         boundingBoxColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -20,7 +20,6 @@ namespace GLPL {
 
     void AxesArea::Draw() {
         // Scissor Test
-        std::cout << xPx << ", " << yPx << ", " << widthPx << ", " << heightPx << std::endl;
         glEnable(GL_SCISSOR_TEST);
         glScissor(xPx, yPx, widthPx, heightPx);
 
@@ -96,19 +95,68 @@ namespace GLPL {
     }
 
     void AxesArea::setPosition(float newX, float newY) {
-        ConstantScaleDrawable::setPosition(newX, newY);
+        // Set position
+        this->x = newX;
+        this->y = newY;
+        // Set position in pixels
+        IDrawable::updatePositionPx();
+        // Update Transforms
+        IDrawable::updateTransforms();
         AxesArea::updateAxesViewportTransform();
+        // Update Children
+        IDrawable::updateChildren();
     }
 
     void AxesArea::setSize(float newWidth, float newHeight) {
-        ConstantScaleDrawable::setSize(newWidth, newHeight);
+        // New width and height relative to their parent
+        // Update size
+        this->width = newWidth;
+        this->height = newHeight;
+        // Update in pixels
+        updateSizePx();
+        // Update Transforms
+        IDrawable::updateTransforms();
         AxesArea::updateAxesViewportTransform();
+        // Update Children
+        this->updateChildren();
     }
 
-    void AxesArea::updateChildren() {
-        IDrawable::updateChildren();
-        // Update plotable with axes transforms
-        this->updateAxesViewportTransform();
+    void GLPL::AxesArea::updateSizePx() {
+        this->widthPx = (int) (this->width * (float)parentWidthPx);
+        this->heightPx = (int) (this->height * (float)parentHeightPx);
+    }
+
+    void GLPL::AxesArea::setParentDimensions(glm::mat4 newParentTransform,
+                                                          int newParentXPx,
+                                                          int newParentYPx,
+                                                          int newParentWidthPx,
+                                                          int newParentHeightPx) {
+        this->parentXPx = newParentXPx;
+        this->parentYPx = newParentYPx;
+        this->parentWidthPx = newParentWidthPx;
+        this->parentHeightPx = newParentHeightPx;
+        this->parentTransform = newParentTransform;
+        updatePositionPx();
+        updateSizePx();
+        updateTransforms();
+        AxesArea::updateAxesViewportTransform();
+        // Update Children
+        updateChildren();
+    }
+
+    void GLPL::AxesArea::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
+        this->parentTransform = parentDimensions->parentTransform;
+        this->parentXPx = parentDimensions->parentXPx;
+        this->parentYPx = parentDimensions->parentYPx;
+        this->parentWidthPx = parentDimensions->parentWidthPx;
+        this->parentHeightPx = parentDimensions->parentHeightPx;
+        this->shaderSetPt = parentDimensions->shaderSet;
+        updatePositionPx();
+        updateSizePx();
+        updateTransforms();
+        AxesArea::updateAxesViewportTransform();
+        // Update Children
+        updateChildren();
     }
 
     glm::mat4 AxesArea::scale2AxesLimits() {
