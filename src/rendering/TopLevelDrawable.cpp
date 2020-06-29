@@ -19,6 +19,8 @@ void GLPL::TopLevelDrawable::setPosition(float newX, float newY) {
     this->y = newY;
     // Update Transforms
     IDrawable::updateTransforms();
+    // Update Children
+    updateChildren();
 }
 
 void GLPL::TopLevelDrawable::setSize(float newWidth, float newHeight) {
@@ -30,16 +32,24 @@ void GLPL::TopLevelDrawable::setSize(float newWidth, float newHeight) {
     this->heightPx = (int)newHeight;
     // Update Transforms;
     IDrawable::updateTransforms();
+    // Update Children
+    updateChildren();
 }
 
 void GLPL::TopLevelDrawable::setParentDimensions(glm::mat4 newParentTransform,
+                                          int newParentXPx,
+                                          int newParentYPx,
                                           int newParentWidthPx,
                                           int newParentHeightPx) {
     // This is already the top level
     parentTransform = glm::mat4(1.0f);
+    parentXPx = 0.0;                    // Always zero as this is the top level
+    parentYPx = 0.0;                    // Always zero as this is the top level
     parentWidthPx = getWidthPx();
     parentHeightPx = getHeightPx();
     updateTransforms();
+    // Update Children
+    updateChildren();
 }
 
 void GLPL::TopLevelDrawable::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {

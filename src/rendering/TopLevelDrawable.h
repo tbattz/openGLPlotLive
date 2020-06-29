@@ -18,6 +18,8 @@ namespace GLPL {
         void setPosition(float newX, float newY);
         void setSize(float newWidth, float newHeight);
         void setParentDimensions(glm::mat4 newParentTransform,
+                                 int newParentXPx,
+                                 int newParentYPx,
                                  int newParentWidthPx,
                                  int newParentHeightPx);
         void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);

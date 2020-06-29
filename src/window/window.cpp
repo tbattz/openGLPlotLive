@@ -88,7 +88,11 @@ namespace GLPL {
         // Update Viewport Dimensions
         glViewport(0, 0, windowWidth, windowHeight);
         // Update the stored size
-        TopLevelDrawable::setSize(windowWidth, windowHeight);
+        TopLevelDrawable::setSize((float)windowWidth, (float)windowHeight);
+        // Update children
+        for(unsigned int i = 0; i < children.size(); i++) {
+            this->children[i]->setParentDimensions(this->getParentDimensions());
+        }
     }
 
     void Window::updateStoredSize(int newWidth, int newHeight) {
@@ -98,6 +102,10 @@ namespace GLPL {
         for(unsigned int i = 0; i < children.size(); i++) {
             this->children[i]->setParentDimensions(this->getParentDimensions());
         }
+    }
+
+    void Window::updateSizePx() {
+
     }
 
     void Window::initGLAD() {
@@ -172,7 +180,7 @@ namespace GLPL {
 
     std::shared_ptr<ParentDimensions> Window::getParentDimensions() {
         // Create parent pointers
-        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, getWidthPx(), getHeightPx(), shaderSetPt});
+        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, 0.0, 0.0, getWidthPx(), getHeightPx(), shaderSetPt});
 
         return parentDimensions;
     }

@@ -1,9 +1,15 @@
-# Try and find sphinx-build
-find_program(SPHINX_EXECUTABLE
-             NAMES sphinx-build
-             DOC "Path to sphinx-build exectuable")
+if (UNIX)
+    set(SPHINX_EXECUTABLE /usr/local/bin/sphinx-build)
 
-include(FindPackageHandleStandardArgs)
+elseif(LINUX)
+    # Try and find sphinx-build
+    find_program(SPHINX_EXECUTABLE
+            NAMES sphinx-build
+            DOC "Path to sphinx-build exectuable")
 
-# Handle standard arguments for find_package
-find_package_handle_standard_args(Sphinx "Failed to find sphinx-build executable" SPHINX_EXECUTABLE)
+    include(FindPackageHandleStandardArgs)
+
+    # Handle standard arguments for find_package
+    find_package_handle_standard_args(Sphinx "Failed to find sphinx-build executable" SPHINX_EXECUTABLE)
+endif()
+message("-- SPHINX: " ${SPHINX_EXECUTABLE})

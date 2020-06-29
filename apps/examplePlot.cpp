@@ -104,6 +104,16 @@ int main(int argc, char **argv) {
         yVec10.push_back(5 - 0.25*pow(i/500.0, 2));
     }
 
+    // Graph 11
+    std::vector<float> xVec11;
+    std::vector<float> yVec11;
+    xVec11.reserve(2000);
+    yVec11.reserve(2000);
+    for(int i=-2000; i<1501; i++) {
+        xVec11.push_back(i/1000.0);
+        yVec11.push_back(i/1000.0);
+    }
+
 
 	/* ======================================================
 	 *                	    Create Plot
@@ -149,6 +159,9 @@ int main(int argc, char **argv) {
     myplot.addShadedLine(shaded9);
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);*/
+
+    std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
+    axesPt->addLine(&xVec11, &yVec11);
 
 
 	/* ======================================================

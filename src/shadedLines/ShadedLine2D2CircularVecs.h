@@ -17,14 +17,15 @@ namespace GLPL {
         // This operates similar to a circular buffer.
     public:
         /* Constructor */
-        ShadedLine2D2CircularVecs(std::vector<float>* dataPtX, std::vector<float>* dataPtY, GLenum mode = GL_TRIANGLES);
+        ShadedLine2D2CircularVecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                  std::shared_ptr<ParentDimensions> parentDimensions, GLenum mode = GL_TRIANGLES);
 
         /* Destructor */
         ~ShadedLine2D2CircularVecs();
 
         /* Functions */
         void updateInternalData(unsigned int currIndex);
-        void Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth);
+        void Draw();
         std::vector<float> getMinMax();
 
     private:

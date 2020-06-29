@@ -26,6 +26,8 @@ namespace GLPL {
 
     struct ParentDimensions {
         glm::mat4 parentTransform;
+        int parentXPx;
+        int parentYPx;
         int parentWidthPx;
         int parentHeightPx;
         std::shared_ptr<ShaderSet> shaderSet;
@@ -50,10 +52,13 @@ namespace GLPL {
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;
+        virtual void updateSizePx() = 0;
         // Parent Dimension Functions
         virtual void setParentDimensions(glm::mat4 newParentTransform,
-                                  int newParentWidthPx,
-                                  int newParentHeightPx) = 0;
+                                         int newParentXPx,
+                                         int newParentYPx,
+                                         int newParentWidthPx,
+                                         int newParentHeightPx) = 0;
         virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
         std::shared_ptr<ParentDimensions> createParentDimensions();
 
@@ -68,11 +73,15 @@ namespace GLPL {
         // Dimensions
         float x = 0;			// Location of bottom left corner x position of the drawable relative to its parent in 0 to 1
         float y = 0;			// Location of bottom left corner y position of the drawable relative to its parent in 0 to 1
+        int xPx = 0;            // Location of bottom left corner x position of the drawable, in pixels
+        int yPx = 0;            // Location of bottom left corner y position of the drawable, in pixels
         float width = 1.0;      // Width of drawable as a proportion of the parents width
         float height = 1.0;		// Height of drawable as a proportion of the parents height
         int widthPx = 0;        // Width in pixels
         int heightPx = 0;       // Height in pixels
         // Parent Dimensions
+        int parentXPx = 0;        // Parent x location in pixels
+        int parentYPx = 0;        // Parent y location in pixels
         int parentWidthPx = 0;    // Parent width in pixels
         int parentHeightPx = 0;   // Parent height in pixels
         int zDepthValue = 0;      // The z buffer value
@@ -95,6 +104,7 @@ namespace GLPL {
         // Functions
         void createAndSetupBuffers();
         void updateTransforms();
+        void updatePositionPx();
         void updateChildren();
         void sortChildren();
         static bool compareZDepthValue(const std::shared_ptr<IDrawable>& left, const std::shared_ptr<IDrawable>& right);

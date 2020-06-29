@@ -18,7 +18,7 @@ namespace GLPL {
     #ifdef _WIN32
         #define FONTPATH "C:/Windows/Fonts/Arial.ttf"
     #elif __linux__
-        #define FONTPATH "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf"
+        #define FONTPATH "/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf"
     #endif
 
     // Contains the shaders for plotting

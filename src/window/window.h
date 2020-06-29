@@ -30,7 +30,7 @@ namespace GLPL {
 	#ifdef _WIN32
 		#define FONTPATH "C:/Windows/Fonts/Arial.ttf"
 	#elif __linux__
-		#define FONTPATH "/usr/share/fonts/truetype/abyssinica/AbyssinicaSIL-R.ttf"
+		#define FONTPATH "/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf"
 	#endif
 
 	class Window : public IWindow, TopLevelDrawable {
@@ -51,6 +51,7 @@ namespace GLPL {
 	    std::shared_ptr<ShaderSet> getShaderSet();
 	    std::shared_ptr<ParentDimensions> getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
+	    void updateSizePx();
 	    void Draw();
 
 	    void addPlot(const std::shared_ptr<IDrawable>& plotPt);
@@ -71,9 +72,6 @@ namespace GLPL {
 	    bool focusOnShow;
 	    glm::mat4 transform = glm::mat4(1.0f);
 	    std::shared_ptr<ShaderSet> shaderSetPt;
-
-	    // Children widgets
-        std::vector<std::shared_ptr<IDrawable>> children;
 
         // Keys
         bool keys[1024];

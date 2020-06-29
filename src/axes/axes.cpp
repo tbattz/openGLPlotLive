@@ -19,18 +19,32 @@ namespace GLPL {
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 
         // TODO - Remove text string creation
-        //Axes2::addText("Test String", 0.1, 0.8, 50);
-        Axes::addText("Test String", 0.0, 0.0, 50);
-        Axes::addText("2nd Test String", 0.0, 0.8, 25);
-        Axes::addText("3rd Test String", 0.0, 0.4, 25);
+        Axes::addText("Test String", 0.0, 0.0, 10);
+        Axes::addText("2nd Test String", 0.0, 0.8, 15);
+        Axes::addText("3rd Test String", 0.0, 0.4, 15);
 
         this->getText(0)->setZDepthValue(0);
         this->getText(1)->setZDepthValue(10);
         this->getText(2)->setZDepthValue(-10);
+
+        // Add axes area
+        Axes::createAxesArea();
+
+    }
+
+    void Axes::createAxesArea() {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Register Child
+        std::shared_ptr<IDrawable> axesAreaObj = std::make_shared<AxesArea>(0.2, 0.2, 0.6, 0.6, newParentPointers);
+        std::shared_ptr<AxesArea> axesAreaPt = std::dynamic_pointer_cast<AxesArea>(axesAreaObj);
+        Axes::registerChild(axesAreaObj);
+        // Store Text String
+        this->axesArea = axesAreaPt;
     }
 
     void Axes::addText(const char* textString, float x, float y, float fontSize) {
-        // Create Text String
+        // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
         std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
@@ -58,7 +72,7 @@ namespace GLPL {
             // Remove axes
             textStringMap.erase(textStringId);
         } else {
-            std::cout << "Cannot remove Axes " << textStringId << ", axes does not exist!" << std::endl;
+            std::cout << "Cannot remove TextString " << textStringId << ", TextString does not exist!" << std::endl;
         }
     }
 
@@ -69,6 +83,10 @@ namespace GLPL {
         for(auto & i : children) {
             i->Draw();
         }
+    }
+
+    void Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY) {
+        axesArea->addLine(dataPtX, dataPtY);
     }
 
 }

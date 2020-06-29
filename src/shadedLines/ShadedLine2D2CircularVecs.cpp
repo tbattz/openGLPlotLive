@@ -11,7 +11,9 @@
 #include "ShadedLine2D2CircularVecs.h"
 
 namespace GLPL {
-    ShadedLine2D2CircularVecs::ShadedLine2D2CircularVecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY, GLenum mode) {
+    ShadedLine2D2CircularVecs::ShadedLine2D2CircularVecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                                         std::shared_ptr<ParentDimensions> parentDimensions,
+                                                         GLenum mode) : IShadedLine2D(std::move(parentDimensions)) {
         this->dataPtX = dataPtX;
         this->dataPtY = dataPtY;
         this->setMode(mode);
@@ -20,7 +22,7 @@ namespace GLPL {
         updateInternalData(0);
         int vertDataSizeBytes = internalData.size()*sizeof(internalData[0]);
         int indicesDataSizeBytes = internalIndices.size()*sizeof(internalIndices[0]);
-        createAndSetupBuffers(&VAO, &VBO, &EBO, vertDataSizeBytes, indicesDataSizeBytes,
+        createAndSetupBuffers(vertDataSizeBytes, indicesDataSizeBytes,
                 &internalData[0], &internalIndices[0], 2*sizeof(internalData[0]));
     }
 
@@ -73,7 +75,7 @@ namespace GLPL {
         updated = true;
     }
 
-    void ShadedLine2D2CircularVecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth) {
+    void ShadedLine2D2CircularVecs::Draw() {
         // Check if the number of points changed
         if (updated) {
             nIndices = internalIndices.size();
@@ -88,7 +90,7 @@ namespace GLPL {
         }
 
         // Draw plot
-        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nIndices, zDepth, getMode());
+        drawData(nIndices);
     }
 
     std::vector<float> ShadedLine2D2CircularVecs::getMinMax() {

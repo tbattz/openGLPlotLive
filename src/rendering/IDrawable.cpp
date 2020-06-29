@@ -78,7 +78,7 @@ void GLPL::IDrawable::setZDepthValue(int newZDepthValue) {
 }
 
 std::shared_ptr<GLPL::ParentDimensions> GLPL::IDrawable::createParentDimensions() {
-    std::shared_ptr<ParentDimensions> newParentDimensions = std::make_shared<GLPL::ParentDimensions>(ParentDimensions{overallTransform, parentWidthPx, parentHeightPx, shaderSetPt});
+    std::shared_ptr<ParentDimensions> newParentDimensions = std::make_shared<GLPL::ParentDimensions>(ParentDimensions{overallTransform, xPx, yPx, widthPx, heightPx, shaderSetPt});
 
     return newParentDimensions;
 }
@@ -119,14 +119,19 @@ void GLPL::IDrawable::updateTransforms() {
     // Update the transforms
     this->viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
     this->overallTransform = parentTransform * viewportTransform;
+}
 
-    IDrawable::updateChildren();
+void GLPL::IDrawable::updatePositionPx() {
+    // Update the size in pixels
+    this->xPx = (int)((float)parentXPx + (x*(float)parentWidthPx));
+    this->yPx = (int)((float)parentYPx + (y*(float)parentHeightPx));
 }
 
 void GLPL::IDrawable::updateChildren() {
     for(auto & i : children) {
         // Update parent information for child
-        i->setParentDimensions(overallTransform, parentWidthPx, parentHeightPx);
+        i->setParentDimensions(overallTransform, xPx, yPx, widthPx, heightPx);
+        i->updateChildren();
     }
 }
 

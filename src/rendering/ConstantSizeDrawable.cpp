@@ -25,10 +25,15 @@ GLPL::ConstantSizeDrawable::ConstantSizeDrawable(float x, float y, float width, 
 }
 
 void GLPL::ConstantSizeDrawable::setPosition(float newX, float newY) {
+    // Set Position
     this->x = newX;
     this->y = newY;
+    // Set position in pixels
+    IDrawable::updatePositionPx();
     // Update Transforms
     IDrawable::updateTransforms();
+    // Update Children
+    updateChildren();
 }
 
 void GLPL::ConstantSizeDrawable::setSize(float newWidth, float newHeight) {
@@ -37,21 +42,35 @@ void GLPL::ConstantSizeDrawable::setSize(float newWidth, float newHeight) {
     this->widthPx = (int)newWidth;
     this->heightPx = (int)newHeight;
     // Update relative width, height to parent
-    this->width = (float)widthPx / (float)parentWidthPx;
-    this->height = (float)heightPx / (float)parentHeightPx;
+    ConstantSizeDrawable::updateSizePx();
     // Update Transforms
     IDrawable::updateTransforms();
+    // Update Children
+    updateChildren();
+}
+
+void GLPL::ConstantSizeDrawable::updateSizePx() {
+    this->width = (float)widthPx / (float)parentWidthPx;
+    this->height = (float)heightPx / (float)parentHeightPx;
 }
 
 void GLPL::ConstantSizeDrawable::setParentDimensions(glm::mat4 newParentTransform,
-                                                      int newParentWidthPx,
-                                                      int newParentHeightPx) {
+                                                     int newParentXPx,
+                                                     int newParentYPx,
+                                                     int newParentWidthPx,
+                                                     int newParentHeightPx) {
+    this->parentXPx = newParentXPx;
+    this->parentYPx = newParentYPx;
     this->parentWidthPx = newParentWidthPx;
     this->parentHeightPx = newParentHeightPx;
     this->parentTransform = newParentTransform;
     // When the parent size changes, the relative size of this widget needs to be recalculated, to keep the same pixel size
     ConstantSizeDrawable::setSize((float)getWidthPx(), (float)getHeightPx());
+    updatePositionPx();
+    updateSizePx();
     updateTransforms();
+    // Update Children
+    updateChildren();
 }
 
 void GLPL::ConstantSizeDrawable::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
@@ -61,5 +80,7 @@ void GLPL::ConstantSizeDrawable::setParentDimensions(std::shared_ptr<ParentDimen
     this->shaderSetPt = parentDimensions->shaderSet;
     // When the parent size changes, the relative size of this widget needs to be recalculated, to keep the same pixel size
     ConstantSizeDrawable::setSize((float)getWidthPx(), (float)getHeightPx());
+    updatePositionPx();
+    updateSizePx();
     updateTransforms();
 }
