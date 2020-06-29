@@ -25,11 +25,8 @@ namespace GLPL {
         TextString::setTextString(textString);
         TextString::setFontSize(fontSize);
 
-        // Calculate position, offset to account for glyphs that go below the line, in font coordinates
-        textFontDimensions = characterLoader->getStringFontDimensions(textString);
-
-        // Calculate text dimensions in pixels
-        ConstantSizeDrawable::setSize(fontPixelFactor[0] * (float)textFontDimensions.width, fontPixelFactor[1] * (float)textFontDimensions.height);
+        // Calculate text sizing
+        TextString::updateTextDimensions();
 
         // Setup Buffers
         TextString::createAndSetupFontBuffers();
@@ -115,13 +112,18 @@ namespace GLPL {
         // Calculate new dimensions for string
         textFontDimensions = characterLoader->getStringFontDimensions(textString);
 
-        // Convert font space to pixel space
-        fontPixelFactor = characterLoader->getFontSpaceToPixelSpaceFactor(this->fontSize);
-        ConstantSizeDrawable::setSize((fontPixelFactor[0] * (float)textFontDimensions.width),
-                             (fontPixelFactor[1] * (float)textFontDimensions.height));
+        // Get number of pixels per em square
+        glm::vec2 pixelPerEm = characterLoader->calcPixelsPerEmSquare((int)this->fontSize);
 
-        // Convert pixel space to axes relative space
-        pixelRelativeFactor = glm::vec2(1./parentWidthPx, 1./parentHeightPx);
+        // Calculate the number of em squares for the total text size
+        double emSquareSize = (double)characterLoader->getEmSquareSize();
+        double emWidth = textFontDimensions.width / emSquareSize;
+        double emHeight = (textFontDimensions.height + textFontDimensions.yOffset) / emSquareSize;
+
+        // Calculate the size of the text in pixels
+        float pixelWidth = (float)(pixelPerEm[0] * emWidth);
+        float pixelHeight = (float)(pixelPerEm[1] * emHeight);
+        ConstantSizeDrawable::setSize(pixelWidth, pixelHeight);
 
         // Generate Vertices
         TextString::generateVertices();
@@ -140,7 +142,7 @@ namespace GLPL {
         verticesList.clear();
 
         // Get largest negative y offset
-        yOrigin = -textFontDimensions.yOffset;
+        yOrigin = textFontDimensions.yOffset;
 
         // Draw glyphs
         for(unsigned int i=0; i < textString.size(); i++) {
@@ -160,14 +162,17 @@ namespace GLPL {
             float hRel = h/textFontDimensions.height;
 
             // Calculate vertices for current character
+            // Scale from (0 to 1) to (-1 to 1)
             std::array<std::array<GLfloat, 4>, 6> vertices = {{
-                    {xPosRel,           yPosRel + hRel,     0.0, 0.0},
-                    {xPosRel,           yPosRel,            0.0, 1.0},
-                    {xPosRel + wRel,    yPosRel,            1.0, 1.0},
-                    {xPosRel,           yPosRel + hRel,     0.0, 0.0},
-                    {xPosRel + wRel,    yPosRel,            1.0, 1.0},
-                    {xPosRel + wRel,    yPosRel + hRel,     1.0, 0.0}
+                    {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     0.0, 0.0},
+                    {2.0*(xPosRel)-1.0,           2.0*(yPosRel)-1.0,            0.0, 1.0},
+                    {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
+                    {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     0.0, 0.0},
+                    {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
+                    {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel + hRel)-1.0,     1.0, 0.0}
             }};
+
+
 
             // Store vertices
             verticesList.push_back(vertices);

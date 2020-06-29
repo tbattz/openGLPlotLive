@@ -89,6 +89,8 @@ namespace GLPL {
         StringFontDimensions calcStringFontDimensions(std::string textString, float fontSize);
         StringDimensions calcStringDimensions(std::string textString, float fontSize);
 
+        int getEmSquareSize();
+
     private:
         // Data
         std::map<GLchar, Character3> Characters;
@@ -103,6 +105,7 @@ namespace GLPL {
         float dpiX = 1;
         float dpiY = 1;
         const float inch2Mm = 25.4;
+        int emSquareSize = 2048;
 
         // Functions
         void loadFont(const GLchar *fontPath);

@@ -84,8 +84,6 @@ namespace GLPL {
 
             this->Characters.insert(std::pair<GLchar, Character3>(c, character3));
 
-            // Set units per em
-            unitsPerEm = face->units_per_EM;
         }
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -126,6 +124,10 @@ namespace GLPL {
         float heightInch = heightMm / inch2Mm;
         dpiX = monitorWidthPixel / widthInch;
         dpiY = monitorHeightPixel / heightInch;
+    }
+
+    int CharacterLoader::getEmSquareSize() {
+        return emSquareSize;
     }
 
     glm::vec2 CharacterLoader::calcPixelsPerEmSquare(int fontSize) {
@@ -237,6 +239,9 @@ namespace GLPL {
         if (rowWidth > totalWidth) {
             totalWidth = rowWidth;
         }
+
+        // Add offset to total height
+        totalHeight += yOffset;
 
         return TextFontDimensions({totalWidth, totalHeight, yOffset});
     }
