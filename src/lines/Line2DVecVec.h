@@ -7,11 +7,11 @@
 
 
 #include "../dataTypes/dataTypes.h"
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 
 
 namespace GLPL {
-    class Line2DVecVec : public ILine2D {
+    class Line2DVecVec : public ILine2D_OLD {
         // Line of vectors of vectors
     public:
         /* Constructor */

@@ -5,11 +5,11 @@
 #ifndef OPENGLPLOTLIVE_PROJ_LINE2D2CIRCULARVECS_H
 #define OPENGLPLOTLIVE_PROJ_LINE2D2CIRCULARVECS_H
 
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 
 
 namespace GLPL  {
-    class Line2D2CircularVecs : public ILine2D {
+    class Line2D2CircularVecs : public ILine2D_OLD {
         // Two vectors corresponding to an x vector and a y vector
         // An index specifies the 'start' of the vector
         // The resultant vector is from the index to the end of the vector, plus

@@ -8,7 +8,7 @@
 namespace GLPL {
 
     IShadedLine2D::IShadedLine2D(std::shared_ptr<ParentDimensions> parentDimensions) :
-        ConstantScaleDrawable(0.0f, 0.0f, 1.0f, 1.0f, std::move(parentDimensions)) {
+        ILine2D(std::move(parentDimensions)) {
 
     }
 
@@ -54,25 +54,7 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
-    void IShadedLine2D::setShadeColour(glm::vec3 shadeColour) {
-        this->colour = shadeColour;
-    }
 
-    void IShadedLine2D::setMode(GLenum newMode) {
-        this->mode = newMode;
-    }
-
-    void IShadedLine2D::setOpacityRatio(float newOpacityRatio) {
-        this->opacityRatio = newOpacityRatio;
-    }
-
-    glm::vec3 IShadedLine2D::getColour() {
-        return this->colour;
-    }
-
-    GLenum IShadedLine2D::getMode() {
-        return this->mode;
-    }
 
 
 }

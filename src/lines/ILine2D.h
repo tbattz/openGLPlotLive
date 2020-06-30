@@ -1,53 +1,38 @@
 //
-// Created by bcub3d-desktop on 27/3/20.
+// Created by bcub3d-desktop on 30/6/20.
 //
 
-#ifndef OPENGLPLOTLIVE_ILINE2D_H
-#define OPENGLPLOTLIVE_ILINE2D_H
-
-// GLM Mathematics
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
+#ifndef OPENGLPLOTLIVE_PROJ_ILINE2D_H
+#define OPENGLPLOTLIVE_PROJ_ILINE2D_H
 
 // Project Includes
-#include "../rendering/shader.h"
+#include "../axes/IPlotable.h"
+#include "../rendering/ConstantScaleDrawable.h"
 #include "lineColours.h"
-
-// Standard Includes
-#include <vector>
 
 
 namespace GLPL {
-    class ILine2D {
+    class ILine2D : public IPlotable, public ConstantScaleDrawable {
     public:
-        ILine2D();
+        ILine2D(std::shared_ptr<ParentDimensions> parentDimensions);
 
-        void createAndSetupBuffers(GLuint *VAOPt, GLuint *VBOPt, int dataSizeBytes, const void *dataAddress,
-                                   int strideBytes, int glType=GL_FLOAT);
-
-        void drawData(Shader shader, glm::mat4 axesLimitViewportTrans, GLuint *VAOPt, glm::vec3 colour, int nPts,
-                      GLenum mode);
         void setLineColour(glm::vec3 lineColor);
         void setMode(GLenum newMode);
         void setLineWidth(unsigned int newLineWidth);
         glm::vec3 getColour();
         GLenum getMode();
-
-        virtual void Draw(Shader shader, glm::mat4 axesLimitViewportTrans) = 0;
+        void setOpacityRatio(float newOpacityRatio);
 
         virtual std::vector<float> getMinMax() = 0;
 
     protected:
-        /* Attributes */
+        // Data
         unsigned int lineWidth = 1;
         glm::vec3 colour = LC_WHITE;
         GLenum mode; // Mode, line or points
+        float opacityRatio = 1.0;
     };
 }
 
 
-#endif //OPENGLPLOTLIVE_ILINE2D_H
+#endif //OPENGLPLOTLIVE_PROJ_ILINE2D_H

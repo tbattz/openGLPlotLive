@@ -20,8 +20,8 @@ namespace GLPL {
 
         // TODO - Remove text string creation
         Axes::addText("Test String", 0.0, 0.0, 10);
-        Axes::addText("2nd Test String", 0.0, 0.8, 15);
-        Axes::addText("3rd Test String", 0.0, 0.4, 15);
+        Axes::addText("2nd Test String", 0.25, 0.9, 15);
+        Axes::addText("3rd Test String", 0.495, 0.0, 15);
 
         this->getText(0)->setZDepthValue(0);
         this->getText(1)->setZDepthValue(10);
@@ -85,8 +85,9 @@ namespace GLPL {
         }
     }
 
-    void Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY) {
-        axesArea->addLine(dataPtX, dataPtY);
+    void Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,
+                       float opacityRatio) {
+        axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
     }
 
 }

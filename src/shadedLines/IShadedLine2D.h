@@ -18,13 +18,14 @@
 #include "../lines/lineColours.h"
 #include "../axes/IPlotable.h"
 #include "../rendering/ConstantScaleDrawable.h"
+#include "../lines/ILine2D.h"
 
 // Standard Includes
 #include <vector>
 
 
 namespace GLPL {
-    class IShadedLine2D : public IPlotable, public ConstantScaleDrawable {
+    class IShadedLine2D : public ILine2D {
     public:
         IShadedLine2D(std::shared_ptr<ParentDimensions> parentDimensions);
 
@@ -32,22 +33,11 @@ namespace GLPL {
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
         void drawData(int numIndices);
-        void setShadeColour(glm::vec3 shadeColour);
-        void setMode(GLenum newMode);
-        void setOpacityRatio(float newOpacityRatio);
-        glm::vec3 getColour();
-        GLenum getMode();
-
-        virtual void Draw() = 0;
-        virtual std::vector<float> getMinMax() = 0;
 
     private:
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
-        // Data
-        glm::vec3 colour = LC_WHITE;
-        float opacityRatio = 1.0;
-        GLenum mode; // Mode, shaded or line
+
     };
 }
 

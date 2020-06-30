@@ -6,7 +6,7 @@
 
 
 namespace GLPL {
-    Line2DPts::Line2DPts(std::vector<GLPL::pt2D>* dataPtPt, GLenum mode) : ILine2D() {
+    Line2DPts::Line2DPts(std::vector<GLPL::pt2D>* dataPtPt, GLenum mode) : ILine2D_OLD() {
         this->dataPtPt = dataPtPt;
         this->setMode(mode);
 

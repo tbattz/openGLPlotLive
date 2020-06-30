@@ -7,7 +7,7 @@
 
 
 #include "../dataTypes/dataTypes.h"
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 
 
 
@@ -22,7 +22,7 @@ namespace GLPL {
 
     // Class template
     template <typename T>
-    class Line2DVec : public ILine2D {
+    class Line2DVec : public ILine2D_OLD {
         // Line of 2-length vectors
     public:
         /* Constructor */

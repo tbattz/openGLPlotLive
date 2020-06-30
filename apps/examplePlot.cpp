@@ -161,7 +161,10 @@ int main(int argc, char **argv) {
 	myplot.getAxes()->setEqualAxes(true);*/
 
     std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
-    axesPt->addLine(&xVec11, &yVec11);
+    axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    axesPt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
+
 
 
 	/* ======================================================

@@ -4,6 +4,7 @@
 
 #include "AxesArea.h"
 #include "../shadedLines/ShadedLine2D2CircularVecs.h"
+#include "../lines/Line2D2Vecs.h"
 
 #include <utility>
 
@@ -55,17 +56,39 @@ namespace GLPL {
         return xyVec;
     }
 
-    void AxesArea::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY) {
+    void AxesArea::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+            LineType lineType, glm::vec3 colour, float opacityRatio) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
-        // Register Child
-        std::shared_ptr<IDrawable> lineObj = std::make_shared<ShadedLine2D2CircularVecs>(dataPtX, dataPtY, newParentPointers);
-        std::shared_ptr<IShadedLine2D> linePt = std::dynamic_pointer_cast<ShadedLine2D2CircularVecs>(lineObj);
+        // Create Line
+        std::shared_ptr<IDrawable> lineObj;
+        std::shared_ptr<ILine2D> linePt;
+
+        switch(lineType) {
+            case SINGLE_LINE: {
+                lineObj = std::make_shared<Line2D2Vecs>(dataPtX, dataPtY, newParentPointers);
+                linePt = std::dynamic_pointer_cast<Line2D2Vecs>(lineObj);
+                break;
+            }
+            case SHADED_LINE: {
+                lineObj = std::make_shared<ShadedLine2D2CircularVecs>(dataPtX, dataPtY, newParentPointers);
+                linePt = std::dynamic_pointer_cast<ShadedLine2D2CircularVecs>(lineObj);
+                break;
+            }
+            default: {
+                lineObj = std::make_shared<ShadedLine2D2CircularVecs>(dataPtX, dataPtY, newParentPointers);
+                linePt = std::dynamic_pointer_cast<ShadedLine2D2CircularVecs>(lineObj);
+            }
+        }
+        // Set Attributes
+        linePt->setLineColour(colour);
+        linePt->setOpacityRatio(opacityRatio);
+        // Register Children
         AxesArea::registerChild(lineObj);
         // Set axes area transform
         linePt->setAxesViewportTransform(axesViewportTransformation);
         // Store line
-        lineMap.insert(std::pair<unsigned int, std::shared_ptr<IShadedLine2D>>(lineCount, linePt));
+        lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, linePt));
         lineCount += 1;
     }
 
@@ -80,9 +103,10 @@ namespace GLPL {
 
     void AxesArea::removeLine(unsigned int lineId) {
         if (lineMap.count(lineId) > 0) {
-            std::shared_ptr<IShadedLine2D> line2Remove = lineMap.at(lineId);
+            std::shared_ptr<IPlotable> line2Remove = lineMap.at(lineId);
+            std::shared_ptr<IDrawable> drawable2Remove = std::dynamic_pointer_cast<GLPL::IDrawable>(line2Remove);
             // Remove child
-            IDrawable::removeChild(line2Remove);
+            IDrawable::removeChild(drawable2Remove);
             // Remove axes
             lineMap.erase(lineId);
         } else {

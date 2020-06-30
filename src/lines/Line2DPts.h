@@ -7,12 +7,12 @@
 
 
 #include "../dataTypes/dataTypes.h"
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 #include "lineColours.h"
 
 
 namespace GLPL {
-    class Line2DPts : public ILine2D {
+    class Line2DPts : public ILine2D_OLD {
         // Line of pt2D Structures
     public:
         /* Constructor */

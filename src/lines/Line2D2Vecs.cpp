@@ -4,8 +4,12 @@
 
 #include "Line2D2Vecs.h"
 
+#include <utility>
+
 namespace GLPL {
-    Line2D2Vecs::Line2D2Vecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY, GLenum mode) {
+    Line2D2Vecs::Line2D2Vecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                             std::shared_ptr<ParentDimensions> parentDimensions,
+                             GLenum mode) : ISingleLine2D(std::move(parentDimensions)) {
         this->dataPtX = dataPtX;
         this->dataPtY = dataPtY;
         this->setMode(mode);
@@ -13,7 +17,7 @@ namespace GLPL {
         /* Setup Buffers */
         updateInternalData();
         int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
-        createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
+        createAndSetupBuffers(dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
 
         /* Set number of Points */
         nPts = internalData.size()/2.0;
@@ -36,7 +40,7 @@ namespace GLPL {
         }
     }
 
-    void Line2D2Vecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans) {
+    void Line2D2Vecs::Draw() {
         // Check if the number of points changed
         int newPts = (internalData).size()/2;
         if (newPts != nPts) {
@@ -47,7 +51,7 @@ namespace GLPL {
         }
 
         // Draw plot
-        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nPts, getMode());
+        drawData(nPts);
     }
 
     std::vector<float> Line2D2Vecs::getMinMax() {

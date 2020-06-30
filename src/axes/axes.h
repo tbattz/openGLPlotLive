@@ -24,7 +24,8 @@ namespace GLPL {
         std::shared_ptr<TextString> getText(unsigned int textStringId);
         void removeTextString(unsigned int textStringId);
         // Line
-        void addLine(std::vector<float>* dataPtX, std::vector<float>* dataPtY);
+        void addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType = SINGLE_LINE,
+                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
 
         void Draw();
 
