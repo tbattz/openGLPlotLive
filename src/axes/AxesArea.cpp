@@ -56,7 +56,7 @@ namespace GLPL {
         return xyVec;
     }
 
-    void AxesArea::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+    std::shared_ptr<ILine2D> AxesArea::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
             LineType lineType, glm::vec3 colour, float opacityRatio) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
@@ -90,6 +90,8 @@ namespace GLPL {
         // Store line
         lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, linePt));
         lineCount += 1;
+
+        return linePt;
     }
 
     std::shared_ptr<IPlotable> AxesArea::getLine(unsigned int lineId) {

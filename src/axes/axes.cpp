@@ -85,9 +85,9 @@ namespace GLPL {
         }
     }
 
-    void Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,
+    std::shared_ptr<ILine2D> Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,
                        float opacityRatio) {
-        axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
+        return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
     }
 
 }

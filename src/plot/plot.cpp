@@ -15,7 +15,7 @@ namespace GLPL {
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Add default axes
-        Plot::addAxes(0.1f, 0.1f, 0.7f, 0.6f);
+        Plot::addAxes(0.1f, 0.1f, 0.8f, 0.8f);
 
     }
 

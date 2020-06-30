@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	std::shared_ptr<GLPL::Plot> myplot2 = std::make_shared<GLPL::Plot>(0.0, 0.25, 0.75, 0.75, window2->getParentDimensions());
+	std::shared_ptr<GLPL::Plot> myplot2 = std::make_shared<GLPL::Plot>(0.0, 0.25, 0.85, 0.75, window2->getParentDimensions());
 	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot2);
 	window2->addPlot(myPlotPt);
 	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
@@ -161,8 +161,8 @@ int main(int argc, char **argv) {
 	myplot.getAxes()->setEqualAxes(true);*/
 
     std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
-    axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
-    axesPt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line9 = axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line11 = axesPt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
 
 
@@ -226,7 +226,7 @@ int main(int argc, char **argv) {
 		// Draw Plot
 		myplot.Draw();*/
 		std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
-        axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
+        //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
 		myplot2->Draw();
 		//myplot2->removeAxes(0);
 		myplot2->drawBoundingBox();

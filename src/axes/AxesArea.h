@@ -22,7 +22,7 @@ namespace GLPL {
 
         // Functions
         void Draw();
-        void addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+        std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
         std::shared_ptr<IPlotable> getLine(unsigned int lineId);
         void removeLine(unsigned int lineId);
