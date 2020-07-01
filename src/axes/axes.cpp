@@ -18,15 +18,6 @@ namespace GLPL {
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 
-        // TODO - Remove text string creation
-        Axes::addText("Test String", 0.0, 0.0, 10);
-        Axes::addText("2nd Test String", 0.25, 0.9, 15);
-        Axes::addText("3rd Test String", 0.495, 0.0, 15);
-
-        this->getText(0)->setZDepthValue(0);
-        this->getText(1)->setZDepthValue(10);
-        this->getText(2)->setZDepthValue(-10);
-
         // Add axes area
         Axes::createAxesArea();
 
@@ -43,14 +34,14 @@ namespace GLPL {
         this->axesArea = axesAreaPt;
     }
 
-    void Axes::addText(const char* textString, float x, float y, float fontSize, PinPosition pinPosition) {
+    void Axes::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
         std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
         std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
         // Set pin position
-        textStringPt->setPinPosition(pinPosition);
+        textStringPt->setAttachLocation(attachLocation);
         // Register Child
         Axes::registerChild(textStringObj);
         // Store Text String

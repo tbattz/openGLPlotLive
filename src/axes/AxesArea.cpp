@@ -24,6 +24,14 @@ namespace GLPL {
 
         // Calculate transform
         AxesArea::updateAxesViewportTransform();
+
+        // Add Title
+        AxesArea::addText("Axes Title", 0.5, 1.01, 14, CENTRE_BOTTOM);
+
+        // Add Axes Label
+        AxesArea::addText("x label", 0.5, -0.11, 12, CENTRE_TOP);
+        AxesArea::addText("y label", -0.01, 0.5, 12, CENTRE_RIGHT);
+
     }
 
     void AxesArea::Draw() {
@@ -38,6 +46,16 @@ namespace GLPL {
 
         // Disable Scissor Testing
         glDisable(GL_SCISSOR_TEST);
+
+        // Draw attachments
+        for(auto & i : axesItems) {
+            i->Draw();
+        }
+
+        // Draw Text
+        for(auto & i : textStringMap) {
+            i.second->Draw();
+        }
 
     }
 
@@ -113,6 +131,42 @@ namespace GLPL {
             lineMap.erase(lineId);
         } else {
             std::cout << "Cannot remove Line " << lineId << ", Line does not exist!" << std::endl;
+        }
+    }
+
+    void AxesArea::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Register Child
+        std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
+        std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
+        // Set pin position
+        textStringPt->setAttachLocation(attachLocation);
+        // Register Child
+        AxesArea::registerChild(textStringObj);
+        // Store Text String
+        textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, textStringPt));
+        textStringCount += 1;
+    }
+
+    std::shared_ptr<TextString> AxesArea::getText(unsigned int textStringId) {
+        if (textStringMap.count(textStringId) > 0) {
+            return textStringMap.at(textStringId);
+        } else {
+            std::cout << "TextString " << textStringId << " does not exist!" << std::endl;
+            return nullptr;
+        }
+    }
+
+    void AxesArea::removeTextString(unsigned int textStringId) {
+        if (textStringMap.count(textStringId) > 0) {
+            std::shared_ptr<TextString> textString2Remove = textStringMap.at(textStringId);
+            // Remove child
+            IDrawable::removeChild(textString2Remove);
+            // Remove axes
+            textStringMap.erase(textStringId);
+        } else {
+            std::cout << "Cannot remove TextString " << textStringId << ", TextString does not exist!" << std::endl;
         }
     }
 
@@ -208,7 +262,5 @@ namespace GLPL {
 
         return scale;
     }
-
-
 
 }

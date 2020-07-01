@@ -146,8 +146,8 @@ bool GLPL::IDrawable::compareZDepthValue(const std::shared_ptr<IDrawable>& left,
     return left->getZDepthValue() < right->getZDepthValue();
 }
 
-void GLPL::IDrawable::setPinPosition(GLPL::PinPosition newPinPosition) {
-    this->pinPosition = newPinPosition;
+void GLPL::IDrawable::setAttachLocation(GLPL::AttachLocation newAttachLocation) {
+    this->attachLocation = newAttachLocation;
     // Update transforms
     GLPL::IDrawable::updateTransforms();
     GLPL::IDrawable::updateChildren();
@@ -158,7 +158,7 @@ std::array<float, 2> GLPL::IDrawable::generateXYPositionFromPin() {
     std::array<float, 2> xyPos = {x, y};
 
     // Handle each pin position mode
-    switch(pinPosition) {
+    switch(attachLocation) {
         case BOTTOM_LEFT: {
             xyPos = {x, y};
             break;
@@ -196,7 +196,7 @@ std::array<float, 2> GLPL::IDrawable::generateXYPositionFromPin() {
             break;
         }
         default: {
-            std::cout << "Invalid PinPosition! Defaulting to BOTTOM_LEFT." << std::endl;
+            std::cout << "Invalid AttachLocation! Defaulting to BOTTOM_LEFT." << std::endl;
             xyPos = {x, y};
             break;
         }

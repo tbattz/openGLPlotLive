@@ -11,6 +11,7 @@
 #include "IPlotable.h"
 #include "../shadedLines/IShadedLine2D.h"
 #include "../lines/LineType.h"
+#include "../texts/textString.h"
 
 
 namespace GLPL {
@@ -22,10 +23,16 @@ namespace GLPL {
 
         // Functions
         void Draw();
+        // Lines
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
         std::shared_ptr<IPlotable> getLine(unsigned int lineId);
         void removeLine(unsigned int lineId);
+        // Text
+        void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
+        std::shared_ptr<TextString> getText(unsigned int textStringId);
+        void removeTextString(unsigned int textStringId);
+        // Other
         void updateAxesViewportTransform();
         void setPosition(float newX, float newY);
         void setSize(float newWidth, float newHeight);
@@ -43,11 +50,15 @@ namespace GLPL {
         std::shared_ptr<glm::mat4> axesViewportTransformation = std::make_shared<glm::mat4>(1.0f);
         unsigned int lineCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<ILine2D>> lineMap;
+        std::vector<std::shared_ptr<IDrawable>> axesItems;
         // Axes
         float xmin = -1.0;
         float xmax = 1.0;
         float ymin = -1.0;
         float ymax = 1.0;
+        // Text String
+        unsigned int textStringCount = 0;
+        std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
 
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);

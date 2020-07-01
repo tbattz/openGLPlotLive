@@ -33,7 +33,7 @@ namespace GLPL {
         std::shared_ptr<ShaderSet> shaderSet;
     };
 
-    enum PinPosition {
+    enum AttachLocation {
         BOTTOM_LEFT,
         BOTTOM_RIGHT,
         TOP_LEFT,
@@ -80,7 +80,7 @@ namespace GLPL {
         void drawBoundingBox();
         void setZDepthValue(int newZDepthValue);
         int getZDepthValue();
-        void setPinPosition(PinPosition newPinPosition);
+        void setAttachLocation(AttachLocation newAttachLocation);
 
     protected:
         // Dimensions
@@ -98,7 +98,7 @@ namespace GLPL {
         int parentWidthPx = 0;    // Parent width in pixels
         int parentHeightPx = 0;   // Parent height in pixels
         int zDepthValue = 0;      // The z buffer value
-        PinPosition pinPosition = BOTTOM_LEFT; // The location to position the object by
+        AttachLocation attachLocation = BOTTOM_LEFT; // The location to position the object by, used to locate the object by different corners
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables
