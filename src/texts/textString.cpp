@@ -116,13 +116,13 @@ namespace GLPL {
         glm::vec2 pixelPerEm = characterLoader->calcPixelsPerEmSquare((int)this->fontSize);
 
         // Calculate the number of em squares for the total text size
-        double emSquareSize = (double)characterLoader->getEmSquareSize();
+        auto emSquareSize = (double)characterLoader->getEmSquareSize();
         double emWidth = textFontDimensions.width / emSquareSize;
         double emHeight = (textFontDimensions.height + textFontDimensions.yOffset) / emSquareSize;
 
         // Calculate the size of the text in pixels
-        float pixelWidth = (float)(pixelPerEm[0] * emWidth);
-        float pixelHeight = (float)(pixelPerEm[1] * emHeight);
+        auto pixelWidth = (float)(pixelPerEm[0] * emWidth);
+        auto pixelHeight = (float)(pixelPerEm[1] * emHeight);
         ConstantSizeDrawable::setSize(pixelWidth, pixelHeight);
 
         // Generate Vertices
@@ -145,9 +145,8 @@ namespace GLPL {
         yOrigin = textFontDimensions.yOffset;
 
         // Draw glyphs
-        for(unsigned int i=0; i < textString.size(); i++) {
+        for(char c : textString) {
             // Get the corresponding character
-            const char c = (textString[i]);
             Character3 ch = characterLoader->getCharacter(c);
             // Calculate Top Left Position
             xPos = (float)xOrigin + (float)ch.bearingX;
@@ -156,10 +155,10 @@ namespace GLPL {
             h = (float)(ch.height);
 
             // Conversions - Normalise by font coordinate width and height
-            float xPosRel = xPos/textFontDimensions.width;
-            float wRel = w/textFontDimensions.width;
-            float yPosRel = yPos/textFontDimensions.height;
-            float hRel = h/textFontDimensions.height;
+            float xPosRel = xPos/(float)textFontDimensions.width;
+            float wRel = w/(float)textFontDimensions.width;
+            float yPosRel = yPos/(float)textFontDimensions.height;
+            float hRel = h/(float)textFontDimensions.height;
 
             // Calculate vertices for current character
             // Scale from (0 to 1) to (-1 to 1)

@@ -33,6 +33,18 @@ namespace GLPL {
         std::shared_ptr<ShaderSet> shaderSet;
     };
 
+    enum PinPosition {
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+        TOP_LEFT,
+        TOP_RIGHT,
+        CENTRE_TOP,
+        CENTRE_BOTTOM,
+        CENTRE_LEFT,
+        CENTRE_RIGHT,
+        CENTRE
+    };
+
     class IDrawable {
         // Anything that is draw must implement the following
     public:
@@ -68,6 +80,7 @@ namespace GLPL {
         void drawBoundingBox();
         void setZDepthValue(int newZDepthValue);
         int getZDepthValue();
+        void setPinPosition(PinPosition newPinPosition);
 
     protected:
         // Dimensions
@@ -85,6 +98,7 @@ namespace GLPL {
         int parentWidthPx = 0;    // Parent width in pixels
         int parentHeightPx = 0;   // Parent height in pixels
         int zDepthValue = 0;      // The z buffer value
+        PinPosition pinPosition = BOTTOM_LEFT; // The location to position the object by
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables
@@ -108,6 +122,7 @@ namespace GLPL {
         void updateChildren();
         void sortChildren();
         static bool compareZDepthValue(const std::shared_ptr<IDrawable>& left, const std::shared_ptr<IDrawable>& right);
+        std::array<float, 2> generateXYPositionFromPin();
 
     };
 }

@@ -15,7 +15,7 @@ namespace GLPL {
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Add default axes
-        Plot::addAxes(0.1f, 0.1f, 0.8f, 0.8f);
+        Plot::addAxes(0.1f, 0.1f, 0.4f, 0.8f);
 
     }
 
@@ -23,7 +23,7 @@ namespace GLPL {
 
     }
 
-    void Plot::addAxes(float x, float y, float width, float height) {
+    std::shared_ptr<GLPL::Axes> Plot::addAxes(float x, float y, float width, float height) {
         // Create axes
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register child
@@ -33,6 +33,8 @@ namespace GLPL {
         // Store axes
         axesMap.insert(std::pair<unsigned int, std::shared_ptr<Axes>>(axesCount, axesPt));
         axesCount += 1;
+
+        return axesPt;
     }
 
     std::shared_ptr<Axes> Plot::getAxes(unsigned int axesId) {

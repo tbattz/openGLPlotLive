@@ -20,7 +20,7 @@ namespace GLPL {
         // Functions
         void createAxesArea();
         // Text
-        void addText(const char* textString, float x, float y, float fontSize);
+        void addText(const char* textString, float x, float y, float fontSize, PinPosition pinPosition=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(unsigned int textStringId);
         void removeTextString(unsigned int textStringId);
         // Line

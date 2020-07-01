@@ -22,7 +22,7 @@ namespace GLPL {
         ~Plot();
 
         // Functions
-        void addAxes(float x, float y, float width, float height);
+        std::shared_ptr<GLPL::Axes> addAxes(float x, float y, float width, float height);
         std::shared_ptr<Axes> getAxes(unsigned int axesId);
         void removeAxes(unsigned int axesId);
         void Draw();

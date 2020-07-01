@@ -117,7 +117,8 @@ void GLPL::IDrawable::createAndSetupBuffers() {
 
 void GLPL::IDrawable::updateTransforms() {
     // Update the transforms
-    this->viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
+    std::array<float, 2> xy = GLPL::IDrawable::generateXYPositionFromPin();
+    this->viewportTransform = GLPL::Transforms::viewportTransform(xy[0], xy[1], width, height);
     this->overallTransform = parentTransform * viewportTransform;
 }
 
@@ -143,6 +144,65 @@ void GLPL::IDrawable::sortChildren() {
 
 bool GLPL::IDrawable::compareZDepthValue(const std::shared_ptr<IDrawable>& left, const std::shared_ptr<IDrawable>& right) {
     return left->getZDepthValue() < right->getZDepthValue();
+}
+
+void GLPL::IDrawable::setPinPosition(GLPL::PinPosition newPinPosition) {
+    this->pinPosition = newPinPosition;
+    // Update transforms
+    GLPL::IDrawable::updateTransforms();
+    GLPL::IDrawable::updateChildren();
+}
+
+std::array<float, 2> GLPL::IDrawable::generateXYPositionFromPin() {
+    // Generate the bottom left xy position from the current position and pin position
+    std::array<float, 2> xyPos = {x, y};
+
+    // Handle each pin position mode
+    switch(pinPosition) {
+        case BOTTOM_LEFT: {
+            xyPos = {x, y};
+            break;
+        }
+        case BOTTOM_RIGHT: {
+            xyPos = {x - width, y};
+            break;
+        }
+        case TOP_LEFT: {
+            xyPos = {x, y - height};
+            break;
+        }
+        case TOP_RIGHT: {
+            xyPos = {x - width, y - height};
+            break;
+        }
+        case CENTRE_TOP: {
+            xyPos = {x - (width/2.0), y - height};
+            break;
+        }
+        case CENTRE_BOTTOM: {
+            xyPos = {x - (width/2.0), y};
+            break;
+        }
+        case CENTRE_LEFT: {
+            xyPos = {x, y - (height/2.0)};
+            break;
+        }
+        case CENTRE_RIGHT: {
+            xyPos = {x - width, y - (height/2.0)};
+            break;
+        }
+        case CENTRE: {
+            xyPos = {x - (width/2.0), y - (height/2.0)};
+            break;
+        }
+        default: {
+            std::cout << "Invalid PinPosition! Defaulting to BOTTOM_LEFT." << std::endl;
+            xyPos = {x, y};
+            break;
+        }
+    }
+
+    return xyPos;
 }
 
 

@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	 *                     Setup Window
 	   ====================================================== */
     // Window Size
-    int windowWidth  = 800;
+    int windowWidth  = 1600;
     int windowHeight = 800;
 
 	// Init GLFW
@@ -119,8 +119,8 @@ int main(int argc, char **argv) {
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	std::shared_ptr<GLPL::Plot> myplot2 = std::make_shared<GLPL::Plot>(0.0, 0.25, 0.85, 0.75, window2->getParentDimensions());
-	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot2);
+	std::shared_ptr<GLPL::Plot> myplot = std::make_shared<GLPL::Plot>(0.0, 0.25, 0.8, 0.75, window2->getParentDimensions());
+	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot);
 	window2->addPlot(myPlotPt);
 	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 
@@ -160,9 +160,14 @@ int main(int argc, char **argv) {
 	myplot.getAxes()->setAutoScaleRound(false);
 	myplot.getAxes()->setEqualAxes(true);*/
 
-    std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
+	// Axes 1
+    std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
     std::shared_ptr<GLPL::ILine2D> line9 = axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
     std::shared_ptr<GLPL::ILine2D> line11 = axesPt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+
+    // Axes 2
+    std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.6f, 0.1f, 0.4f, 0.8f);
+
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
 
 
@@ -225,11 +230,11 @@ int main(int argc, char **argv) {
 
 		// Draw Plot
 		myplot.Draw();*/
-		std::shared_ptr<GLPL::Axes> axesPt = myplot2->getAxes(0);
+		std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
         //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
-		myplot2->Draw();
+		myplot->Draw();
 		//myplot2->removeAxes(0);
-		myplot2->drawBoundingBox();
+		myplot->drawBoundingBox();
 		// TODO - Convert children vector to set, automatic ordering given the function
 
 		// Post-loop draw

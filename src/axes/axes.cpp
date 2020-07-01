@@ -43,12 +43,15 @@ namespace GLPL {
         this->axesArea = axesAreaPt;
     }
 
-    void Axes::addText(const char* textString, float x, float y, float fontSize) {
+    void Axes::addText(const char* textString, float x, float y, float fontSize, PinPosition pinPosition) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
         std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
         std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
+        // Set pin position
+        textStringPt->setPinPosition(pinPosition);
+        // Register Child
         Axes::registerChild(textStringObj);
         // Store Text String
         textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, textStringPt));
