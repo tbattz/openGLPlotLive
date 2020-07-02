@@ -27,7 +27,6 @@ namespace GLPL {
         void Draw();
         void setTextString(std::string newTextString);
         void setTextColor(glm::vec3 textColor);
-        void setTextAlignment(TextAlignment newTextAlignment);
         void setFontSize(float fontSize);
 
     private:
@@ -35,10 +34,7 @@ namespace GLPL {
         void createAndSetupFontBuffers();
         void updateTextDimensions();
         void generateVertices();
-        void drawLeftTopAligned();
-        void drawLeftBottomAligned();
-        void drawHCentreAligned();
-        void drawVCentreAligned();
+        void drawText();
 
         // Buffers
         GLuint textVAO, textVBO;
@@ -49,7 +45,6 @@ namespace GLPL {
         std::string textString = "";
         float fontSize = 12;
         glm::vec3 textColor = glm::vec3(1.0f);
-        TextAlignment textAlignment = LEFT_TOP;
         // Text Dimensions
         TextFontDimensions textFontDimensions;
         glm::vec2 fontPixelFactor = glm::vec2(1.0f);        // Font space to pixel space conversion factors

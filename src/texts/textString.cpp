@@ -45,27 +45,7 @@ namespace GLPL {
         glBindVertexArray(this->textVAO);
 
         // Iterate through each character
-        switch (textAlignment) {
-            case LEFT_TOP: {
-                drawLeftTopAligned();
-                break;
-            }
-            case LEFT_BOTTOM: {
-                drawLeftBottomAligned();
-                break;
-            }
-            case H_CENTRE: {
-                drawHCentreAligned();
-                break;
-            }
-            case V_CENTRE: {
-                drawVCentreAligned();
-                break;
-            }
-            default: {
-                std::cout << "Unknown Text Alignment Enum!" << std::endl;
-            }
-        }
+        drawText();
 
         // Unbind Arrays
         glBindVertexArray(0);
@@ -82,10 +62,6 @@ namespace GLPL {
 
     void TextString::setTextColor(glm::vec3 newTextColor) {
         this->textColor = newTextColor;
-    }
-
-    void TextString::setTextAlignment(TextAlignment newTextAlignment) {
-        this->textAlignment = newTextAlignment;
     }
 
     void TextString::setFontSize(float newFontSize) {
@@ -118,7 +94,7 @@ namespace GLPL {
         // Calculate the number of em squares for the total text size
         auto emSquareSize = (double)characterLoader->getEmSquareSize();
         double emWidth = textFontDimensions.width / emSquareSize;
-        double emHeight = (textFontDimensions.height + textFontDimensions.yOffset) / emSquareSize;
+        double emHeight = (textFontDimensions.height) / emSquareSize;
 
         // Calculate the size of the text in pixels
         auto pixelWidth = (float)(pixelPerEm[0] * emWidth);
@@ -181,7 +157,7 @@ namespace GLPL {
         }
     }
 
-    void TextString::drawLeftTopAligned() {
+    void TextString::drawText() {
         // Draw glyphs
         for(unsigned int i=0; i < textString.size(); i++) {
             // Get the corresponding character
@@ -197,18 +173,6 @@ namespace GLPL {
             // Render quad face
             glDrawArrays(GL_TRIANGLES,0,6);
         }
-    }
-
-    void TextString::drawLeftBottomAligned() {
-
-    }
-
-    void TextString::drawHCentreAligned() {
-
-    }
-
-    void TextString::drawVCentreAligned() {
-
     }
 
 }
