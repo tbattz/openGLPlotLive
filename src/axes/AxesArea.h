@@ -23,6 +23,9 @@ namespace GLPL {
 
         // Functions
         void Draw();
+        // Axes
+        void setAxesBoxOn(bool axesBoxOnBool);
+        void setAxesBoxColor(glm::vec4 newAxesBoxColour);
         // Lines
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
@@ -51,11 +54,14 @@ namespace GLPL {
         unsigned int lineCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<ILine2D>> lineMap;
         std::vector<std::shared_ptr<IDrawable>> axesItems;
-        // Axes
+        // Axes Limits
         float xmin = -1.0;
         float xmax = 1.0;
         float ymin = -1.0;
         float ymax = 1.0;
+        // Axes Settings
+        bool axesBoxOn = true;
+        glm::vec4 axesBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         // Text String
         unsigned int textStringCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
@@ -63,6 +69,7 @@ namespace GLPL {
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
         glm::mat4 scale2AxesLimits();
+        void drawAxesBox();
 
     };
 

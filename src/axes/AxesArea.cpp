@@ -26,7 +26,7 @@ namespace GLPL {
         AxesArea::updateAxesViewportTransform();
 
         // Add Title
-        AxesArea::addText("Axes Title", 0.5, 1.01, 14, CENTRE_BOTTOM);
+        AxesArea::addText("Axes Title", 0.5, 1.03, 14, CENTRE_BOTTOM);
 
         // Add Axes Label
         AxesArea::addText("x label", 0.5, -0.11, 12, CENTRE_TOP);
@@ -57,6 +57,19 @@ namespace GLPL {
             i.second->Draw();
         }
 
+        // Draw Axes box
+        if (axesBoxOn) {
+            AxesArea::drawAxesBox();
+        }
+
+    }
+
+    void AxesArea::setAxesBoxOn(bool axesBoxOnBool) {
+        axesBoxOn = axesBoxOnBool;
+    }
+
+    void AxesArea::setAxesBoxColor(glm::vec4 newAxesBoxColour) {
+        axesBoxColor = newAxesBoxColour;
     }
 
     std::vector<float> AxesArea::calculateScissor(glm::mat4 axesLimitsViewportTrans) {
@@ -261,6 +274,17 @@ namespace GLPL {
         glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX,scaleY,1));
 
         return scale;
+    }
+
+    void GLPL::AxesArea::drawAxesBox() {
+        // Draw bounding box
+        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        shader->Use();
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(overallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program,"inColor"),1,glm::value_ptr(axesBoxColor));
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_LINE_LOOP,0,4);
+        glBindVertexArray(0);
     }
 
 }
