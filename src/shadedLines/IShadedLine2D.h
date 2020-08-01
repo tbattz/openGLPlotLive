@@ -33,7 +33,7 @@ namespace GLPL {
                                    int strideBytes, int glType=GL_FLOAT);
         void drawData(int numIndices);
 
-    private:
+    protected:
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
 

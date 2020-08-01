@@ -46,7 +46,7 @@ namespace GLPL {
         if (newPts != nPts) {
             nPts = newPts;
             // Update buffer and attributes
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
         }
 

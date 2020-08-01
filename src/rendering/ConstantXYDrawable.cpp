@@ -7,10 +7,14 @@
 namespace GLPL {
     ConstantXYDrawable::ConstantXYDrawable(float x, float y, float width, float height,
                                             XYScale xScale, XYScale yScale,
-                                            std::shared_ptr<ParentDimensions> parentDimensions): IDrawable() {
+                                            std::shared_ptr<ParentDimensions> parentDimensions,
+                                            AttachLocation newAttachLocation): IDrawable() {
         // Width and height are dependent on xScale and yScale respectively.
         // CONSTANT_SCALE - Input is relative to the parent, 0.0 to 1.0
         // CONSTANT_SIZE - Input is in pixels
+
+        // Set attach location
+        IDrawable::setAttachLocation(newAttachLocation);
 
         // Set Parent Dimensions
         ConstantXYDrawable::setParentDimensions(std::move(parentDimensions));
@@ -119,6 +123,22 @@ namespace GLPL {
         updateTransforms();
         // Update Children
         updateChildren();
+    }
+
+    void ConstantXYDrawable::setXScale(XYScale newXScale) {
+        xScale = newXScale;
+        ConstantXYDrawable::updateSizePx();
+    }
+
+    void ConstantXYDrawable::setYScale(XYScale newYScale) {
+        yScale = newYScale;
+        ConstantXYDrawable::updateSizePx();
+    }
+
+    void ConstantXYDrawable::setXYScale(XYScale newXScale, XYScale newYScale) {
+        xScale = newXScale;
+        yScale = newYScale;
+        ConstantXYDrawable::updateSizePx();
     }
 
 

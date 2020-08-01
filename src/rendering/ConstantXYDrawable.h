@@ -20,7 +20,9 @@ namespace GLPL {
     public:
         // Constructor
         ConstantXYDrawable(float x, float y, float width, float height,
-                            XYScale xScale, XYScale yScale, std::shared_ptr<ParentDimensions> parentDimensions);
+                            XYScale xScale, XYScale yScale,
+                            std::shared_ptr<ParentDimensions> parentDimensions,
+                            AttachLocation newAttachLocation = BOTTOM_LEFT);
 
         // Functions
         void setPosition(float newX, float newY);
@@ -32,6 +34,10 @@ namespace GLPL {
                                  int newParentWidthPx,
                                  int newParentHeightPx);
         void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
+
+        void setXScale(XYScale newXScale);
+        void setYScale(XYScale newYScale);
+        void setXYScale(XYScale newXScale, XYScale newYScale);
 
 
         // Data

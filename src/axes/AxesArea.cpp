@@ -30,7 +30,7 @@ namespace GLPL {
 
         // Add Axes Label
         AxesArea::addText("x label", 0.5, -0.11, 12, CENTRE_TOP);
-        AxesArea::addText("y label", -0.01, 0.5, 12, CENTRE_RIGHT);
+        AxesArea::addText("y label", -0.08, 0.5, 12, CENTRE_RIGHT);
 
     }
 

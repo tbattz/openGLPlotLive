@@ -41,8 +41,8 @@ namespace GLPL {
         // Get parent pointers
         std::shared_ptr<ParentDimensions> ourParentDimensions = createParentDimensions();
         // Create axes
-        xAxes = std::make_shared<AxesLineWithText>(0.0, 0.0, X_AXES_CENTRE, ourParentDimensions);
-        yAxes = std::make_shared<AxesLineWithText>(0.2, 0.8, Y_AXES_LEFT, ourParentDimensions);
+        xAxes = std::make_shared<AxesLineTicks>(X_AXES_CENTRE, ourParentDimensions);
+        yAxes = std::make_shared<AxesLineTicks>(Y_AXES_CENTRE, ourParentDimensions);
         // Register children
         axesArea->registerChild(xAxes);
         axesArea->registerChild(yAxes);
@@ -91,6 +91,9 @@ namespace GLPL {
         for(auto & i : children) {
             i->Draw();
         }
+        // Draw Axes Lines
+        xAxes->Draw();
+        yAxes->Draw();
     }
 
     std::shared_ptr<ILine2D> Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,

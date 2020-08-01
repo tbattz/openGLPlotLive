@@ -29,12 +29,9 @@ namespace GLPL {
         std::vector<float> getMinMax();
 
     private:
-        /* Buffers */
-        GLuint VAO, VBO, EBO;
-        int nIndices = 0;
-
         /* Data */
         bool updated = false;
+        int nIndices = 0;
         std::vector<float>* dataPtX;
         std::vector<float>* dataPtY;
         std::vector<float> internalData;

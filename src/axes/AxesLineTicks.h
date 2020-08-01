@@ -25,14 +25,16 @@ namespace GLPL {
     class AxesLineTicks : public ConstantXYDrawable {
     public:
         // Constructor
-        AxesLineTicks(float x, float y, AxesDirection axesDirection, std::shared_ptr<ParentDimensions> parentDimensions);
+        AxesLineTicks(AxesDirection axesDirection, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
         void Draw();
 
     private:
         // Functions
-        void generateAxesLineVertices();
+        void generateAxesLine();
+        void updateSize();
+        void setMinMax(float newMin, float newMax);
         void createAndSetupAxesLineBuffer();
         void drawAxesLine();
 
@@ -40,14 +42,14 @@ namespace GLPL {
         AxesDirection axesDirection;
         GLuint lineVAO, lineVBO;
         std::vector<GLfloat> lineVerts;
-        glm::vec4 axesLineColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        glm::vec4 axesLineColor = glm::vec4(0.75f, 0.75f, 0.75f, 1.0f);
 
         // Limits
         float valMin = -1;
         float valMax = 1;
         unsigned int minorTickSpacingPx = 25;   // Space between minor ticks
         unsigned int minorTickLengthPx = 10;    // Length of minor ticks
-        unsigned int majorTickLengthPx = 10;    // Length of major ticks
+        unsigned int majorTickLengthPx = 20;    // Length of major ticks
         unsigned int minorSpacingsPerMajor = 3; // Number of minor spacings between two major spacings
 
     };

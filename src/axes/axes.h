@@ -8,8 +8,8 @@
 // Project Includes
 #include "../texts/textString.h"
 #include "AxesArea.h"
-#include "AxesLineWithText.h"
 #include "../rendering/ConstantXYDrawable.h"
+#include "AxesLineTicks.h"
 
 
 namespace GLPL {
@@ -41,8 +41,8 @@ namespace GLPL {
         unsigned int textStringCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
         // Axes
-        std::shared_ptr<AxesLineWithText> xAxes;
-        std::shared_ptr<AxesLineWithText> yAxes;
+        std::shared_ptr<AxesLineTicks> xAxes;
+        std::shared_ptr<AxesLineTicks> yAxes;
     };
 }
 
