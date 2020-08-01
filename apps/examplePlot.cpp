@@ -233,7 +233,7 @@ int main(int argc, char **argv) {
 		std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
         //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
 		myplot->Draw();
-		//myplot->drawBoundingBox();
+		myplot->drawBoundingBox();
 		// TODO - Convert children vector to set, automatic ordering given the function
 
 		// Post-loop draw

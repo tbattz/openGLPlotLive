@@ -10,10 +10,11 @@
 
 // Project Includes
 #include "../axes/axes.h"
-#include "../rendering/ConstantScaleDrawable.h"
+#include "../rendering/ConstantXYDrawable.h"
+
 
 namespace GLPL {
-    class Plot : public ConstantScaleDrawable {
+    class Plot : public ConstantXYDrawable {
         // Plot contains sets of axes, labels and titles
     public:
         // Constructor

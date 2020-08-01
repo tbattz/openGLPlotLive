@@ -6,7 +6,6 @@
 #define OPENGLPLOTLIVE_PROJ_AXESAREA_H
 
 // Project Includes
-#include "../rendering/ConstantScaleDrawable.h"
 #include "../lines/ILine2D_OLD.h"
 #include "IPlotable.h"
 #include "../shadedLines/IShadedLine2D.h"

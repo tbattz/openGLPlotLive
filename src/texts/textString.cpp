@@ -13,7 +13,7 @@ namespace GLPL {
 
     TextString::TextString(const std::string& textString, float x, float y, float fontSize,
                            std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantSizeDrawable(x, y, 0.0f, 0.0f, std::move(parentDimensions)) {
+            ConstantXYDrawable(x, y, 0.0f, 0.0f, CONSTANT_SIZE, CONSTANT_SIZE, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
@@ -99,7 +99,7 @@ namespace GLPL {
         // Calculate the size of the text in pixels
         auto pixelWidth = (float)(pixelPerEm[0] * emWidth);
         auto pixelHeight = (float)(pixelPerEm[1] * emHeight);
-        ConstantSizeDrawable::setSize(pixelWidth, pixelHeight);
+        ConstantXYDrawable::setSize(pixelWidth, pixelHeight);
 
         // Generate Vertices
         TextString::generateVertices();

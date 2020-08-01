@@ -7,12 +7,12 @@
 
 // Project Includes
 #include "../axes/IPlotable.h"
-#include "../rendering/ConstantScaleDrawable.h"
 #include "lineColours.h"
+#include "../rendering/ConstantXYDrawable.h"
 
 
 namespace GLPL {
-    class ILine2D : public IPlotable, public ConstantScaleDrawable {
+    class ILine2D : public IPlotable, public ConstantXYDrawable {
     public:
         ILine2D(std::shared_ptr<ParentDimensions> parentDimensions);
 

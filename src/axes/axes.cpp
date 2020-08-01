@@ -13,13 +13,16 @@ namespace GLPL {
 
     Axes::Axes(float x, float y, float width, float height,
                std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantScaleDrawable(x, y, width, height, std::move(parentDimensions)) {
+            ConstantXYDrawable(x, y, width, height, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 
         // Add axes area
         Axes::createAxesArea();
+
+        // Create Axes
+        Axes::createAxesLines();
 
     }
 
@@ -32,6 +35,17 @@ namespace GLPL {
         Axes::registerChild(axesAreaObj);
         // Store Text String
         this->axesArea = axesAreaPt;
+    }
+
+    void Axes::createAxesLines() {
+        // Get parent pointers
+        std::shared_ptr<ParentDimensions> ourParentDimensions = createParentDimensions();
+        // Create axes
+        xAxes = std::make_shared<AxesLineWithText>(0.0, 0.0, X_AXES_CENTRE, ourParentDimensions);
+        yAxes = std::make_shared<AxesLineWithText>(0.2, 0.8, Y_AXES_LEFT, ourParentDimensions);
+        // Register children
+        axesArea->registerChild(xAxes);
+        axesArea->registerChild(yAxes);
     }
 
     void Axes::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {

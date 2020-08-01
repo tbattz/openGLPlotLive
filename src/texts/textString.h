@@ -7,7 +7,7 @@
 
 // Project Includes
 #include "../rendering/IDrawable.h"
-#include "../rendering/ConstantSizeDrawable.h"
+#include "../rendering/ConstantXYDrawable.h"
 
 
 namespace GLPL {
@@ -18,7 +18,7 @@ namespace GLPL {
         V_CENTRE
     };
 
-    class TextString : public ConstantSizeDrawable {
+    class TextString : public ConstantXYDrawable {
     public:
         // Constructor
         TextString(const std::string& textString, float x, float y, float fontSize, std::shared_ptr<ParentDimensions> parentDimensions);

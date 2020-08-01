@@ -7,18 +7,18 @@
 
 // Project Includes
 #include "../texts/textString.h"
-#include "../rendering/ConstantScaleDrawable.h"
 #include "AxesArea.h"
+#include "AxesLineWithText.h"
+#include "../rendering/ConstantXYDrawable.h"
 
 
 namespace GLPL {
-    class Axes : public ConstantScaleDrawable {
+    class Axes : public ConstantXYDrawable {
     public:
         // Constructor
         Axes(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
-        void createAxesArea();
         // Text
         void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(unsigned int textStringId);
@@ -30,12 +30,19 @@ namespace GLPL {
         void Draw();
 
     private:
+        // Functions
+        void createAxesArea();
+        void createAxesLines();
+
         // Data
         // Axes Area
         std::shared_ptr<AxesArea> axesArea;
         // Text String
         unsigned int textStringCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
+        // Axes
+        std::shared_ptr<AxesLineWithText> xAxes;
+        std::shared_ptr<AxesLineWithText> yAxes;
     };
 }
 

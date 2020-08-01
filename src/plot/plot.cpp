@@ -9,7 +9,7 @@
 namespace GLPL {
 
     Plot::Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantScaleDrawable(x, y, width, height, std::move(parentDimensions)) {
+            ConstantXYDrawable(x, y, width, height, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);

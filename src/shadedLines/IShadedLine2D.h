@@ -17,7 +17,6 @@
 #include "../rendering/shader.h"
 #include "../lines/lineColours.h"
 #include "../axes/IPlotable.h"
-#include "../rendering/ConstantScaleDrawable.h"
 #include "../lines/ILine2D.h"
 
 // Standard Includes
