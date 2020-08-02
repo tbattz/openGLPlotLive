@@ -4,6 +4,7 @@
 
 #include "AxesLineTicks.h"
 
+
 namespace GLPL {
 
     AxesLineTicks::AxesLineTicks(AxesDirection axesDirection,
@@ -12,23 +13,37 @@ namespace GLPL {
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(1.0f, 0.78f, 0.0f, 1.0f);
 
+        // Setup Buffers
+        AxesLineTicks::createAndSetupAxesLineBuffers();
+
         // Generate Axes Line
         this->axesDirection = axesDirection;
-        AxesLineTicks::generateAxesLine();
-
-        // Setup Buffers
-        AxesLineTicks::createAndSetupAxesLineBuffer();
+        AxesLineTicks::generateAllVertices();
 
         // Set size
         AxesLineTicks::updateSize();
 
     }
 
-    void AxesLineTicks::generateAxesLine() {
+    void AxesLineTicks::generateAllVertices() {
+        // Generate the Axes Line
+        AxesLineTicks::generateAxesLines();
+
+        // Generate the Major Ticks
+        AxesLineTicks::generateMajorTickVerts();
+
+        // Generate the Minor Ticks
+        AxesLineTicks::generateMinorTickVerts();
+
+        // Update the buffers
+        AxesLineTicks::updateAxesLineBuffers();
+    }
+
+    void AxesLineTicks::generateAxesLines() {
         switch(axesDirection) {
             case X_AXES_TOP: {
                 // Line on bottom
-                lineVerts = {-1.0, -1.0, 1.0, -1.0};
+                axesLineVerts = {-1.0, -1.0, 1.0, -1.0};
                 setXYScale(CONSTANT_SCALE, CONSTANT_SIZE);
                 setAttachLocation(BOTTOM_LEFT);
                 setPosition(0.0f, 1.0f);
@@ -36,7 +51,7 @@ namespace GLPL {
             }
             case X_AXES_BOTTOM: {
                 // Line on top
-                lineVerts = {-1.0, 1.0, 1.0, 1.0};
+                axesLineVerts = {-1.0, 1.0, 1.0, 1.0};
                 setXYScale(CONSTANT_SCALE, CONSTANT_SIZE);
                 setAttachLocation(TOP_LEFT);
                 setPosition(0.0f, 0.0f);
@@ -44,15 +59,17 @@ namespace GLPL {
             }
             case X_AXES_CENTRE: {
                 // Line in centre
-                lineVerts = {-1.0, 0.0, 1.0, 0.0};
+                // Calculate the position within the window
+                float yMid = -yMin/(yMax - yMin);   // In 0 to 1
+                axesLineVerts = {-1.0, 0.0, 1.0, 0.0};
                 setXYScale(CONSTANT_SCALE, CONSTANT_SIZE);
                 setAttachLocation(CENTRE);
-                setPosition(0.5f, 0.5f);
+                setPosition(0.5f, yMid);
                 break;
             }
             case Y_AXES_LEFT: {
                 // Line on right
-                lineVerts = {1.0, -1.0, 1.0, 1.0};
+                axesLineVerts = {1.0, -1.0, 1.0, 1.0};
                 setXYScale(CONSTANT_SIZE, CONSTANT_SCALE);
                 setAttachLocation(BOTTOM_RIGHT);
                 setPosition(0.0f, 0.0f);
@@ -60,7 +77,7 @@ namespace GLPL {
             }
             case Y_AXES_RIGHT: {
                 // Line on left
-                lineVerts = {-1.0, -1.0, -1.0, 1.0};
+                axesLineVerts = {-1.0, -1.0, -1.0, 1.0};
                 setXYScale(CONSTANT_SIZE, CONSTANT_SCALE);
                 setAttachLocation(BOTTOM_LEFT);
                 setPosition(1.0f, 0.0f);
@@ -68,16 +85,103 @@ namespace GLPL {
             }
             case Y_AXES_CENTRE: {
                 // Line in centre
-                lineVerts = {0.0, -1.0, 0.0, 1.0};
+                // Calculate the position within the window
+                float xMid = -xMin/(xMax - xMin);   // In 0 to 1
+                axesLineVerts = {0.0, -1.0, 0.0, 1.0};
                 setXYScale(CONSTANT_SIZE, CONSTANT_SCALE);
                 setAttachLocation(CENTRE);
-                setPosition(0.5f, 0.5f);
+                setPosition(xMid, 0.5f);
                 break;
             }
             default: {
                 std::cout << "Invalid Axes Direction!" << std::endl;
             }
         }
+    }
+
+    void AxesLineTicks::generateMajorTickVerts() {
+        // Calculate distribution of major ticks
+        unsigned int sectionsBtwMajor = minorSpacingsPerMajor + 1;
+        unsigned int majorSectionWidthPx = sectionsBtwMajor * minorTickSpacingPx;
+        // Create based around the axes mid position (axesMidPos)
+        majorTickVerts.clear();
+        majorTickAxesPos.clear();
+        if (axesDirection == X_AXES_TOP || axesDirection == X_AXES_BOTTOM || axesDirection == X_AXES_CENTRE) {
+            float pixelsPerUnit = (float)getWidthPx() / 2.0f;
+            float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
+            float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getWidthPx(); // xMin to xMax
+            float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
+            // Negative values
+            float currRelPos = yMidRelPos;
+            float currAxesPos = 0.0f;
+            while (currRelPos > -1.0f) {
+                // Store relative position
+                majorTickVerts.push_back(currRelPos);   // x1
+                majorTickVerts.push_back(-1.0f);        // y1
+                majorTickVerts.push_back(currRelPos);   // x2
+                majorTickVerts.push_back(1.0f);         // y2
+                // Store axes position
+                majorTickAxesPos.push_back(currAxesPos);
+                // Update position
+                currRelPos -= majorSectionWidthRel;
+                currAxesPos -= majorSectionWidthAxesUnits;
+            }
+            // Positive Values
+            currRelPos = yMidRelPos;
+            currAxesPos = 0.0f;
+            while (currRelPos < 1.0f) {
+                // Store relative position
+                majorTickVerts.push_back(currRelPos);   // x1
+                majorTickVerts.push_back(-1.0f);        // y1
+                majorTickVerts.push_back(currRelPos);   // x2
+                majorTickVerts.push_back(1.0f);         // y2
+                // Store axes position
+                majorTickAxesPos.push_back(currAxesPos);
+                // Update position
+                currRelPos += majorSectionWidthRel;
+                currAxesPos += majorSectionWidthAxesUnits;
+            }
+        } else if (axesDirection == Y_AXES_LEFT || axesDirection == Y_AXES_RIGHT || axesDirection == Y_AXES_CENTRE) {
+            float pixelsPerUnit = (float)getHeightPx() / 2.0f;
+            float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
+            float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getHeightPx(); // xMin to xMax
+            float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
+            // Negative values
+            float currRelPos = xMidRelPos;
+            float currAxesPos = 0.0f;
+            while (currRelPos > -1.0f) {
+                // Store relative position
+                majorTickVerts.push_back(-1.0f);        // x1
+                majorTickVerts.push_back(currRelPos);   // y1
+                majorTickVerts.push_back(1.0f);         // x2
+                majorTickVerts.push_back(currRelPos);   // y2
+                // Store axes position
+                majorTickAxesPos.push_back(currAxesPos);
+                // Update position
+                currRelPos -= majorSectionWidthRel;
+                currAxesPos -= majorSectionWidthAxesUnits;
+            }
+            // Positive Values
+            currRelPos = xMidRelPos;
+            currAxesPos = 0.0f;
+            while (currRelPos < 1.0f) {
+                // Store relative position
+                majorTickVerts.push_back(-1.0f);        // x1
+                majorTickVerts.push_back(currRelPos);   // y1
+                majorTickVerts.push_back(1.0f);         // x2
+                majorTickVerts.push_back(currRelPos);   // y2
+                // Store axes position
+                majorTickAxesPos.push_back(currAxesPos);
+                // Update position
+                currRelPos += majorSectionWidthRel;
+                currAxesPos += majorSectionWidthAxesUnits;
+            }
+        }
+
+    }
+
+    void AxesLineTicks::generateMinorTickVerts() {
+
     }
 
     void AxesLineTicks::updateSize() {
@@ -102,21 +206,54 @@ namespace GLPL {
 
 
     void AxesLineTicks::setMinMax(float newMin, float newMax) {
-        valMin = newMin;
-        valMax = newMax;
+        xMin = newMin;
+        xMax = newMax;
         // Regenerate axes lines
         // TODO
     }
 
-    void AxesLineTicks::createAndSetupAxesLineBuffer() {
+    void AxesLineTicks::createAndSetupAxesLineBuffers() {
+        // Axes Line
         // Create Buffers
-        glGenVertexArrays(1,&lineVAO);
-        glGenBuffers(1,&lineVBO);
+        glGenVertexArrays(1,&axesLineVAO);
+        glGenBuffers(1,&axesLineVBO);
 
         // Setup Buffers
-        glBindVertexArray(lineVAO);
-        glBindBuffer(GL_ARRAY_BUFFER,lineVBO);
-        glBufferData(GL_ARRAY_BUFFER, lineVerts.size()*sizeof(GLfloat),&lineVerts[0],GL_STATIC_DRAW);
+        glBindVertexArray(axesLineVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, axesLineVBO);
+        glBufferData(GL_ARRAY_BUFFER, axesLineVerts.size() * sizeof(GLfloat), &axesLineVerts[0], GL_STATIC_DRAW);
+
+        // Position Attributes
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+        glBindVertexArray(0);
+
+        // Major Tick Buffers
+        // Create Buffers
+        glGenVertexArrays(1,&majorTickVAO);
+        glGenBuffers(1,&majorTickVBO);
+
+        // Setup Buffers
+        glBindVertexArray(majorTickVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, majorTickVBO);
+        glBufferData(GL_ARRAY_BUFFER, majorTickVerts.size()*sizeof(GLfloat),&majorTickVerts[0],GL_STATIC_DRAW);
+
+        // Position Attributes
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+        glBindVertexArray(0);
+
+        // Minor Tick Buffers
+        // Create Buffers
+        glGenVertexArrays(1,&minorTickVAO);
+        glGenBuffers(1,&minorTickVBO);
+
+        // Setup Buffers
+        glBindVertexArray(minorTickVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, minorTickVBO);
+        glBufferData(GL_ARRAY_BUFFER, minorTickVerts.size()*sizeof(GLfloat),&minorTickVerts[0],GL_STATIC_DRAW);
 
         // Position Attributes
         glEnableVertexAttribArray(0);
@@ -125,21 +262,72 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
+    void AxesLineTicks::updateAxesLineBuffers() {
+        // Axes Line
+        glBindBuffer(GL_ARRAY_BUFFER, axesLineVBO);
+        glBufferData(GL_ARRAY_BUFFER, axesLineVerts.size()*sizeof(axesLineVerts[0]), &axesLineVerts[0], GL_DYNAMIC_DRAW);
+        // Major Ticks
+        glBindBuffer(GL_ARRAY_BUFFER, majorTickVBO);
+        glBufferData(GL_ARRAY_BUFFER, majorTickVerts.size()*sizeof(majorTickVerts[0]), &majorTickVerts[0], GL_DYNAMIC_DRAW);
+        // Minor Ticks
+        glBindBuffer(GL_ARRAY_BUFFER, minorTickVBO);
+        glBufferData(GL_ARRAY_BUFFER, minorTickVerts.size()*sizeof(minorTickVerts[0]), &minorTickVerts[0], GL_DYNAMIC_DRAW);
+    }
+
     void AxesLineTicks::drawAxesLine() {
-        // Draw bounding box
+        // Draw Axes Line
         std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
         shader->Use();
         glUniformMatrix4fv(glGetUniformLocation(shader->Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(overallTransform));
         glUniform4fv(glGetUniformLocation(shader->Program,"inColor"),1,glm::value_ptr(axesLineColor));
-        glBindVertexArray(lineVAO);
-        glDrawArrays(GL_LINES,0,4);
+        glBindVertexArray(axesLineVAO);
+        glDrawArrays(GL_LINES,0,(int)axesLineVerts.size()/2.0);
+        glBindVertexArray(0);
+    }
+
+    void AxesLineTicks::drawMajorTicks() {
+        // Draw the series of major ticks
+        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        shader->Use();
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(overallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program,"inColor"),1,glm::value_ptr(axesLineColor));
+        glBindVertexArray(majorTickVAO);
+        glDrawArrays(GL_LINES,0,(int)majorTickVerts.size()/2.0);
+        glBindVertexArray(0);
+    }
+
+    void AxesLineTicks::drawMinorTicks() {
+        // Draw the series of minor ticks
+        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        shader->Use();
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(overallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program,"inColor"),1,glm::value_ptr(axesLineColor));
+        glBindVertexArray(minorTickVAO);
+        glDrawArrays(GL_LINES,0,(int)minorTickVerts.size()/2.0);
         glBindVertexArray(0);
     }
 
     void AxesLineTicks::Draw() {
         // Draw Axes line
         AxesLineTicks::drawAxesLine();
+        // Draw Major Ticks
+        AxesLineTicks::drawMajorTicks();
+        // Draw Minor Ticks
+        AxesLineTicks::drawMinorTicks();
     }
 
+    void AxesLineTicks::setParentDimensions(glm::mat4 newParentTransform, int newParentXPx, int newParentYPx,
+                                            int newParentWidthPx, int newParentHeightPx) {
+        ConstantXYDrawable::setParentDimensions(newParentTransform, newParentXPx, newParentYPx, newParentWidthPx,
+                                                newParentHeightPx);
+        // Update vertices
+        AxesLineTicks::generateAllVertices();
+    }
+
+    void AxesLineTicks::setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) {
+        ConstantXYDrawable::setParentDimensions(parentDimensions);
+        // Update vertices
+        AxesLineTicks::generateAllVertices();
+    }
 
 }

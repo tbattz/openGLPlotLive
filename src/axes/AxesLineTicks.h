@@ -29,25 +29,51 @@ namespace GLPL {
 
         // Functions
         void Draw();
+        void setParentDimensions(glm::mat4 newParentTransform,
+                                 int newParentXPx,
+                                 int newParentYPx,
+                                 int newParentWidthPx,
+                                 int newParentHeightPx);
+        void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
+
 
     private:
         // Functions
-        void generateAxesLine();
+        void generateAllVertices();
+        void generateAxesLines();
+        void generateMajorTickVerts();
+        void generateMinorTickVerts();
         void updateSize();
         void setMinMax(float newMin, float newMax);
-        void createAndSetupAxesLineBuffer();
+        void createAndSetupAxesLineBuffers();
+        void updateAxesLineBuffers();
         void drawAxesLine();
+        void drawMajorTicks();
+        void drawMinorTicks();
 
-        // Buffers
+        // Axes Line Buffers
         AxesDirection axesDirection;
-        GLuint lineVAO, lineVBO;
-        std::vector<GLfloat> lineVerts;
-        glm::vec4 axesLineColor = glm::vec4(0.75f, 0.75f, 0.75f, 1.0f);
+        GLuint axesLineVAO, axesLineVBO;
+        std::vector<GLfloat> axesLineVerts;
 
-        // Limits
-        float valMin = -1;
-        float valMax = 1;
-        unsigned int minorTickSpacingPx = 25;   // Space between minor ticks
+        // Major Tick Buffers
+        GLuint majorTickVAO, majorTickVBO;
+        std::vector<GLfloat> majorTickVerts;    // Holds the vertices (-1 to 1) to plot
+        std::vector<float> majorTickAxesPos;    // Holds the graph value at this vertex
+
+        // Minor Tick Buffers
+        GLuint minorTickVAO, minorTickVBO;
+        std::vector<GLfloat> minorTickVerts;    // Holds the vertices (-1 to 1) to plot
+        std::vector<float> minorTickAxesPos;    // Holds the graph value at this vertex
+
+
+        // Settings
+        float xMin = -2;
+        float xMax = 6;
+        float yMin = -0.5;
+        float yMax = 1.5;
+        glm::vec4 axesLineColor = glm::vec4(0.75f, 0.75f, 0.75f, 1.0f);
+        unsigned int minorTickSpacingPx = 20;   // Suggested space between minor ticks
         unsigned int minorTickLengthPx = 10;    // Length of minor ticks
         unsigned int majorTickLengthPx = 20;    // Length of major ticks
         unsigned int minorSpacingsPerMajor = 3; // Number of minor spacings between two major spacings
