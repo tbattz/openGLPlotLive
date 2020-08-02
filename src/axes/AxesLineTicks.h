@@ -22,6 +22,11 @@ namespace GLPL {
         Y_AXES_CENTRE   // Attached to centre, line on right
     };
 
+    enum TickSpacingType {
+        MINOR_SPACING,
+        MAJOR_SPACING
+    };
+
     class AxesLineTicks : public ConstantXYDrawable {
     public:
         // Constructor
@@ -41,11 +46,20 @@ namespace GLPL {
         // Functions
         void generateAllVertices();
         void generateAxesLines();
-        std::tuple<unsigned int, std::vector<float>, std::vector<float>>
+        std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
                                 generateEquallySpacingBetweenLimits(float sectionWidthRel,
                                                                     float sectionWidthAxesUnits,
                                                                     float midRelPos);
+        void generateXTopTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateXBottomTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateXCentreTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateYLeftTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateYRightTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateYCentreTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
+        void generateXTickVerts();
+        void generateYTickVerts();
         void generateTickVerts();
+
         void updateSize();
         void setMinMax(float newMin, float newMax);
         void createAndSetupAxesLineBuffers();

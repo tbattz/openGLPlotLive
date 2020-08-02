@@ -96,16 +96,24 @@ namespace GLPL {
         }
     }
 
-    std::tuple<unsigned int, std::vector<float>, std::vector<float>>
+    std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
     AxesLineTicks::generateEquallySpacingBetweenLimits(float sectionWidthRel,
                                                        float sectionWidthAxesUnits,
                                                        float midRelPos) {
         // Negative values
         float currRelPos = midRelPos;
         float currAxesPos = 0.0f;
+        std::vector<TickSpacingType> tickSpacingType;
         std::vector<float> relPos;
         std::vector<float> axesPos;
+        unsigned int count = 0;
         while (currRelPos > -1.0f) {
+            // Store tick type
+            if (count % (minorSpacingsPerMajor + 1) == 0) {
+                tickSpacingType.push_back(MAJOR_SPACING);
+            } else {
+                tickSpacingType.push_back(MINOR_SPACING);
+            }
             // Store relative position
             relPos.push_back(currRelPos);
             // Store axes position
@@ -113,13 +121,22 @@ namespace GLPL {
             // Update position
             currRelPos -= sectionWidthRel;
             currAxesPos -= sectionWidthAxesUnits;
+            // Increment count
+            count += 1;
         }
         // Store cross over point
         unsigned int crossIndex = relPos.size() - 1;
         // Positive Values
         currRelPos = midRelPos;
         currAxesPos = 0.0f;
+        count = 0;
         while (currRelPos < 1.0f) {
+            // Store tick type
+            if (count % (minorSpacingsPerMajor + 1) == 0) {
+                tickSpacingType.push_back(MAJOR_SPACING);
+            } else {
+                tickSpacingType.push_back(MINOR_SPACING);
+            }
             // Store relative position
             relPos.push_back(currRelPos);
             // Store axes position
@@ -127,9 +144,219 @@ namespace GLPL {
             // Update position
             currRelPos += sectionWidthRel;
             currAxesPos += sectionWidthAxesUnits;
+            // Increment count
+            count += 1;
         }
 
-        return std::make_tuple(crossIndex, relPos, axesPos);
+        return std::make_tuple(crossIndex, tickSpacingType, relPos, axesPos);
+    }
+
+    void AxesLineTicks::generateXTopTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(relPos);   // x1
+            majorTickVerts.push_back(-1.0f);    // y1
+            majorTickVerts.push_back(relPos);   // x2
+            majorTickVerts.push_back(1.0f);     // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = 2.0f * (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(relPos);          // x1
+            minorTickVerts.push_back(-1.0f);           // y1
+            minorTickVerts.push_back(relPos);          // x2
+            minorTickVerts.push_back(-1.0f + relLen);  // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateXBottomTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(relPos);  // x1
+            majorTickVerts.push_back(-1.0f);   // y1
+            majorTickVerts.push_back(relPos);  // x2
+            majorTickVerts.push_back(1.0f);    // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = 2.0f * (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(relPos);         // x1
+            minorTickVerts.push_back(1.0f);           // y1
+            minorTickVerts.push_back(relPos);         // x2
+            minorTickVerts.push_back(1.0f - relLen);  // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateXCentreTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(relPos);  // x1
+            majorTickVerts.push_back(-1.0f);   // y1
+            majorTickVerts.push_back(relPos);  // x2
+            majorTickVerts.push_back(1.0f);    // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(relPos);   // x1
+            minorTickVerts.push_back(-relLen);  // y1
+            minorTickVerts.push_back(relPos);   // x2
+            minorTickVerts.push_back(relLen);   // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateYLeftTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(1.0f);     // x1
+            majorTickVerts.push_back(relPos);   // y1
+            majorTickVerts.push_back(-1.0f);    // x2
+            majorTickVerts.push_back(relPos);   // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = 2.0f * (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(1.0f);           // x1
+            minorTickVerts.push_back(relPos);         // y1
+            minorTickVerts.push_back(1.0f - relLen);  // x2
+            minorTickVerts.push_back(relPos);         // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateYRightTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(-1.0f);   // x1
+            majorTickVerts.push_back(relPos);  // y1
+            majorTickVerts.push_back(1.0f);    // x2
+            majorTickVerts.push_back(relPos);  // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = 2.0f * (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(-1.0f);          // x1
+            minorTickVerts.push_back(relPos);         // y1
+            minorTickVerts.push_back(relLen - 1.0f);  // x2
+            minorTickVerts.push_back(relPos);         // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateYCentreTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos) {
+        if (tickSpacingType == MAJOR_SPACING) {
+            // Major
+            // Store relative position
+            majorTickVerts.push_back(-1.0f);   // x1
+            majorTickVerts.push_back(relPos);  // y1
+            majorTickVerts.push_back(1.0f);    // x2
+            majorTickVerts.push_back(relPos);  // y2
+            // Store axes position
+            majorTickAxesPos.push_back(axesPos);
+        } else if (tickSpacingType == MINOR_SPACING) {
+            // Minor
+            float relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
+            // Store relative position
+            minorTickVerts.push_back(-relLen);  // x1
+            minorTickVerts.push_back(relPos);   // y1
+            minorTickVerts.push_back(relLen);   // x2
+            minorTickVerts.push_back(relPos);   // y2
+            // Store axes position
+            minorTickAxesPos.push_back(axesPos);
+        }
+    }
+
+    void AxesLineTicks::generateXTickVerts() {
+        float pixelsPerUnit = (float)getWidthPx() / 2.0f;
+        float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+        float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getWidthPx(); // xMin to xMax
+        float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
+        // Generate Sequence
+        unsigned int crossIndex;
+        std::vector<TickSpacingType> tickSpacingType;
+        std::vector<float> relPos;
+        std::vector<float> axesPos;
+        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
+        // Generate vertices
+        for(unsigned int i=0; i < relPos.size(); i++) {
+            switch(axesDirection) {
+                case X_AXES_TOP: {
+                    AxesLineTicks::generateXTopTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                case X_AXES_BOTTOM: {
+                    AxesLineTicks::generateXBottomTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                case X_AXES_CENTRE: {
+                    AxesLineTicks::generateXCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                case Y_AXES_LEFT:
+                case Y_AXES_RIGHT:
+                case Y_AXES_CENTRE:
+                default: {}
+            }
+        }
+    }
+
+    void AxesLineTicks::generateYTickVerts() {
+        float pixelsPerUnit = (float)getHeightPx() / 2.0f;
+        float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+        float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getHeightPx(); // xMin to xMax
+        float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
+        // Generate Sequence
+        unsigned int crossIndex;
+        std::vector<TickSpacingType> tickSpacingType;
+        std::vector<float> relPos;
+        std::vector<float> axesPos;
+        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
+        // Generate vertices
+        for(unsigned int i=0; i < relPos.size(); i++) {
+            switch(axesDirection) {
+                case X_AXES_TOP:
+                case X_AXES_BOTTOM:
+                case X_AXES_CENTRE: {
+                    break;
+                }
+                case Y_AXES_LEFT: {
+                    AxesLineTicks::generateYLeftTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                case Y_AXES_RIGHT: {
+                    AxesLineTicks::generateYRightTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                case Y_AXES_CENTRE: {
+                    AxesLineTicks::generateYCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                    break;
+                }
+                default: {}
+            }
+        }
     }
 
     void AxesLineTicks::generateTickVerts() {
@@ -140,98 +367,21 @@ namespace GLPL {
         majorTickVerts.clear();
         majorTickAxesPos.clear();
         // Create based around the axes mid position
-        if (axesDirection == X_AXES_TOP || axesDirection == X_AXES_BOTTOM || axesDirection == X_AXES_CENTRE) {
-            float pixelsPerUnit = (float)getWidthPx() / 2.0f;
-            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-            float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getWidthPx(); // xMin to xMax
-            float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
-            // Generate Sequence
-            unsigned int crossIndex;
-            std::vector<float> relPos;
-            std::vector<float> axesPos;
-            std::tie(crossIndex, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
-            // Generate vertices
-            unsigned int count = 0;
-            float relLen = 0;
-            bool crossedOver = false;
-            for(unsigned int i=0; i < relPos.size(); i++) {
-                // Check for minor or major
-                if (count % (minorSpacingsPerMajor + 1) == 0) {
-                    // Major
-                    relLen = 1.0f;
-                    // Store relative position
-                    majorTickVerts.push_back(relPos[i]);   // x1
-                    majorTickVerts.push_back(-relLen);     // y1
-                    majorTickVerts.push_back(relPos[i]);   // x2
-                    majorTickVerts.push_back(relLen);      // y2
-                    // Store axes position
-                    majorTickAxesPos.push_back(axesPos[i]);
-                } else {
-                    // Minor
-                    relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
-                    // Store relative position
-                    minorTickVerts.push_back(relPos[i]);   // x1
-                    minorTickVerts.push_back(-relLen);     // y1
-                    minorTickVerts.push_back(relPos[i]);   // x2
-                    minorTickVerts.push_back(relLen);      // y2
-                    // Store axes position
-                    minorTickAxesPos.push_back(axesPos[i]);
-                }
-
-                // Increment count in current side
-                count += 1;
-                if (!crossedOver && count > crossIndex) {
-                    count = 0;
-                    crossedOver = true;
-                }
+        switch(axesDirection) {
+            case X_AXES_BOTTOM:
+            case X_AXES_TOP:
+            case X_AXES_CENTRE: {
+                AxesLineTicks::generateXTickVerts();
+                break;
             }
-        } else if (axesDirection == Y_AXES_LEFT || axesDirection == Y_AXES_RIGHT || axesDirection == Y_AXES_CENTRE) {
-            float pixelsPerUnit = (float)getHeightPx() / 2.0f;
-            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-            float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getHeightPx(); // xMin to xMax
-            float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
-            // Generate Sequence
-            unsigned int crossIndex;
-            std::vector<float> relPos;
-            std::vector<float> axesPos;
-            std::tie(crossIndex, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
-            // Generate vertices
-            unsigned int count = 0;
-            float relLen = 0;
-            bool crossedOver = false;
-            for(unsigned int i=0; i < relPos.size(); i++) {
-                // Check for minor or major
-                if (count % (minorSpacingsPerMajor + 1) == 0) {
-                    // Major
-                    relLen = 1.0f;
-                    // Store relative position
-                    majorTickVerts.push_back(-relLen);     // x1
-                    majorTickVerts.push_back(relPos[i]);   // y1
-                    majorTickVerts.push_back(relLen);      // x2
-                    majorTickVerts.push_back(relPos[i]);   // y2
-                    // Store axes position
-                    majorTickAxesPos.push_back(axesPos[i]);
-                } else {
-                    // Minor
-                    relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
-                    // Store relative position
-                    minorTickVerts.push_back(-relLen);     // x1
-                    minorTickVerts.push_back(relPos[i]);   // y1
-                    minorTickVerts.push_back(relLen);      // x2
-                    minorTickVerts.push_back(relPos[i]);   // y2
-                    // Store axes position
-                    minorTickAxesPos.push_back(axesPos[i]);
-                }
-
-                // Increment count in current side
-                count += 1;
-                if (!crossedOver && count > crossIndex) {
-                    count = 0;
-                    crossedOver = true;
-                }
+            case Y_AXES_LEFT:
+            case Y_AXES_RIGHT:
+            case Y_AXES_CENTRE: {
+                AxesLineTicks::generateYTickVerts();
+                break;
             }
+            default: {}
         }
-
     }
 
     void AxesLineTicks::updateSize() {
