@@ -41,11 +41,11 @@ namespace GLPL {
         // Functions
         void generateAllVertices();
         void generateAxesLines();
-        std::tuple<std::vector<float>, std::vector<float>> generateEquallySpacingBetweenLimits(float sectionWidthRel,
-                                                                                               float sectionWidthAxesUnits,
-                                                                                               float midRelPos);
-        void generateMajorTickVerts();
-        void generateMinorTickVerts();
+        std::tuple<unsigned int, std::vector<float>, std::vector<float>>
+                                generateEquallySpacingBetweenLimits(float sectionWidthRel,
+                                                                    float sectionWidthAxesUnits,
+                                                                    float midRelPos);
+        void generateTickVerts();
         void updateSize();
         void setMinMax(float newMin, float newMax);
         void createAndSetupAxesLineBuffers();

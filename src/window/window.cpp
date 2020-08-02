@@ -83,15 +83,20 @@ namespace GLPL {
     void Window::updateStoredSize() {
         // Updates the stored window size used for scaling and
         // transformations with the current window size.
+        // Get previous size
+        std::pair<int, int> oldSize = getSizePx();
+        // Get new size
         int windowWidth, windowHeight;
         glfwGetWindowSize(window,&windowWidth,&windowHeight);
         // Update Viewport Dimensions
         glViewport(0, 0, windowWidth, windowHeight);
-        // Update the stored size
-        TopLevelDrawable::setSize((float)windowWidth, (float)windowHeight);
         // Update children
-        for(unsigned int i = 0; i < children.size(); i++) {
-            this->children[i]->setParentDimensions(this->getParentDimensions());
+        if (windowWidth != oldSize.first || windowHeight != oldSize.second) {
+            // Update the stored size
+            TopLevelDrawable::setSize((float)windowWidth, (float)windowHeight);
+            for (unsigned int i = 0; i < children.size(); i++) {
+                this->children[i]->setParentDimensions(this->getParentDimensions());
+            }
         }
     }
 

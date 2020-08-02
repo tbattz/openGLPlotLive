@@ -29,11 +29,8 @@ namespace GLPL {
         // Generate the Axes Line
         AxesLineTicks::generateAxesLines();
 
-        // Generate the Major Ticks
-        AxesLineTicks::generateMajorTickVerts();
-
-        // Generate the Minor Ticks
-        AxesLineTicks::generateMinorTickVerts();
+        // Generate the Ticks
+        AxesLineTicks::generateTickVerts();
 
         // Update the buffers
         AxesLineTicks::updateAxesLineBuffers();
@@ -99,8 +96,9 @@ namespace GLPL {
         }
     }
 
-    std::tuple<std::vector<float>, std::vector<float>>
-    AxesLineTicks::generateEquallySpacingBetweenLimits(float sectionWidthRel, float sectionWidthAxesUnits,
+    std::tuple<unsigned int, std::vector<float>, std::vector<float>>
+    AxesLineTicks::generateEquallySpacingBetweenLimits(float sectionWidthRel,
+                                                       float sectionWidthAxesUnits,
                                                        float midRelPos) {
         // Negative values
         float currRelPos = midRelPos;
@@ -116,6 +114,8 @@ namespace GLPL {
             currRelPos -= sectionWidthRel;
             currAxesPos -= sectionWidthAxesUnits;
         }
+        // Store cross over point
+        unsigned int crossIndex = relPos.size() - 1;
         // Positive Values
         currRelPos = midRelPos;
         currAxesPos = 0.0f;
@@ -129,60 +129,108 @@ namespace GLPL {
             currAxesPos += sectionWidthAxesUnits;
         }
 
-        return std::make_tuple(relPos, axesPos);
+        return std::make_tuple(crossIndex, relPos, axesPos);
     }
 
-    void AxesLineTicks::generateMajorTickVerts() {
-        // Calculate distribution of major ticks
-        unsigned int sectionsBtwMajor = minorSpacingsPerMajor + 1;
-        unsigned int majorSectionWidthPx = sectionsBtwMajor * minorTickSpacingPx;
-        // Create based around the axes mid position (axesMidPos)
+    void AxesLineTicks::generateTickVerts() {
+        // Calculate the distribution of ticks
+        // Clear previous entries
+        minorTickVerts.clear();
+        minorTickAxesPos.clear();
         majorTickVerts.clear();
         majorTickAxesPos.clear();
+        // Create based around the axes mid position
         if (axesDirection == X_AXES_TOP || axesDirection == X_AXES_BOTTOM || axesDirection == X_AXES_CENTRE) {
             float pixelsPerUnit = (float)getWidthPx() / 2.0f;
-            float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
-            float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getWidthPx(); // xMin to xMax
+            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+            float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getWidthPx(); // xMin to xMax
             float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
-            // Generate sequence
+            // Generate Sequence
+            unsigned int crossIndex;
             std::vector<float> relPos;
             std::vector<float> axesPos;
-            std::tie(relPos, axesPos) = generateEquallySpacingBetweenLimits(majorSectionWidthRel,majorSectionWidthAxesUnits, yMidRelPos);
+            std::tie(crossIndex, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
             // Generate vertices
+            unsigned int count = 0;
+            float relLen = 0;
+            bool crossedOver = false;
             for(unsigned int i=0; i < relPos.size(); i++) {
-                // Store relative position
-                majorTickVerts.push_back(relPos[i]);   // x1
-                majorTickVerts.push_back(-1.0f);        // y1
-                majorTickVerts.push_back(relPos[i]);   // x2
-                majorTickVerts.push_back(1.0f);         // y2
-                // Store axes position
-                majorTickAxesPos.push_back(axesPos[i]);
-            }
+                // Check for minor or major
+                if (count % (minorSpacingsPerMajor + 1) == 0) {
+                    // Major
+                    relLen = 1.0f;
+                    // Store relative position
+                    majorTickVerts.push_back(relPos[i]);   // x1
+                    majorTickVerts.push_back(-relLen);     // y1
+                    majorTickVerts.push_back(relPos[i]);   // x2
+                    majorTickVerts.push_back(relLen);      // y2
+                    // Store axes position
+                    majorTickAxesPos.push_back(axesPos[i]);
+                } else {
+                    // Minor
+                    relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
+                    // Store relative position
+                    minorTickVerts.push_back(relPos[i]);   // x1
+                    minorTickVerts.push_back(-relLen);     // y1
+                    minorTickVerts.push_back(relPos[i]);   // x2
+                    minorTickVerts.push_back(relLen);      // y2
+                    // Store axes position
+                    minorTickAxesPos.push_back(axesPos[i]);
+                }
 
+                // Increment count in current side
+                count += 1;
+                if (!crossedOver && count > crossIndex) {
+                    count = 0;
+                    crossedOver = true;
+                }
+            }
         } else if (axesDirection == Y_AXES_LEFT || axesDirection == Y_AXES_RIGHT || axesDirection == Y_AXES_CENTRE) {
             float pixelsPerUnit = (float)getHeightPx() / 2.0f;
-            float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
-            float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getHeightPx(); // xMin to xMax
+            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+            float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getHeightPx(); // xMin to xMax
             float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
-            // Generate sequence
+            // Generate Sequence
+            unsigned int crossIndex;
             std::vector<float> relPos;
             std::vector<float> axesPos;
-            std::tie(relPos, axesPos) = generateEquallySpacingBetweenLimits(majorSectionWidthRel, majorSectionWidthAxesUnits, xMidRelPos);
+            std::tie(crossIndex, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
             // Generate vertices
+            unsigned int count = 0;
+            float relLen = 0;
+            bool crossedOver = false;
             for(unsigned int i=0; i < relPos.size(); i++) {
-                // Store relative position
-                majorTickVerts.push_back(-1.0f);        // x1
-                majorTickVerts.push_back(relPos[i]);    // y1
-                majorTickVerts.push_back(1.0f);         // x2
-                majorTickVerts.push_back(relPos[i]);    // y2
-                // Store axes position
-                majorTickAxesPos.push_back(axesPos[i]);
+                // Check for minor or major
+                if (count % (minorSpacingsPerMajor + 1) == 0) {
+                    // Major
+                    relLen = 1.0f;
+                    // Store relative position
+                    majorTickVerts.push_back(-relLen);     // x1
+                    majorTickVerts.push_back(relPos[i]);   // y1
+                    majorTickVerts.push_back(relLen);      // x2
+                    majorTickVerts.push_back(relPos[i]);   // y2
+                    // Store axes position
+                    majorTickAxesPos.push_back(axesPos[i]);
+                } else {
+                    // Minor
+                    relLen = (float)minorTickLengthPx / (float)majorTickLengthPx;
+                    // Store relative position
+                    minorTickVerts.push_back(-relLen);     // x1
+                    minorTickVerts.push_back(relPos[i]);   // y1
+                    minorTickVerts.push_back(relLen);      // x2
+                    minorTickVerts.push_back(relPos[i]);   // y2
+                    // Store axes position
+                    minorTickAxesPos.push_back(axesPos[i]);
+                }
+
+                // Increment count in current side
+                count += 1;
+                if (!crossedOver && count > crossIndex) {
+                    count = 0;
+                    crossedOver = true;
+                }
             }
         }
-
-    }
-
-    void AxesLineTicks::generateMinorTickVerts() {
 
     }
 

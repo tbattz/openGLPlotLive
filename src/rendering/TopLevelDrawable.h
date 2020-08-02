@@ -17,6 +17,7 @@ namespace GLPL {
         // Functions
         void setPosition(float newX, float newY);
         void setSize(float newWidth, float newHeight);
+        std::pair<int, int> getSizePx();
         void setParentDimensions(glm::mat4 newParentTransform,
                                  int newParentXPx,
                                  int newParentYPx,

@@ -36,6 +36,10 @@ void GLPL::TopLevelDrawable::setSize(float newWidth, float newHeight) {
     updateChildren();
 }
 
+std::pair<int, int> GLPL::TopLevelDrawable::getSizePx() {
+    return {this->widthPx, this->heightPx};
+}
+
 void GLPL::TopLevelDrawable::setParentDimensions(glm::mat4 newParentTransform,
                                           int newParentXPx,
                                           int newParentYPx,
