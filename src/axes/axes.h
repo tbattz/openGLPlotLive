@@ -40,9 +40,6 @@ namespace GLPL {
         // Text String
         unsigned int textStringCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
-        // Axes
-        std::shared_ptr<AxesLineTicks> xAxes;
-        std::shared_ptr<AxesLineTicks> yAxes;
     };
 }
 

@@ -11,6 +11,7 @@
 #include "../shadedLines/IShadedLine2D.h"
 #include "../lines/LineType.h"
 #include "../texts/textString.h"
+#include "AxesLineTicks.h"
 
 
 namespace GLPL {
@@ -25,6 +26,7 @@ namespace GLPL {
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
+        void addAxesLine(const std::string& axesName, AxesDirection axesDirection);
         // Lines
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
@@ -64,6 +66,8 @@ namespace GLPL {
         // Text String
         unsigned int textStringCount = 0;
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
+        // Axes Lines
+        std::unordered_map<std::string, std::shared_ptr<AxesLineTicks>> axesLines;
 
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);

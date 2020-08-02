@@ -39,6 +39,11 @@ namespace GLPL {
         glEnable(GL_SCISSOR_TEST);
         glScissor(xPx, yPx, widthPx, heightPx);
 
+        // Draw Axes
+        for(auto & i : axesLines) {
+            i.second->Draw();
+        }
+
         // Draw lines
         for(auto & i : lineMap) {
             i.second->Draw();
@@ -70,6 +75,17 @@ namespace GLPL {
 
     void AxesArea::setAxesBoxColor(glm::vec4 newAxesBoxColour) {
         axesBoxColor = newAxesBoxColour;
+    }
+
+    void AxesArea::addAxesLine(const std::string& axesName, AxesDirection axesDirection) {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Create Axes
+        std::shared_ptr<AxesLineTicks> newAxes = std::make_shared<AxesLineTicks>(axesDirection, newParentPointers);
+        // Store Axes
+        axesLines.insert(std::pair<std::string, std::shared_ptr<AxesLineTicks>>(axesName, newAxes));
+        // Register as a child
+        AxesArea::registerChild(newAxes);
     }
 
     std::vector<float> AxesArea::calculateScissor(glm::mat4 axesLimitsViewportTrans) {
