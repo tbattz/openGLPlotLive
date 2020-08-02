@@ -99,6 +99,39 @@ namespace GLPL {
         }
     }
 
+    std::tuple<std::vector<float>, std::vector<float>>
+    AxesLineTicks::generateEquallySpacingBetweenLimits(float sectionWidthRel, float sectionWidthAxesUnits,
+                                                       float midRelPos) {
+        // Negative values
+        float currRelPos = midRelPos;
+        float currAxesPos = 0.0f;
+        std::vector<float> relPos;
+        std::vector<float> axesPos;
+        while (currRelPos > -1.0f) {
+            // Store relative position
+            relPos.push_back(currRelPos);
+            // Store axes position
+            axesPos.push_back(currAxesPos);
+            // Update position
+            currRelPos -= sectionWidthRel;
+            currAxesPos -= sectionWidthAxesUnits;
+        }
+        // Positive Values
+        currRelPos = midRelPos;
+        currAxesPos = 0.0f;
+        while (currRelPos < 1.0f) {
+            // Store relative position
+            relPos.push_back(currRelPos);
+            // Store axes position
+            axesPos.push_back(currAxesPos);
+            // Update position
+            currRelPos += sectionWidthRel;
+            currAxesPos += sectionWidthAxesUnits;
+        }
+
+        return std::make_tuple(relPos, axesPos);
+    }
+
     void AxesLineTicks::generateMajorTickVerts() {
         // Calculate distribution of major ticks
         unsigned int sectionsBtwMajor = minorSpacingsPerMajor + 1;
@@ -111,70 +144,39 @@ namespace GLPL {
             float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
             float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getWidthPx(); // xMin to xMax
             float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
-            // Negative values
-            float currRelPos = yMidRelPos;
-            float currAxesPos = 0.0f;
-            while (currRelPos > -1.0f) {
+            // Generate sequence
+            std::vector<float> relPos;
+            std::vector<float> axesPos;
+            std::tie(relPos, axesPos) = generateEquallySpacingBetweenLimits(majorSectionWidthRel,majorSectionWidthAxesUnits, yMidRelPos);
+            // Generate vertices
+            for(unsigned int i=0; i < relPos.size(); i++) {
                 // Store relative position
-                majorTickVerts.push_back(currRelPos);   // x1
+                majorTickVerts.push_back(relPos[i]);   // x1
                 majorTickVerts.push_back(-1.0f);        // y1
-                majorTickVerts.push_back(currRelPos);   // x2
+                majorTickVerts.push_back(relPos[i]);   // x2
                 majorTickVerts.push_back(1.0f);         // y2
                 // Store axes position
-                majorTickAxesPos.push_back(currAxesPos);
-                // Update position
-                currRelPos -= majorSectionWidthRel;
-                currAxesPos -= majorSectionWidthAxesUnits;
+                majorTickAxesPos.push_back(axesPos[i]);
             }
-            // Positive Values
-            currRelPos = yMidRelPos;
-            currAxesPos = 0.0f;
-            while (currRelPos < 1.0f) {
-                // Store relative position
-                majorTickVerts.push_back(currRelPos);   // x1
-                majorTickVerts.push_back(-1.0f);        // y1
-                majorTickVerts.push_back(currRelPos);   // x2
-                majorTickVerts.push_back(1.0f);         // y2
-                // Store axes position
-                majorTickAxesPos.push_back(currAxesPos);
-                // Update position
-                currRelPos += majorSectionWidthRel;
-                currAxesPos += majorSectionWidthAxesUnits;
-            }
+
         } else if (axesDirection == Y_AXES_LEFT || axesDirection == Y_AXES_RIGHT || axesDirection == Y_AXES_CENTRE) {
             float pixelsPerUnit = (float)getHeightPx() / 2.0f;
             float majorSectionWidthRel = (float)majorSectionWidthPx / pixelsPerUnit; // -1 to 1
             float majorSectionWidthAxesUnits = (float)majorSectionWidthPx / (float)getHeightPx(); // xMin to xMax
             float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
-            // Negative values
-            float currRelPos = xMidRelPos;
-            float currAxesPos = 0.0f;
-            while (currRelPos > -1.0f) {
+            // Generate sequence
+            std::vector<float> relPos;
+            std::vector<float> axesPos;
+            std::tie(relPos, axesPos) = generateEquallySpacingBetweenLimits(majorSectionWidthRel, majorSectionWidthAxesUnits, xMidRelPos);
+            // Generate vertices
+            for(unsigned int i=0; i < relPos.size(); i++) {
                 // Store relative position
                 majorTickVerts.push_back(-1.0f);        // x1
-                majorTickVerts.push_back(currRelPos);   // y1
+                majorTickVerts.push_back(relPos[i]);    // y1
                 majorTickVerts.push_back(1.0f);         // x2
-                majorTickVerts.push_back(currRelPos);   // y2
+                majorTickVerts.push_back(relPos[i]);    // y2
                 // Store axes position
-                majorTickAxesPos.push_back(currAxesPos);
-                // Update position
-                currRelPos -= majorSectionWidthRel;
-                currAxesPos -= majorSectionWidthAxesUnits;
-            }
-            // Positive Values
-            currRelPos = xMidRelPos;
-            currAxesPos = 0.0f;
-            while (currRelPos < 1.0f) {
-                // Store relative position
-                majorTickVerts.push_back(-1.0f);        // x1
-                majorTickVerts.push_back(currRelPos);   // y1
-                majorTickVerts.push_back(1.0f);         // x2
-                majorTickVerts.push_back(currRelPos);   // y2
-                // Store axes position
-                majorTickAxesPos.push_back(currAxesPos);
-                // Update position
-                currRelPos += majorSectionWidthRel;
-                currAxesPos += majorSectionWidthAxesUnits;
+                majorTickAxesPos.push_back(axesPos[i]);
             }
         }
 

@@ -41,6 +41,9 @@ namespace GLPL {
         // Functions
         void generateAllVertices();
         void generateAxesLines();
+        std::tuple<std::vector<float>, std::vector<float>> generateEquallySpacingBetweenLimits(float sectionWidthRel,
+                                                                                               float sectionWidthAxesUnits,
+                                                                                               float midRelPos);
         void generateMajorTickVerts();
         void generateMinorTickVerts();
         void updateSize();
