@@ -35,14 +35,14 @@ namespace GLPL {
     }
 
     void AxesArea::Draw() {
-        // Scissor Test
-        glEnable(GL_SCISSOR_TEST);
-        glScissor(xPx, yPx, widthPx, heightPx);
-
         // Draw Axes
         for(auto & i : axesLines) {
             i.second->Draw();
         }
+
+        // Scissor Test
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(xPx, yPx, widthPx, heightPx);
 
         // Draw lines
         for(auto & i : lineMap) {
