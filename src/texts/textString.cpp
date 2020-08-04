@@ -123,12 +123,12 @@ namespace GLPL {
         // Draw glyphs
         for(char c : textString) {
             // Get the corresponding character
-            Character3 ch = characterLoader->getCharacter(c);
+            std::shared_ptr<Character3> ch = characterLoader->getCharacter(c);
             // Calculate Top Left Position
-            xPos = (float)xOrigin + (float)ch.bearingX;
-            yPos = (float)yOrigin - (float)(ch.height - ch.bearingY);
-            w = (float)(ch.width);
-            h = (float)(ch.height);
+            xPos = (float)xOrigin + (float)ch->bearingX;
+            yPos = (float)yOrigin - (float)(ch->height - ch->bearingY);
+            w = (float)(ch->width);
+            h = (float)(ch->height);
 
             // Conversions - Normalise by font coordinate width and height
             float xPosRel = xPos/(float)textFontDimensions.width;
@@ -153,7 +153,7 @@ namespace GLPL {
             verticesList.push_back(vertices);
 
             // Update origin
-            xOrigin += ch.advance;
+            xOrigin += ch->advance;
         }
     }
 
@@ -162,10 +162,10 @@ namespace GLPL {
         for(unsigned int i=0; i < textString.size(); i++) {
             // Get the corresponding character
             const char c = (textString[i]);
-            Character3 ch = characterLoader->getCharacter(c);
+            std::shared_ptr<Character3> ch = characterLoader->getCharacter(c);
 
             // Render glyph texture over quad face
-            glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+            glBindTexture(GL_TEXTURE_2D, ch->TextureID);
             // Update VBO memory
             glBindBuffer(GL_ARRAY_BUFFER,this->textVBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(verticesList[i]), &verticesList[i], GL_DYNAMIC_DRAW);

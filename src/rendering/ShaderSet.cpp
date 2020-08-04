@@ -6,8 +6,12 @@
 
 namespace GLPL {
     GLPL::ShaderSet::ShaderSet() {
-        //characterLoader.getStringDimensions("1", 12);
-
+        // Make shared_ptrs
+        textShaderPt = std::make_shared<Shader>(textShader);
+        plot2dShaderPt = std::make_shared<Shader>(plot2dShader);
+        plotPosNeg2DShaderPt = std::make_shared<Shader>(plotPosNeg2DShader);
+        plotTransparent2dShaderPt = std::make_shared<Shader>(plotTransparent2dShader);
+        characterLoaderPt = std::make_shared<CharacterLoader>(characterLoader);
     }
 
     GLPL::ShaderSet::~ShaderSet() {
@@ -15,22 +19,22 @@ namespace GLPL {
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getTextShader() {
-        return std::make_shared<Shader>(textShader);
+        return textShaderPt;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getPlot2dShader() {
-        return std::make_shared<Shader>(plot2dShader);
+        return plot2dShaderPt;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getPlotPosNeg2DShader() {
-        return std::make_shared<Shader>(plotPosNeg2DShader);
+        return plotPosNeg2DShaderPt;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getPlotTransparent2dShader() {
-        return std::make_shared<Shader>(plotTransparent2dShader);
+        return plotTransparent2dShaderPt;
     }
 
     std::shared_ptr<CharacterLoader> ShaderSet::getCharacterLoader() {
-        return std::make_shared<CharacterLoader>(characterLoader);
+        return characterLoaderPt;
     }
 }

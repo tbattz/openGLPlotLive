@@ -7,6 +7,7 @@
 
 // Standard Includes
 #include <map>
+#include <memory>
 
 // GLAD - Multi Language GL Loader-Generator
 #include <glad/glad.h>
@@ -78,22 +79,16 @@ namespace GLPL {
     public:
         // Constructor
         CharacterLoader(const GLchar* fontPath);
-        Character3 getCharacter(const char reqCharacter);
+        std::shared_ptr<Character3> getCharacter(const char reqCharacter);
         glm::vec2 calcPixelsPerEmSquare(int fontSize);
-        glm::ivec2 calcFontPixelWidthHeight(int fontSize, int fontWidth, int fontHeight);
-        glm::vec2 getFontSpaceToPixelSpaceFactor(int fontSize);
-        glm::ivec2 calcStringWidthHeightInFontCoordinates(std::string newString, int fontSize);
-        glm::ivec2 getStringDimensions(std::string newString, int fontSize);
         TextFontDimensions getStringFontDimensions(std::string newString);
 
-        StringFontDimensions calcStringFontDimensions(std::string textString, float fontSize);
-        StringDimensions calcStringDimensions(std::string textString, float fontSize);
 
         int getEmSquareSize();
 
     private:
         // Data
-        std::map<GLchar, Character3> Characters;
+        std::map<GLchar, std::shared_ptr<Character3>> Characters;
         GLuint VAO, VBO;
         // Freetype
         FT_Library ft;

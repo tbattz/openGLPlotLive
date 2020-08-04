@@ -43,6 +43,14 @@ namespace GLPL {
         Shader plotPosNeg2DShader = Shader("Shaders/plotPosNeg2d.vs", "Shaders/plotPosNeg2d.frag");
         Shader plotTransparent2dShader = Shader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag");
 
+        // shared_ptr
+        std::shared_ptr<Shader> textShaderPt;
+        std::shared_ptr<Shader> plot2dShaderPt;
+        std::shared_ptr<Shader> plotPosNeg2DShaderPt;
+        std::shared_ptr<Shader> plotTransparent2dShaderPt;
+        std::shared_ptr<CharacterLoader> characterLoaderPt;
+
+
         // Text
         CharacterLoader characterLoader = CharacterLoader(FONTPATH);
 

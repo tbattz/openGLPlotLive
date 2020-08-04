@@ -37,7 +37,7 @@ namespace GLPL {
         CharacterLoader::determineScaling();
     }
 
-    Character3 CharacterLoader::getCharacter(const char reqCharacter) {
+    std::shared_ptr<Character3> CharacterLoader::getCharacter(const char reqCharacter) {
         return this->Characters[reqCharacter];
     }
 
@@ -75,14 +75,14 @@ namespace GLPL {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             // Store characters
-            Character3 character3 = {texture,
+            std::shared_ptr<Character3> character3b = std::make_shared<Character3>(Character3{texture,
                                      face->glyph->metrics.width,
                                      face->glyph->metrics.height,
                                      face->glyph->metrics.horiBearingX,
                                      face->glyph->metrics.horiBearingY,
-                                     face->glyph->metrics.horiAdvance};
+                                     face->glyph->metrics.horiAdvance});
 
-            this->Characters.insert(std::pair<GLchar, Character3>(c, character3));
+            this->Characters.insert(std::pair<GLchar, std::shared_ptr<Character3>>(c, character3b));
 
         }
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -120,8 +120,8 @@ namespace GLPL {
         ptInPixels = (float)(25.4/72) * (monitorHeightPixel / (float)heightMm);
         ptInPerHeight = ptInPixels / monitorHeightPixel;
         // Calculate dpi
-        float widthInch = widthMm / inch2Mm;
-        float heightInch = heightMm / inch2Mm;
+        float widthInch = (float)widthMm / inch2Mm;
+        float heightInch = (float)heightMm / inch2Mm;
         dpiX = monitorWidthPixel / widthInch;
         dpiY = monitorHeightPixel / heightInch;
     }
@@ -138,71 +138,6 @@ namespace GLPL {
         return glm::vec2(pixelSizeX, pixelSizeY);
     }
 
-    glm::ivec2 CharacterLoader::calcFontPixelWidthHeight(int fontSize, int fontWidth, int fontHeight) {
-        // Calculate pixel width, height
-        glm::vec2 pixelsPerEmSquare = CharacterLoader::calcPixelsPerEmSquare(fontSize);
-        int pixelWidth = std::round((float)fontWidth * pixelsPerEmSquare[0] / unitsPerEm);
-        int pixelHeight = std::round((float)fontHeight * pixelsPerEmSquare[1] / unitsPerEm);
-
-        return glm::ivec2(pixelWidth, pixelHeight);
-    }
-
-    glm::vec2 CharacterLoader::getFontSpaceToPixelSpaceFactor(int fontSize) {
-        // Calculate scaling factor from font space to pixel space
-        glm::vec2 pixelsPerEmSquare = CharacterLoader::calcPixelsPerEmSquare(fontSize);
-        float factorX = pixelsPerEmSquare[0] / unitsPerEm;
-        float factorY = pixelsPerEmSquare[1] / unitsPerEm;
-
-        return glm::vec2(factorX, factorY);
-    }
-
-    glm::ivec2 CharacterLoader::calcStringWidthHeightInFontCoordinates(std::string newString, int fontSize) {
-        // Calculate width and height in font coordinates
-        int rowHeight = 0;
-        int rowWidth = 0;
-        int totalHeight = 0;
-        int totalWidth = 0;
-        for(unsigned int i=0; i<newString.size(); i++) {
-            // Get character
-            const char currChar = newString.at(i);
-            Character3 ch = this->getCharacter(currChar);
-            // Account for multiple lines
-            if(currChar == '\n') {
-                totalHeight += rowHeight;
-                if (rowWidth > totalWidth) {
-                    totalWidth = rowWidth;
-                }
-                rowHeight = 0;
-                rowWidth = 0;
-            }
-            // Increment row dimensions
-            if (ch.height > rowHeight) {
-                rowHeight = ch.height;
-            }
-            rowWidth += ch.width;
-        }
-        // Add last row
-        totalHeight += rowHeight;
-        if (rowWidth > totalWidth) {
-            totalWidth = rowWidth;
-        }
-
-        return glm::ivec2(totalWidth, totalHeight);
-    }
-
-    /*glm::ivec2 CharacterLoader::getStringDimensions(std::string newString, int fontSize) {
-        // Get standard string size
-        // Height based maximum height of character in row
-        // Width based on width of longest row
-        // Calculate width and height in font coordinates
-        glm::ivec2 stringFontCoords = CharacterLoader::calcStringWidthHeightInFontCoordinates(std::move(newString), fontSize);
-
-        // Calculate pixel width, height for the given font size
-        glm::ivec2 fontPixelSize = CharacterLoader::calcFontPixelWidthHeight(fontSize, stringFontCoords[0], stringFontCoords[1]);
-
-        return fontPixelSize;
-    }*/
-
     TextFontDimensions CharacterLoader::getStringFontDimensions(std::string newString) {
         // Calculate width and height in font coordinates
         int rowHeight = 0;
@@ -213,7 +148,7 @@ namespace GLPL {
         for(unsigned int i=0; i<newString.size(); i++) {
             // Get character
             const char currChar = newString.at(i);
-            Character3 ch = this->getCharacter(currChar);
+            std::shared_ptr<Character3> ch = this->getCharacter(currChar);
             // Account for multiple lines
             if(currChar == '\n') {
                 totalHeight += rowHeight;
@@ -224,12 +159,12 @@ namespace GLPL {
                 rowWidth = 0;
             }
             // Increment row dimensions
-            if (ch.height > rowHeight) {
-                rowHeight = ch.height;
+            if (ch->height > rowHeight) {
+                rowHeight = ch->height;
             }
-            rowWidth += ch.advance;
+            rowWidth += ch->advance;
             // Check for larger yOffset
-            int charOffset = ch.height - ch.bearingY;
+            int charOffset = ch->height - ch->bearingY;
             if (yOffset < charOffset) {
                 yOffset = charOffset;
             }
@@ -245,61 +180,5 @@ namespace GLPL {
 
         return TextFontDimensions({totalWidth, totalHeight, yOffset});
     }
-
-
-
-
-    StringDimensions CharacterLoader::calcStringDimensions(std::string textString, float fontSize) {
-        // Calculate width and height in font coordinates
-        int rowHeight = 0;
-        int rowWidth = 0;
-        int totalHeight = 0;
-        int totalWidth = 0;
-        int yOffset = 0;
-        for(unsigned int i=0; i<textString.size(); i++) {
-            // Get character
-            const char currChar = textString.at(i);
-            Character3 ch = this->getCharacter(currChar);
-            // Account for multiple lines
-            if(currChar == '\n') {
-                totalHeight += rowHeight;
-                if (rowWidth > totalWidth) {
-                    totalWidth = rowWidth;
-                }
-                rowHeight = 0;
-                rowWidth = 0;
-            }
-            // Increment row dimensions
-            if (ch.height > rowHeight) {
-                rowHeight = ch.height;
-            }
-            rowWidth += ch.advance;
-            // Check for larger yOffset
-            int charOffset = ch.height - ch.bearingY;
-            if (yOffset < charOffset) {
-                yOffset = charOffset;
-            }
-        }
-        // Add last row
-        totalHeight += rowHeight;
-        if (rowWidth > totalWidth) {
-            totalWidth = rowWidth;
-        }
-        int fontWidth = totalWidth;
-        int fontHeight = totalHeight;
-        int fontYOffset = yOffset;
-
-        // Calculate scaling factor from font space to pixel space
-        glm::vec2 pixelsPerEmSquare = CharacterLoader::calcPixelsPerEmSquare(fontSize);
-        float factorX = pixelsPerEmSquare[0] / unitsPerEm;
-        float factorY = pixelsPerEmSquare[1] / unitsPerEm;
-
-        float pixelWidth = factorX * (float)fontHeight;
-        float pixelHeight = factorY * (float)fontHeight;
-        float pixelYOffset = factorY * (float)(fontYOffset);
-
-    }
-
-
 
 }

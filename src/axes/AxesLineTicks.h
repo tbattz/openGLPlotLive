@@ -9,6 +9,7 @@
 // Project Includes
 #include "../rendering/IDrawable.h"
 #include "../rendering/ConstantXYDrawable.h"
+#include "../texts/textString.h"
 
 
 namespace GLPL {
@@ -45,7 +46,9 @@ namespace GLPL {
     private:
         // Functions
         void generateAllVertices();
+        // Axes Line
         void generateAxesLines();
+        // Axes Ticks
         std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
                                 generateEquallySpacingBetweenLimits(float sectionWidthRel,
                                                                     float sectionWidthAxesUnits,
@@ -59,6 +62,8 @@ namespace GLPL {
         void generateXTickVerts();
         void generateYTickVerts();
         void generateTickVerts();
+        // Axes Tick Labels
+        void generateMajorTickLabels();
 
         void updateSize();
         void setMinMax(float newMin, float newMax);
@@ -67,6 +72,7 @@ namespace GLPL {
         void drawAxesLine();
         void drawMajorTicks();
         void drawMinorTicks();
+        void drawMajorTickLabels();
 
         // Axes Line Buffers
         AxesDirection axesDirection;
@@ -83,6 +89,8 @@ namespace GLPL {
         std::vector<GLfloat> minorTickVerts;    // Holds the vertices (-1 to 1) to plot
         std::vector<float> minorTickAxesPos;    // Holds the graph value at this vertex
 
+        // Axes Text Labels
+        std::vector<std::shared_ptr<TextString>> majorTickTextStrings; // Holds the text labels for major axes ticks
 
         // Settings
         float xMin = -2;

@@ -29,11 +29,14 @@ namespace GLPL {
         // Generate the Axes Line
         AxesLineTicks::generateAxesLines();
 
-        // Generate the Ticks
+        // Generate the ticks
         AxesLineTicks::generateTickVerts();
 
         // Update the buffers
         AxesLineTicks::updateAxesLineBuffers();
+
+        // Generate major tick labels
+        AxesLineTicks::generateMajorTickLabels();
     }
 
     void AxesLineTicks::generateAxesLines() {
@@ -384,6 +387,49 @@ namespace GLPL {
         }
     }
 
+    void AxesLineTicks::generateMajorTickLabels() {
+        // Generate labels
+        unsigned int usedCount = 0;
+        for(unsigned int i=0; i < majorTickAxesPos.size(); i++) {
+            // Create Parent Dimensions
+            std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+            // Create Text String
+            char textBuf[10];
+            sprintf(textBuf, "%.2f", majorTickAxesPos[i]);
+            std::string text = std::string(textBuf);
+            // Check that the label should not be the zero label
+            if (text != "0.00") {
+                // Create text string
+                float tx = 0.5f * (majorTickVerts[4 * i] + 1); // Convert (-1 to 1) to (0 to 1)
+                float ty = 0.5f * (majorTickVerts[4 * i + 1] + 1); // Convert (-1 to 1) to (0 to 1)
+                // Check if a text string already exists
+                if (majorTickTextStrings.size() < usedCount + 1) {
+                    // Create new text string
+                    std::shared_ptr<TextString> textStringPt = std::make_shared<TextString>(text, tx, ty, 12, newParentPointers);
+                    // Set pin position
+                    textStringPt->setAttachLocation(CENTRE_TOP);
+                    // Register Child
+                    AxesLineTicks::registerChild(textStringPt);
+                    // Store Text String
+                    majorTickTextStrings.push_back(textStringPt);
+                } else {
+                    // Use existing text string
+                    std::shared_ptr<TextString> textStringPt = majorTickTextStrings[usedCount];
+                    textStringPt->setTextString(text);
+                    textStringPt->setPosition(tx, ty);
+                }
+                // Increment the in use counter
+                usedCount += 1;
+            }
+        }
+
+        // Hide Excess Text Strings
+        for(unsigned int i=usedCount; i < majorTickTextStrings.size(); i++) {
+            majorTickTextStrings[i]->setTextString("");
+        }
+
+    }
+
     void AxesLineTicks::updateSize() {
         switch (axesDirection) {
             case X_AXES_TOP:
@@ -507,6 +553,13 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
+
+    void AxesLineTicks::drawMajorTickLabels() {
+        for(auto & i : majorTickTextStrings) {
+            i->Draw();
+        }
+    }
+
     void AxesLineTicks::Draw() {
         // Draw Axes line
         AxesLineTicks::drawAxesLine();
@@ -514,6 +567,8 @@ namespace GLPL {
         AxesLineTicks::drawMajorTicks();
         // Draw Minor Ticks
         AxesLineTicks::drawMinorTicks();
+        // Draw Major Tick Labels
+        AxesLineTicks::drawMajorTickLabels();
     }
 
     void AxesLineTicks::setParentDimensions(glm::mat4 newParentTransform, int newParentXPx, int newParentYPx,
