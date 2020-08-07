@@ -16,8 +16,13 @@ namespace GLPL {
         // Setup Buffers
         AxesLineTicks::createAndSetupAxesLineBuffers();
 
-        // Generate Axes Line
+        // Set Axes Direction
         this->axesDirection = axesDirection;
+
+        // Rescale pixel size for high DPI
+        AxesLineTicks::setPixelSpacing(minorTickSpacingPx, minorTickLengthPx, majorTickLengthPx);
+
+        // Generate Axes Line
         AxesLineTicks::generateAllVertices();
 
         // Set size
@@ -429,6 +434,22 @@ namespace GLPL {
         }
 
     }
+
+    void AxesLineTicks::setPixelSpacing(unsigned int newMinorTickSpacingPx, unsigned int newMinorTickLengthPx, unsigned int newMajorTickLengthPx) {
+        if (axesDirection == X_AXES_TOP || axesDirection == X_AXES_BOTTOM || axesDirection == X_AXES_CENTRE) {
+            float yScaleDpi = this->shaderSetPt->getYDpiScaling();
+            this->minorTickSpacingPx = (int)(yScaleDpi * (float)newMinorTickSpacingPx);
+            this->minorTickLengthPx = (int)(yScaleDpi * (float)newMinorTickLengthPx);
+            this->majorTickLengthPx = (int)(yScaleDpi * (float)newMajorTickLengthPx);
+        } else if (axesDirection == Y_AXES_LEFT || axesDirection == Y_AXES_CENTRE || axesDirection == Y_AXES_RIGHT) {
+            float xScaleDpi = this->shaderSetPt->getXDpiScaling();
+            this->minorTickSpacingPx = (int)(xScaleDpi * (float)newMinorTickSpacingPx);
+            this->minorTickLengthPx = (int)(xScaleDpi * (float)newMinorTickLengthPx);
+            this->majorTickLengthPx = (int)(xScaleDpi * (float)newMajorTickLengthPx);
+        }
+
+    }
+
 
     void AxesLineTicks::updateSize() {
         switch (axesDirection) {

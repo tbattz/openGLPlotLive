@@ -30,6 +30,8 @@ namespace GLPL {
         ~ShaderSet();
 
         // Functions
+        float getXDpiScaling();
+        float getYDpiScaling();
         std::shared_ptr<Shader> getTextShader();
         std::shared_ptr<Shader> getPlot2dShader();
         std::shared_ptr<Shader> getPlotPosNeg2DShader();
@@ -37,6 +39,10 @@ namespace GLPL {
         std::shared_ptr<CharacterLoader> getCharacterLoader();
 
     private:
+        // DPI Scaling
+        float xScaleDpi = 1;
+        float yScaleDpi = 1;
+
         // Shaders
         Shader textShader = Shader("Shaders/font.vs", "Shaders/font.frag");
         Shader plot2dShader = Shader("Shaders/plot2d.vs","Shaders/plot2d.frag");

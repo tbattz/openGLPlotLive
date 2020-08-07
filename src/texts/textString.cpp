@@ -97,8 +97,10 @@ namespace GLPL {
         double emHeight = (textFontDimensions.height) / emSquareSize;
 
         // Calculate the size of the text in pixels
-        auto pixelWidth = (float)(pixelPerEm[0] * emWidth);
-        auto pixelHeight = (float)(pixelPerEm[1] * emHeight);
+        float xScaleDpi = this->shaderSetPt->getXDpiScaling();
+        float yScaleDpi = this->shaderSetPt->getYDpiScaling();
+        auto pixelWidth = (float)(pixelPerEm[0] * emWidth / xScaleDpi);
+        auto pixelHeight = (float)(pixelPerEm[1] * emHeight / yScaleDpi);
         ConstantXYDrawable::setSize(pixelWidth, pixelHeight);
 
         // Generate Vertices

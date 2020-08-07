@@ -47,6 +47,9 @@ namespace GLPL {
             glfwWindowHint(GLFW_FOCUS_ON_SHOW, false);
         }
 
+        // Adjust window size for high DPI displays
+        glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
+
         // Use 4 samples for MSAA Anti-aliasing
         glfwWindowHint(GLFW_SAMPLES, 4);
 

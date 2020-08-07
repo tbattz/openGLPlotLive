@@ -64,6 +64,8 @@ namespace GLPL {
         void generateTickVerts();
         // Axes Tick Labels
         void generateMajorTickLabels();
+        // Pixel DPI Scaling
+        void setPixelSpacing(unsigned int newMinorTickSpacingPx, unsigned int newMinorTickLengthPx, unsigned int newMajorTickLengthPx);
 
         void updateSize();
         void setMinMax(float newMin, float newMax);

@@ -6,6 +6,10 @@
 
 namespace GLPL {
     GLPL::ShaderSet::ShaderSet() {
+        // Get DPI Scaling
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        glfwGetMonitorContentScale(monitor, &xScaleDpi, &yScaleDpi);
+
         // Make shared_ptrs
         textShaderPt = std::make_shared<Shader>(textShader);
         plot2dShaderPt = std::make_shared<Shader>(plot2dShader);
@@ -16,6 +20,16 @@ namespace GLPL {
 
     GLPL::ShaderSet::~ShaderSet() {
 
+    }
+
+
+    float ShaderSet::getXDpiScaling() {
+        return xScaleDpi;
+    }
+
+
+    float ShaderSet::getYDpiScaling() {
+        return yScaleDpi;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getTextShader() {
@@ -37,4 +51,5 @@ namespace GLPL {
     std::shared_ptr<CharacterLoader> ShaderSet::getCharacterLoader() {
         return characterLoaderPt;
     }
+
 }
