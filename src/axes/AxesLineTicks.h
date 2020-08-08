@@ -62,7 +62,9 @@ namespace GLPL {
         void generateXTickVerts();
         void generateYTickVerts();
         void generateTickVerts();
+        std::pair<float, float>  generateTickLabelVerts(float xPos, float yPos);
         // Axes Tick Labels
+        AttachLocation generateMajorTickOffsetAttachLocation();
         void generateMajorTickLabels();
         // Pixel DPI Scaling
         void setPixelSpacing(unsigned int newMinorTickSpacingPx, unsigned int newMinorTickLengthPx, unsigned int newMajorTickLengthPx);
@@ -92,6 +94,8 @@ namespace GLPL {
         std::vector<float> minorTickAxesPos;    // Holds the graph value at this vertex
 
         // Axes Text Labels
+        float xOffsetFactor = 1.2f;
+        float yOffsetFactor = 1.2f;
         std::vector<std::shared_ptr<TextString>> majorTickTextStrings; // Holds the text labels for major axes ticks
 
         // Settings

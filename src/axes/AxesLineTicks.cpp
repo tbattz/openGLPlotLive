@@ -392,6 +392,85 @@ namespace GLPL {
         }
     }
 
+    std::pair<float, float>  AxesLineTicks::generateTickLabelVerts(float xPos, float yPos) {
+        float labelXPos, labelYPos;
+        switch(axesDirection) {
+            case X_AXES_TOP: {
+                labelXPos = xPos;
+                labelYPos = yOffsetFactor * abs(yPos);
+                break;
+            }
+            case X_AXES_BOTTOM: {
+                labelXPos = xPos;
+                labelYPos = -yOffsetFactor * abs(yPos);
+                break;
+            }
+            case X_AXES_CENTRE: {
+                labelXPos = xPos;
+                labelYPos = -yOffsetFactor * abs(yPos);
+                break;
+            }
+            case Y_AXES_LEFT: {
+                labelXPos = -xOffsetFactor * abs(xPos);
+                labelYPos = yPos;
+                break;
+            }
+            case Y_AXES_RIGHT: {
+                labelXPos = xOffsetFactor * abs(xPos);
+                labelYPos = yPos;
+                break;
+            }
+            case Y_AXES_CENTRE: {
+                labelXPos = -xOffsetFactor * abs(xPos);
+                labelYPos = yPos;
+                break;
+            }
+            default: {
+                labelXPos = xPos;
+                labelYPos = yPos;
+            }
+        }
+        labelXPos = 0.5f * (labelXPos + 1); // Convert (-1 to 1) to (0 to 1)
+        labelYPos = 0.5f * (labelYPos + 1); // Convert (-1 to 1) to (0 to 1)
+
+        return {labelXPos, labelYPos};
+
+    }
+
+    AttachLocation AxesLineTicks::generateMajorTickOffsetAttachLocation() {
+        AttachLocation attachLocation;
+        switch(axesDirection) {
+            case X_AXES_TOP: {
+                attachLocation = CENTRE_BOTTOM;
+                break;
+            }
+            case X_AXES_BOTTOM: {
+                attachLocation = CENTRE_TOP;
+                break;
+            }
+            case X_AXES_CENTRE: {
+                attachLocation = CENTRE_TOP;
+                break;
+            }
+            case Y_AXES_LEFT: {
+                attachLocation = CENTRE_RIGHT;
+                break;
+            }
+            case Y_AXES_RIGHT: {
+                attachLocation = CENTRE_LEFT;
+                break;
+            }
+            case Y_AXES_CENTRE: {
+                attachLocation = CENTRE_RIGHT;
+                break;
+            }
+            default: {
+                attachLocation = CENTRE;
+            }
+        }
+        return attachLocation;
+    }
+
     void AxesLineTicks::generateMajorTickLabels() {
         // Generate labels
         unsigned int usedCount = 0;
@@ -403,16 +482,16 @@ namespace GLPL {
             sprintf(textBuf, "%.2f", majorTickAxesPos[i]);
             std::string text = std::string(textBuf);
             // Check that the label should not be the zero label
-            if (text != "0.00") {
+            if ((axesDirection != X_AXES_CENTRE and axesDirection != Y_AXES_CENTRE) or text != "0.00") {
                 // Create text string
-                float tx = 0.5f * (majorTickVerts[4 * i] + 1); // Convert (-1 to 1) to (0 to 1)
-                float ty = 0.5f * (majorTickVerts[4 * i + 1] + 1); // Convert (-1 to 1) to (0 to 1)
+                std::pair<float, float> labelPos = AxesLineTicks::generateTickLabelVerts(majorTickVerts[4 * i], majorTickVerts[4 * i + 1]);
                 // Check if a text string already exists
                 if (majorTickTextStrings.size() < usedCount + 1) {
                     // Create new text string
-                    std::shared_ptr<TextString> textStringPt = std::make_shared<TextString>(text, tx, ty, 12, newParentPointers);
+                    std::shared_ptr<TextString> textStringPt = std::make_shared<TextString>(text, labelPos.first, labelPos.second, 12, newParentPointers);
                     // Set pin position
-                    textStringPt->setAttachLocation(CENTRE_TOP);
+                    AttachLocation attachLocation = generateMajorTickOffsetAttachLocation();
+                    textStringPt->setAttachLocation(attachLocation);
                     // Register Child
                     AxesLineTicks::registerChild(textStringPt);
                     // Store Text String
@@ -421,7 +500,7 @@ namespace GLPL {
                     // Use existing text string
                     std::shared_ptr<TextString> textStringPt = majorTickTextStrings[usedCount];
                     textStringPt->setTextString(text);
-                    textStringPt->setPosition(tx, ty);
+                    textStringPt->setPosition(labelPos.first, labelPos.second);
                 }
                 // Increment the in use counter
                 usedCount += 1;

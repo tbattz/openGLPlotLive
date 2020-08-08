@@ -30,7 +30,7 @@ namespace GLPL {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
-        std::shared_ptr<IDrawable> axesAreaObj = std::make_shared<AxesArea>(0.2, 0.2, 0.6, 0.6, newParentPointers);
+        std::shared_ptr<IDrawable> axesAreaObj = std::make_shared<AxesArea>(0.25, 0.2, 0.6, 0.6, newParentPointers);
         std::shared_ptr<AxesArea> axesAreaPt = std::dynamic_pointer_cast<AxesArea>(axesAreaObj);
         Axes::registerChild(axesAreaObj);
         // Store Text String
@@ -41,8 +41,8 @@ namespace GLPL {
         // Get parent pointers
         std::shared_ptr<ParentDimensions> ourParentDimensions = createParentDimensions();
         // Create axes
-        axesArea->addAxesLine("x", X_AXES_CENTRE);
-        axesArea->addAxesLine("y", Y_AXES_CENTRE);
+        axesArea->addAxesLine("x", X_AXES_BOTTOM);
+        axesArea->addAxesLine("y", Y_AXES_LEFT);
     }
 
     void Axes::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {
