@@ -27,6 +27,7 @@ namespace GLPL {
         void setAxesBoxOn(bool axesBoxOnBool);
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
         void addAxesLine(const std::string& axesName, AxesDirection axesDirection);
+        void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
         // Lines
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
@@ -73,6 +74,7 @@ namespace GLPL {
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
         glm::mat4 scale2AxesLimits();
         void drawAxesBox();
+        void updateAxesLimits();
 
     };
 

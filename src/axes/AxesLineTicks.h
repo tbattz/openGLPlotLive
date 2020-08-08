@@ -6,6 +6,9 @@
 #define OPENGLPLOTLIVE_PROJ_AXESLINETICKS_H
 
 
+// Standard Includes
+#include <math.h>
+
 // Project Includes
 #include "../rendering/IDrawable.h"
 #include "../rendering/ConstantXYDrawable.h"
@@ -41,6 +44,7 @@ namespace GLPL {
                                  int newParentWidthPx,
                                  int newParentHeightPx);
         void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
+        void setMinMax(float newXMin, float newXMax, float newYMin, float newYMax);
 
 
     private:
@@ -70,7 +74,6 @@ namespace GLPL {
         void setPixelSpacing(unsigned int newMinorTickSpacingPx, unsigned int newMinorTickLengthPx, unsigned int newMajorTickLengthPx);
 
         void updateSize();
-        void setMinMax(float newMin, float newMax);
         void createAndSetupAxesLineBuffers();
         void updateAxesLineBuffers();
         void drawAxesLine();
@@ -99,10 +102,10 @@ namespace GLPL {
         std::vector<std::shared_ptr<TextString>> majorTickTextStrings; // Holds the text labels for major axes ticks
 
         // Settings
-        float xMin = -2;
-        float xMax = 6;
-        float yMin = -0.5;
-        float yMax = 1.5;
+        float xMin = -1;
+        float xMax = 1;
+        float yMin = -1;
+        float yMax = 1;
         glm::vec4 axesLineColor = glm::vec4(0.75f, 0.75f, 0.75f, 1.0f);
         unsigned int minorTickSpacingPx = 20;   // Suggested space between minor ticks
         unsigned int minorTickLengthPx = 10;    // Length of minor ticks

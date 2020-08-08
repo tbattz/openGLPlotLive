@@ -300,17 +300,17 @@ namespace GLPL {
     void AxesLineTicks::generateXTickVerts() {
         float pixelsPerUnit = (float)getWidthPx() / 2.0f;
         float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-        float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getWidthPx(); // xMin to xMax
-        float yMidRelPos = 1 - (2*yMax)/(yMax - yMin); // -1 to 1
+        float minorSectionWidthAxesUnits = minorSectionWidthRel * (xMax - xMin) / 2.0f; // xMin to xMax
+        float xMidRelPos = (xMax + xMin) / (xMin - xMax); // -1 to 1
         // Generate Sequence
         unsigned int crossIndex;
         std::vector<TickSpacingType> tickSpacingType;
         std::vector<float> relPos;
         std::vector<float> axesPos;
-        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
+        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
         // Generate vertices
         for(unsigned int i=0; i < relPos.size(); i++) {
-            switch(axesDirection) {
+            switch (axesDirection) {
                 case X_AXES_TOP: {
                     AxesLineTicks::generateXTopTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
                     break;
@@ -326,7 +326,8 @@ namespace GLPL {
                 case Y_AXES_LEFT:
                 case Y_AXES_RIGHT:
                 case Y_AXES_CENTRE:
-                default: {}
+                default: {
+                }
             }
         }
     }
@@ -334,17 +335,17 @@ namespace GLPL {
     void AxesLineTicks::generateYTickVerts() {
         float pixelsPerUnit = (float)getHeightPx() / 2.0f;
         float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-        float minorSectionWidthAxesUnits = (float)minorTickSpacingPx / (float)getHeightPx(); // xMin to xMax
-        float xMidRelPos = 1 - (2*xMax)/(xMax - xMin); // -1 to 1
+        float minorSectionWidthAxesUnits = minorSectionWidthRel * (yMax - yMin) / 2.0f; // yMin to yMax
+        float yMidRelPos = (yMax + yMin) / (yMin - yMax); // -1 to 1
         // Generate Sequence
         unsigned int crossIndex;
         std::vector<TickSpacingType> tickSpacingType;
         std::vector<float> relPos;
         std::vector<float> axesPos;
-        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
+        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
         // Generate vertices
-        for(unsigned int i=0; i < relPos.size(); i++) {
-            switch(axesDirection) {
+        for (unsigned int i = 0; i < relPos.size(); i++) {
+            switch (axesDirection) {
                 case X_AXES_TOP:
                 case X_AXES_BOTTOM:
                 case X_AXES_CENTRE: {
@@ -362,7 +363,8 @@ namespace GLPL {
                     AxesLineTicks::generateYCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
                     break;
                 }
-                default: {}
+                default: {
+                }
             }
         }
     }
@@ -551,11 +553,13 @@ namespace GLPL {
     }
 
 
-    void AxesLineTicks::setMinMax(float newMin, float newMax) {
-        xMin = newMin;
-        xMax = newMax;
+    void AxesLineTicks::setMinMax(float newXMin, float newXMax, float newYMin, float newYMax) {
+        xMin = newXMin;
+        xMax = newXMax;
+        yMin = newYMin;
+        yMax = newYMax;
         // Regenerate axes lines
-        // TODO
+        AxesLineTicks::generateAllVertices();
     }
 
     void AxesLineTicks::createAndSetupAxesLineBuffers() {

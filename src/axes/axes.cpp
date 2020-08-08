@@ -41,8 +41,8 @@ namespace GLPL {
         // Get parent pointers
         std::shared_ptr<ParentDimensions> ourParentDimensions = createParentDimensions();
         // Create axes
-        axesArea->addAxesLine("x", X_AXES_BOTTOM);
-        axesArea->addAxesLine("y", Y_AXES_LEFT);
+        axesArea->addAxesLine("x", X_AXES_CENTRE);
+        axesArea->addAxesLine("y", Y_AXES_CENTRE);
     }
 
     void Axes::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {

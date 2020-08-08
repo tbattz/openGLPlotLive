@@ -88,6 +88,20 @@ namespace GLPL {
         AxesArea::registerChild(newAxes);
     }
 
+    void AxesArea::setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax) {
+        // Set values
+        xmin = newXMin;
+        xmax = newXMax;
+        ymin = newYMin;
+        ymax = newYMax;
+        // Update Axes Lines
+        for(const auto& axesLine : axesLines) {
+            axesLine.second->setMinMax(newXMin, newXMax, newYMin, newYMax);
+        }
+        // Update Axes Area
+        AxesArea::updateAxesViewportTransform();
+    }
+
     std::vector<float> AxesArea::calculateScissor(glm::mat4 axesLimitsViewportTrans) {
         // Calculate corners of axes limits area
         glm::vec4 a = axesLimitsViewportTrans * glm::vec4(xmin,ymin,0,1); // -1 to 1
@@ -130,6 +144,7 @@ namespace GLPL {
         // Set Attributes
         linePt->setLineColour(colour);
         linePt->setOpacityRatio(opacityRatio);
+
         // Register Children
         AxesArea::registerChild(lineObj);
         // Set axes area transform
@@ -137,6 +152,9 @@ namespace GLPL {
         // Store line
         lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, linePt));
         lineCount += 1;
+
+        // Update limits for axes
+        AxesArea::updateAxesLimits();
 
         return linePt;
     }
@@ -303,4 +321,20 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
+    void GLPL::AxesArea::updateAxesLimits() {
+        // Get the overall maximum and minimum from all lines
+        xmin = -1.0;
+        xmax = 1.0;
+        ymin = -1.0;
+        ymax = 1.0;
+        for(std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
+            std::vector<float> minMax = lineInfo.second->getMinMax();
+            if (minMax[0] < xmin) { xmin = minMax[0]; };
+            if (minMax[1] > xmax) { xmax = minMax[1]; };
+            if (minMax[2] < ymin) { ymin = minMax[2]; };
+            if (minMax[3] > ymax) { ymax = minMax[3]; };
+        }
+        // Set axes limits
+        AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
+    }
 }
