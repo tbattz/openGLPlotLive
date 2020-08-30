@@ -24,11 +24,13 @@ namespace GLPL  {
         void Draw();
         std::vector<float> getMinMax();
 
+        std::vector<float>* dataPtX;
+        std::vector<float>* dataPtY;
+
     private:
         /* Data */
         int nPts = 0;
-        std::vector<float>* dataPtX;
-        std::vector<float>* dataPtY;
+
         std::vector<float> internalData;
 
     };

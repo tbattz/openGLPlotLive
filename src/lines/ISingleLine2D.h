@@ -30,6 +30,9 @@ namespace GLPL {
 
         void createAndSetupBuffers(int dataSizeBytes, const void *dataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
+        void createAndSetupBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
+                                    const void *vertDataAddress, const void *indicesDataAddress,
+                                    int strideBytes, int glType);
 
         void drawData(int nPts);
 

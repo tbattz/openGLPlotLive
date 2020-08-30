@@ -2,6 +2,7 @@
 // Created by bcub3d-desktop on 27/3/20.
 //
 
+#include <glm/gtx/string_cast.hpp>
 #include "ISingleLine2D.h"
 
 
@@ -17,13 +18,12 @@ namespace GLPL {
                                               int strideBytes, int glType) {
         /* Create Buffers */
         glGenVertexArrays(1, &lineVAO);
-        glGenBuffers(1, &lineEBO);
+        glGenBuffers(1, &lineVBO);
 
         /* Setup Buffers */
         glBindVertexArray(lineVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, lineEBO);
-
-        /* Copy data into buffer */
+        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+        // Copy data into buffer
         glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_DYNAMIC_DRAW);
 
         /* Position Attributes */
@@ -34,8 +34,33 @@ namespace GLPL {
 
     }
 
-    void
-    ISingleLine2D::drawData(int nPts) {
+    void ISingleLine2D::createAndSetupBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
+                                              const void *vertDataAddress, const void *indicesDataAddress,
+                                              int strideBytes, int glType) {
+        /* Create Buffers */
+        glGenVertexArrays(1, &lineVAO);
+        glGenBuffers(1, &lineVBO);
+        glGenBuffers(1, &lineEBO);
+
+        /* Setup Buffers */
+        // VAO
+        glBindVertexArray(lineVAO);
+        // VBO
+        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+        glBufferData(GL_ARRAY_BUFFER, vertDataSizeBytes, vertDataAddress, GL_DYNAMIC_DRAW);
+        // EBO
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesDataSizeBytes, indicesDataAddress, GL_DYNAMIC_DRAW);
+
+        /* Position Attributes */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, glType, GL_FALSE, strideBytes, (GLvoid *) 0);
+
+        glBindVertexArray(0); // Unbind VAO
+    }
+
+
+    void ISingleLine2D::drawData(int nPts) {
         // Draws the data currently stored in the line corresponding to the given VAO
         std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
         shader->Use();

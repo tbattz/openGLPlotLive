@@ -35,6 +35,9 @@ namespace GLPL {
     }
 
     void AxesArea::Draw() {
+        // Update Axes Limits
+        AxesArea::updateAxesLimits();
+
         // Draw Axes
         for(auto & i : axesLines) {
             i.second->Draw();
@@ -323,10 +326,10 @@ namespace GLPL {
 
     void GLPL::AxesArea::updateAxesLimits() {
         // Get the overall maximum and minimum from all lines
-        xmin = -1.0;
-        xmax = 1.0;
-        ymin = -1.0;
-        ymax = 1.0;
+        xmin = -0.0;
+        xmax = 0.0;
+        ymin = -0.0;
+        ymax = 0.0;
         for(std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
             std::vector<float> minMax = lineInfo.second->getMinMax();
             if (minMax[0] < xmin) { xmin = minMax[0]; };

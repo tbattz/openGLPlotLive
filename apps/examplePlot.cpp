@@ -17,6 +17,7 @@
 #include "../src/window/window.h"
 #include "../src/lines/Line2DVecVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
+#include "../src/lines/Line2D2Vecs.h"
 
 
 int main(int argc, char **argv) {
@@ -114,6 +115,11 @@ int main(int argc, char **argv) {
         yVec11.push_back(i/1000.0);
     }
 
+    // Graph 12 - Random numbers
+    std::vector<float> xVec12 = {0.0f, 1.0f};
+    std::vector<float> yVec12 = {0.0f, 0.0f};
+    xVec12.reserve(2000);
+    yVec12.reserve(2000);
 
 	/* ======================================================
 	 *                	    Create Plot
@@ -167,14 +173,20 @@ int main(int argc, char **argv) {
 
     // Axes 2
     std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    //std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line12b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line12);
 
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
 
+    float yVal12 = 0;
 
 
 	/* ======================================================
 	 *                     Drawing Loop
 	   ====================================================== */
+	unsigned int i = 0;
+
 	// Game Loop
 	while(!glfwWindowShouldClose(window->getWindow())) {
 
@@ -226,10 +238,18 @@ int main(int argc, char **argv) {
 		// Update Axes Limits
 		//if(i > 500) {
 		//	myplot.axes.updateAxesLimits(-2.0,2.0,-2.0,2.0);
-		//}
+		//}*/
+
+        /// Update graph 12
+        line12b->dataPtX->push_back(2 + i);
+        yVal12 += 2*((rand() % 100)/100.0) - 1.0;
+        line12b->dataPtY->push_back(yVal12);
+        //std::cout << yVal12 << std::endl;
+        line12b->updateInternalData();
+        i += 1;
+
 
 		// Draw Plot
-		myplot.Draw();*/
 		std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
         //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
 		myplot->Draw();
