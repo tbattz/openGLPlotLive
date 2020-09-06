@@ -51,6 +51,7 @@ namespace GLPL {
 	    std::shared_ptr<ShaderSet> getShaderSet();
 	    std::shared_ptr<ParentDimensions> getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
+        void handleMouseMovement(double xpos, double ypos);
 	    void updateSizePx();
 	    void Draw();
 

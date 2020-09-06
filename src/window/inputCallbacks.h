@@ -37,6 +37,13 @@ namespace GLPL {
         windowPt->updateStoredSize(width, height);
 
     }
+
+    static void cursorMoved(GLFWwindow *window, double xpos, double ypos) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+        // Handle mouse movement
+        windowPt->handleMouseMovement(xpos, ypos);
+    }
 }
 
 

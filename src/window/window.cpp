@@ -64,6 +64,7 @@ namespace GLPL {
         glfwSetKeyCallback(window, GLPL::key_callback);
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
+        glfwSetCursorPosCallback(window, GLPL::cursorMoved);
 
         // Set viewport size
         glViewport(0,0,getWidthPx(),getHeightPx()); // Origin is bottom left
@@ -109,6 +110,16 @@ namespace GLPL {
         // Update children
         for(unsigned int i = 0; i < children.size(); i++) {
             this->children[i]->setParentDimensions(this->getParentDimensions());
+        }
+    }
+
+    void Window::handleMouseMovement(double xpos, double ypos) {
+        // Determine children that mouse is over
+        for (auto & child : children) {
+            if (child->canMouseOver()) {
+                // TODO Implement Mouse Movement
+                //child->
+            }
         }
     }
 

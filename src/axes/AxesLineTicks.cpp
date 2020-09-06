@@ -42,6 +42,9 @@ namespace GLPL {
 
         // Generate major tick labels
         AxesLineTicks::generateMajorTickLabels();
+
+        // Update mouse over verts
+        IDrawable::calcMouseOverVerts();
     }
 
     void AxesLineTicks::generateAxesLines() {
@@ -554,12 +557,14 @@ namespace GLPL {
 
 
     void AxesLineTicks::setMinMax(float newXMin, float newXMax, float newYMin, float newYMax) {
-        xMin = newXMin;
-        xMax = newXMax;
-        yMin = newYMin;
-        yMax = newYMax;
-        // Regenerate axes lines
-        AxesLineTicks::generateAllVertices();
+        if ((newXMin != newXMax) && (newYMin != newYMax)) {
+            xMin = newXMin;
+            xMax = newXMax;
+            yMin = newYMin;
+            yMax = newYMax;
+            // Regenerate axes lines
+            AxesLineTicks::generateAllVertices();
+        }
     }
 
     void AxesLineTicks::createAndSetupAxesLineBuffers() {

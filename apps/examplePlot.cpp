@@ -176,7 +176,6 @@ int main(int argc, char **argv) {
     //std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
     std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line12b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line12);
-
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
 
     float yVal12 = 0;
@@ -250,10 +249,11 @@ int main(int argc, char **argv) {
 
 
 		// Draw Plot
-		std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
+		//std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
         //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
 		myplot->Draw();
 		//myplot->drawBoundingBox();
+		myplot->drawMouseOverBox();
 		// TODO - Convert children vector to set, automatic ordering given the function
 
 		// Post-loop draw

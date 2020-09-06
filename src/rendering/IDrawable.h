@@ -73,11 +73,18 @@ namespace GLPL {
                                          int newParentHeightPx) = 0;
         virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
         std::shared_ptr<ParentDimensions> createParentDimensions();
+        // Mouse Interaction
+        bool canMouseOver();
+        bool isHoverable();
+        std::vector<GLfloat> calcMouseOverVerts();
+        std::vector<std::shared_ptr<IDrawable>> isMouseOver(double xpos, double ypos);
+
 
         virtual void Draw() = 0;
         void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
         void removeChild(const std::shared_ptr<IDrawable>& childPt);
         void drawBoundingBox();
+        void drawMouseOverBox();
         void setZDepthValue(int newZDepthValue);
         int getZDepthValue();
         void setAttachLocation(AttachLocation newAttachLocation);
@@ -99,14 +106,19 @@ namespace GLPL {
         int parentHeightPx = 0;   // Parent height in pixels
         int zDepthValue = 0;      // The z buffer value
         AttachLocation attachLocation = BOTTOM_LEFT; // The location to position the object by, used to locate the object by different corners
+        // Mouse Interaction
+        bool mouseOverable = true;
+        bool hoverable = true;
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables
 
         // Buffers
         GLuint VAO, VBO;
+        GLuint mouseVAO, mouseVBO;
         // Area
         std::vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
+        std::vector<GLfloat> mouseOverVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
         glm::vec4 boundingBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         // Transforms
         glm::mat4 parentTransform;                      // Transform of the parent
