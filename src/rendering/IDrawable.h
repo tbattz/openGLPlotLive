@@ -73,6 +73,8 @@ namespace GLPL {
                                          int newParentHeightPx) = 0;
         virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
         std::shared_ptr<ParentDimensions> createParentDimensions();
+        // Identifier
+        virtual const char* getID() = 0;
         // Mouse Interaction
         bool canMouseOver();
         bool isHoverable();

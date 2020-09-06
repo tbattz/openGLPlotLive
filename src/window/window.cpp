@@ -208,6 +208,10 @@ namespace GLPL {
 
     }
 
+    const char* Window::getID() {
+        return ("Window:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    }
+
     void Window::addPlot(const std::shared_ptr<IDrawable>& plotPt) {
         // Store plot pointer
         children.push_back(plotPt);

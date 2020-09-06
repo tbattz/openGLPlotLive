@@ -34,6 +34,10 @@ namespace GLPL {
 
     }
 
+    const char* AxesArea::getID() {
+        return ("AxesArea:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    }
+
     void AxesArea::Draw() {
         // Update Axes Limits
         AxesArea::updateAxesLimits();

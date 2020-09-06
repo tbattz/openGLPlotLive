@@ -680,6 +680,10 @@ namespace GLPL {
         AxesLineTicks::drawMajorTickLabels();
     }
 
+    const char* AxesLineTicks::getID() {
+        return ("AxesLineTicks:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    }
+
     void AxesLineTicks::setParentDimensions(glm::mat4 newParentTransform, int newParentXPx, int newParentYPx,
                                             int newParentWidthPx, int newParentHeightPx) {
         ConstantXYDrawable::setParentDimensions(newParentTransform, newParentXPx, newParentYPx, newParentWidthPx,

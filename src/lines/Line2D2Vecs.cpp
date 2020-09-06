@@ -54,6 +54,10 @@ namespace GLPL {
         drawData(nPts);
     }
 
+    const char* Line2D2Vecs::getID() {
+        return ("Line2D2Vecs:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    }
+
     std::vector<float> Line2D2Vecs::getMinMax() {
         // Gets the minimum and maximum values of both x and y for the data
         float maxFloat = std::numeric_limits<float>::max();

@@ -22,6 +22,7 @@ namespace GLPL {
         AxesArea(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
+        const char* getID();
         void Draw();
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);

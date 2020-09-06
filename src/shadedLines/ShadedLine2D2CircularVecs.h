@@ -26,6 +26,7 @@ namespace GLPL {
         /* Functions */
         void updateInternalData(unsigned int currIndex);
         void Draw();
+        const char* getID();
         std::vector<float> getMinMax();
 
     private:
