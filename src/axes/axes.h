@@ -28,7 +28,7 @@ namespace GLPL {
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
 
         void Draw();
-        const char* getID();
+        std::string getID();
 
     private:
         // Functions

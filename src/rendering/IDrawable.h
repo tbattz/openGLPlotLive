@@ -74,12 +74,14 @@ namespace GLPL {
         virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
         std::shared_ptr<ParentDimensions> createParentDimensions();
         // Identifier
-        virtual const char* getID() = 0;
+        virtual std::string getID() = 0;
         // Mouse Interaction
         bool canMouseOver();
         bool isHoverable();
         std::vector<GLfloat> calcMouseOverVerts();
-        std::vector<std::shared_ptr<IDrawable>> isMouseOver(double xpos, double ypos);
+        bool isMouseOver(double xpos, double ypos);
+        void getMousedOverChildren(double xpos, double ypos,
+                                   const std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>>& mousedOverObjs);
 
 
         virtual void Draw() = 0;

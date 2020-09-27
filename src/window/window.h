@@ -54,7 +54,7 @@ namespace GLPL {
         void handleMouseMovement(double xpos, double ypos);
 	    void updateSizePx();
 	    void Draw();
-        const char* getID();
+        std::string getID();
 
 	    void addPlot(const std::shared_ptr<IDrawable>& plotPt);
 

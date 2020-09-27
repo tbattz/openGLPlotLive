@@ -67,8 +67,8 @@ namespace GLPL {
         }
     }
 
-    const char* Plot::getID() {
-        return ("Plot:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    std::string Plot::getID() {
+        return "Plot:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
 }

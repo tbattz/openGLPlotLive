@@ -38,7 +38,7 @@ namespace GLPL {
 
         // Functions
         void Draw();
-        const char* getID();
+        std::string getID();
         void setParentDimensions(glm::mat4 newParentTransform,
                                  int newParentXPx,
                                  int newParentYPx,

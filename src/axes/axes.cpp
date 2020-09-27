@@ -90,8 +90,8 @@ namespace GLPL {
         }
     }
 
-    const char* Axes::getID() {
-        return ("Axes:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    std::string Axes::getID() {
+        return "Axes:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
     std::shared_ptr<ILine2D> Axes::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,

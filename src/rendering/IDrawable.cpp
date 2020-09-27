@@ -155,15 +155,39 @@ std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVerts() {
         }
     }
 
-    // Update stored values
+    // Update stored values (result is in -1 to 1)
     mouseOverVerts = {xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax};
 
     return mouseOverVerts;
 }
 
-std::vector<std::shared_ptr<GLPL::IDrawable>> GLPL::IDrawable::isMouseOver(double xpos, double ypos) {
+bool GLPL::IDrawable::isMouseOver(double xpos, double ypos) {
+    // Check if mouses is over common bounding box (-1 to 1)
+    if (canMouseOver()) {
+        float xmin = mouseOverVerts[0];
+        float xmax = mouseOverVerts[2];
+        float ymin = mouseOverVerts[1];
+        float ymax = mouseOverVerts[5];
+        // TODO - Make this an inside polygon check, instead of just checking the square bounding box
+        if (xmin < xpos && xpos < xmax) {
+            if (ymin < ypos && ypos < ymax) {
+                return true;
+            }
+        }
+    }
 
-    return std::vector<std::shared_ptr<IDrawable>>();
+    return false;
+}
+
+void GLPL::IDrawable::getMousedOverChildren(double xpos, double ypos,
+        const std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>>& mousedOverObjs) {
+    for(auto & i : children) {
+        if (i->isMouseOver(xpos, ypos)) {
+            mousedOverObjs->push_back(i);
+            // Check children of children
+            i->getMousedOverChildren(xpos, ypos, mousedOverObjs);
+        }
+    }
 }
 
 void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt) {

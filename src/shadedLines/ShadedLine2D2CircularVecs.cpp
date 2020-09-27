@@ -93,8 +93,8 @@ namespace GLPL {
         drawData(nIndices);
     }
 
-    const char* ShadedLine2D2CircularVecs::getID() {
-        return ("ShadedLine2D2CircularVecs:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    std::string ShadedLine2D2CircularVecs::getID() {
+        return "ShadedLine2D2CircularVecs:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
     std::vector<float> ShadedLine2D2CircularVecs::getMinMax() {

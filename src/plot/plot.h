@@ -27,7 +27,7 @@ namespace GLPL {
         std::shared_ptr<Axes> getAxes(unsigned int axesId);
         void removeAxes(unsigned int axesId);
         void Draw();
-        const char* getID();
+        std::string getID();
 
     private:
         // Axes

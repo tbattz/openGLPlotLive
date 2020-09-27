@@ -34,8 +34,8 @@ namespace GLPL {
 
     }
 
-    const char* AxesArea::getID() {
-        return ("AxesArea:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    std::string AxesArea::getID() {
+        return "AxesArea:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
     void AxesArea::Draw() {

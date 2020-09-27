@@ -114,12 +114,23 @@ namespace GLPL {
     }
 
     void Window::handleMouseMovement(double xpos, double ypos) {
-        // Determine children that mouse is over
-        for (auto & child : children) {
-            if (child->canMouseOver()) {
-                // TODO Implement Mouse Movement
-                //child->
+        // Create vector to store
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> mousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+        // Convert from pixel space to -1 to 1
+        if (getWidthPx() > 0 && getHeightPx() > 0) {
+            xpos = 2 * (xpos / getWidthPx()) - 1;
+            ypos = 2 * (ypos / getHeightPx()) - 1;
+            // Determine children that mouse is over
+            for (auto &child : children) {
+                if (child->canMouseOver()) {
+                    child->getMousedOverChildren(xpos, ypos, mousedOverObjs);
+                }
             }
+
+            for (const auto& obj : *mousedOverObjs) {
+                std::cout << obj->getID() << ", ";
+            }
+            std::cout << std::endl;
         }
     }
 
@@ -208,8 +219,8 @@ namespace GLPL {
 
     }
 
-    const char* Window::getID() {
-        return ("Window:" + std::to_string(x) + ":" + std::to_string(y)).c_str();
+    std::string Window::getID() {
+        return "Window:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
     void Window::addPlot(const std::shared_ptr<IDrawable>& plotPt) {
