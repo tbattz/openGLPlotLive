@@ -29,12 +29,13 @@ namespace GLPL {
         std::string getID();
         std::vector<float> getMinMax();
 
+        std::vector<float>* dataPtX;
+        std::vector<float>* dataPtY;
+
     private:
         /* Data */
         bool updated = false;
         int nIndices = 0;
-        std::vector<float>* dataPtX;
-        std::vector<float>* dataPtY;
         std::vector<float> internalData;
         std::vector<int> internalIndices;
 
