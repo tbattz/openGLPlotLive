@@ -476,6 +476,45 @@ namespace GLPL {
         return attachLocation;
     }
 
+    std::string AxesLineTicks::value2Str(float inValue, unsigned int maxChar, unsigned int maxDecimal) {
+        // Setup buffer
+        char textBuf[10];
+        std::string text;
+        // Get length
+        unsigned int count = 1;
+        float divValue = inValue;
+        while (abs(divValue) > 10) {
+            // TODO Also check for -e values, which are small, check goes in the opposite direction
+            divValue = divValue / 10;
+            count += 1;
+        }
+        // Check length is greater than max char
+        if (count < maxChar) {
+            unsigned int decCount = maxChar - count;
+            if (decCount > maxDecimal) {
+                decCount = maxDecimal;
+            }
+            const char* formatStr = ("%." + std::to_string(decCount) + "f").c_str();
+            sprintf(textBuf, formatStr, inValue);
+            text = std::string(textBuf);
+        } else {
+            // Exponential format
+            int decCount = count - 3;
+            if (decCount < 0) {
+                decCount = 0;
+            }
+            std::cout << decCount << std::endl;
+            const char* formatStr = ("%." + std::to_string(decCount) + "f").c_str();
+            std::cout << formatStr << std::endl;
+            sprintf(textBuf, formatStr, inValue/(pow(10.0, count - 1)));
+            text.append(std::string(textBuf));
+            text.append("e");
+            text.append(std::to_string(count));
+        }
+
+        return text;
+    }
+
     void AxesLineTicks::generateMajorTickLabels() {
         // Generate labels
         unsigned int usedCount = 0;
@@ -483,9 +522,7 @@ namespace GLPL {
             // Create Parent Dimensions
             std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
             // Create Text String
-            char textBuf[10];
-            sprintf(textBuf, "%.2f", majorTickAxesPos[i]);
-            std::string text = std::string(textBuf);
+            std::string text = value2Str(majorTickAxesPos[i], 4, 2);
             // Check that the label should not be the zero label
             if ((axesDirection != X_AXES_CENTRE and axesDirection != Y_AXES_CENTRE) or text != "0.00") {
                 // Create text string

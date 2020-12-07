@@ -70,6 +70,7 @@ namespace GLPL {
         std::pair<float, float>  generateTickLabelVerts(float xPos, float yPos);
         // Axes Tick Labels
         AttachLocation generateMajorTickOffsetAttachLocation();
+        std::string value2Str(float inValue, unsigned int maxChar = 3, unsigned int maxDecimal = 2);
         void generateMajorTickLabels();
         // Pixel DPI Scaling
         void setPixelSpacing(unsigned int newMinorTickSpacingPx, unsigned int newMinorTickLengthPx, unsigned int newMajorTickLengthPx);

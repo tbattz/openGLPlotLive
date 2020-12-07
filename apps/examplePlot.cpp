@@ -266,7 +266,8 @@ int main(int argc, char **argv) {
         line13b->dataPtY->push_back(yVal13);
         line13b->updateInternalData();
 
-        i += 1;
+        //i += 1;
+        i -= 1;
 
 
 		// Draw Plot
