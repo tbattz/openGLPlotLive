@@ -64,6 +64,10 @@ namespace GLPL {
         TextString::updateTextDimensions();
     }
 
+    std::string TextString::getTextString() {
+        return textString;
+    }
+
     void TextString::setTextColor(glm::vec3 newTextColor) {
         this->textColor = newTextColor;
     }

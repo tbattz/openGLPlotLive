@@ -341,6 +341,15 @@ namespace GLPL {
             if (minMax[2] < ymin) { ymin = minMax[2]; };
             if (minMax[3] > ymax) { ymax = minMax[3]; };
         }
+        // Match axes lines sizing
+        float xFontSize = axesLines.at("x")->getFontSize();
+        float yFontSize = axesLines.at("y")->getFontSize();
+        if (xFontSize < yFontSize) {
+            axesLines.at("y")->setMajorTickFontSize(xFontSize);
+        } else if (yFontSize < xFontSize) {
+            axesLines.at("x")->setMajorTickFontSize(yFontSize);
+        }
+
         // Set axes limits
         AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
     }

@@ -27,6 +27,7 @@ namespace GLPL {
         void Draw();
         std::string getID();
         void setTextString(std::string newTextString);
+        std::string getTextString();
         void setTextColor(glm::vec3 textColor);
         void setFontSize(float fontSize);
 

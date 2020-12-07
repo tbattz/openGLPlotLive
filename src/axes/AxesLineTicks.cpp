@@ -42,6 +42,15 @@ namespace GLPL {
 
         // Generate major tick labels
         AxesLineTicks::generateMajorTickLabels();
+        // Check overlapping
+        while (currFontSize > 0 && isLabelsOverlapping()) {
+            currFontSize -= 1;
+            AxesLineTicks::setMajorTickFontSize(currFontSize);
+            AxesLineTicks::generateMajorTickLabels();
+            // Update size
+            AxesLineTicks::updateSize();
+        }
+
 
         // Update mouse over verts
         IDrawable::calcMouseOverVerts();
@@ -476,43 +485,109 @@ namespace GLPL {
         return attachLocation;
     }
 
-    std::string AxesLineTicks::value2Str(float inValue, unsigned int maxChar, unsigned int maxDecimal) {
+    std::string AxesLineTicks::value2NeatStr(float inValue, unsigned int maxChar, unsigned int maxDecimal) {
         // Setup buffer
         char textBuf[10];
         std::string text;
         // Get length
         unsigned int count = 1;
         float divValue = inValue;
-        while (abs(divValue) > 10) {
-            // TODO Also check for -e values, which are small, check goes in the opposite direction
-            divValue = divValue / 10;
-            count += 1;
-        }
-        // Check length is greater than max char
-        if (count < maxChar) {
-            unsigned int decCount = maxChar - count;
-            if (decCount > maxDecimal) {
-                decCount = maxDecimal;
+        // TODO - Make this cleaner
+        if (abs(divValue) > 1e-15) {
+            while (abs(divValue) < 1) {
+                divValue = divValue * 10;
+                count += 1;
             }
-            const char* formatStr = ("%." + std::to_string(decCount) + "f").c_str();
-            sprintf(textBuf, formatStr, inValue);
-            text = std::string(textBuf);
-        } else {
-            // Exponential format
-            int decCount = count - 3;
-            if (decCount < 0) {
-                decCount = 0;
+            while (abs(divValue) > 10) {
+                divValue = divValue / 10;
+                count += 1;
             }
-            std::cout << decCount << std::endl;
-            const char* formatStr = ("%." + std::to_string(decCount) + "f").c_str();
-            std::cout << formatStr << std::endl;
-            sprintf(textBuf, formatStr, inValue/(pow(10.0, count - 1)));
-            text.append(std::string(textBuf));
-            text.append("e");
-            text.append(std::to_string(count));
+            // Check length is greater than max char
+            if (count < maxChar) {
+                unsigned int decCount = maxChar - count;
+                if (decCount > maxDecimal) {
+                    decCount = maxDecimal;
+                }
+                const char *formatStr = ("%." + std::to_string(decCount) + "f").c_str();
+                sprintf(textBuf, formatStr, inValue);
+                text = std::string(textBuf);
+            } else {
+                // Exponential format
+                int decCount = count - 3;
+                if (decCount < 0) {
+                    decCount = 0;
+                }
+                const char *formatStr = ("%." + std::to_string(decCount) + "f").c_str();
+                if (abs(inValue) < 1) {
+                    sprintf(textBuf, formatStr, inValue * (pow(10.0, count - 1)));
+                } else {
+                    sprintf(textBuf, formatStr, inValue / (pow(10.0, count - 1)));
+                }
+                text.append(std::string(textBuf));
+                if (inValue < 1) {
+                    text.append("-");
+                }
+                text.append("e");
+                text.append(std::to_string(count));
+            }
         }
 
         return text;
+    }
+
+    bool AxesLineTicks::isLabelsOverlapping() {
+        bool overlapping = false;
+        float prevMin = 0;
+        float prevMax = 0;
+        float currMin = 0;
+        float currMax = 0;
+
+        if (!majorTickTextStrings.empty()) {
+            for(unsigned int i=0; i < majorTickTextStrings.size() - 1; i++) {
+                if ((strcmp(majorTickTextStrings[i + 1]->getTextString().c_str(), "0.00") != 0) &&
+                    (strcmp(majorTickTextStrings[i + 1]->getTextString().c_str(), "") != 0)) {
+                    switch (axesDirection) {
+                        case X_AXES_TOP:
+                        case X_AXES_BOTTOM:
+                        case X_AXES_CENTRE: {
+                            prevMin = majorTickTextStrings[i]->getLeft();
+                            prevMax = majorTickTextStrings[i]->getRight();
+                            currMin = majorTickTextStrings[i + 1]->getLeft();
+                            currMax = majorTickTextStrings[i + 1]->getRight();
+                            break;
+                        }
+                        case Y_AXES_LEFT:
+                        case Y_AXES_RIGHT:
+                        case Y_AXES_CENTRE: {
+                            prevMin = majorTickTextStrings[i]->getBottom();
+                            prevMax = majorTickTextStrings[i]->getTop();
+                            currMin = majorTickTextStrings[i + 1]->getBottom();
+                            currMax = majorTickTextStrings[i + 1]->getTop();
+                            break;
+                        }
+                        default: {
+                            std::cout << "Invalid Axes Direction!" << std::endl;
+                        }
+                    }
+
+                    if (((prevMin < currMin) && (currMin < prevMax)) ||
+                        ((prevMin < currMax) && (currMax < prevMax))) {
+                        // Value is overlapping
+                        overlapping = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return overlapping;
+    }
+
+    void AxesLineTicks::setMajorTickFontSize(float fontSize) {
+        for(auto & majorTickTextString : majorTickTextStrings) {
+            majorTickTextString->setFontSize(fontSize);
+        }
+        currFontSize = fontSize;
     }
 
     void AxesLineTicks::generateMajorTickLabels() {
@@ -522,7 +597,7 @@ namespace GLPL {
             // Create Parent Dimensions
             std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
             // Create Text String
-            std::string text = value2Str(majorTickAxesPos[i], 4, 2);
+            std::string text = value2NeatStr(majorTickAxesPos[i], 4, 2);
             // Check that the label should not be the zero label
             if ((axesDirection != X_AXES_CENTRE and axesDirection != Y_AXES_CENTRE) or text != "0.00") {
                 // Create text string
@@ -530,7 +605,7 @@ namespace GLPL {
                 // Check if a text string already exists
                 if (majorTickTextStrings.size() < usedCount + 1) {
                     // Create new text string
-                    std::shared_ptr<TextString> textStringPt = std::make_shared<TextString>(text, labelPos.first, labelPos.second, 12, newParentPointers);
+                    std::shared_ptr<TextString> textStringPt = std::make_shared<TextString>(text, labelPos.first, labelPos.second, baseFontSize, newParentPointers);
                     // Set pin position
                     AttachLocation attachLocation = generateMajorTickOffsetAttachLocation();
                     textStringPt->setAttachLocation(attachLocation);
@@ -602,6 +677,10 @@ namespace GLPL {
             // Regenerate axes lines
             AxesLineTicks::generateAllVertices();
         }
+    }
+
+    float AxesLineTicks::getFontSize() {
+        return currFontSize;
     }
 
     void AxesLineTicks::createAndSetupAxesLineBuffers() {
