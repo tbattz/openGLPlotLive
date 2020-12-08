@@ -14,6 +14,8 @@ namespace GLPL {
         IDrawable() {
         // Set bounding box color
         boundingBoxColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+        // Set Not Hoverable
+        setHoverable(false);
 
         AxesArea::setParentDimensions(std::move(parentDimensions));
 

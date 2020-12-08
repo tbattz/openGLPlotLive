@@ -78,6 +78,9 @@ namespace GLPL {
         // Mouse Interaction
         bool canMouseOver();
         bool isHoverable();
+        void setHoverable(bool isHoverable);
+        bool isSelected();
+        void setSelected(bool isSelected);
         std::vector<GLfloat> calcMouseOverVerts();
         bool isMouseOver(double xpos, double ypos);
         void getMousedOverChildren(double xpos, double ypos,
@@ -113,6 +116,7 @@ namespace GLPL {
         // Mouse Interaction
         bool mouseOverable = true;
         bool hoverable = true;
+        bool selected = false;
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables

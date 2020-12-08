@@ -140,15 +140,76 @@ namespace GLPL {
                 }
             }
 
-            // Print changes in mouse over
+            // Determine which objects are hoverable
+            std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newHoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+            for(const auto& obj : *newMousedOverObjs) {
+                if (obj->isHoverable()) {
+                    newHoverableObjs->push_back(obj);
+                }
+            }
+
+            // Handle selection
+            if (!newHoverableObjs->empty()) {
+                if (selected == nullptr) {
+                    // Select first object in list
+                    newHoverableObjs.get()[0][0]->setSelected(true);
+                    selected = newHoverableObjs.get()[0][0];
+                }
+            } else if (selected != nullptr) {
+                // Reset selected
+                selected->setSelected(false);
+                selected = nullptr;
+            }
+
+            // Print changes in hoverable over
             if (changed) {
-                for (const auto& obj : *newMousedOverObjs) {
-                    std::cout << obj->getID() << ", ";
+                for (const auto& obj : *newHoverableObjs) {
+                    if (obj->isSelected()) {
+                        std::cout << "[" << obj->getID() << "], ";
+                    } else {
+                        std::cout << obj->getID() << ", ";
+                    }
                 }
                 std::cout << std::endl;
             }
 
             this->mousedOverObjs = newMousedOverObjs;
+            this->hoverableObjs = newHoverableObjs;
+        }
+    }
+
+    void Window::updateSelection() {
+        // Check if we should increment the selection
+        if (toggleKeys[GLFW_KEY_SPACE]) {
+            if (hoverableObjs.get()[0].size() > 1) {
+                selected->setSelected(false);
+                int index = -1;
+                for (unsigned int i = 0; i < hoverableObjs->size(); i++) {
+                    if (hoverableObjs.get()[0][i] == selected) {
+                        if (i + 1 < hoverableObjs.get()[0].size()) {
+                            index = (int)i + 1;
+                        } else {
+                            index = 0;
+                        }
+                        break;
+                    }
+                }
+                if (index != -1) {
+                    hoverableObjs.get()[0][index]->setSelected(true);
+                    selected = hoverableObjs.get()[0][index];
+
+                    // Print changes in hoverable over
+                    for (const auto& obj : *hoverableObjs) {
+                        if (obj->isSelected()) {
+                            std::cout << "[" << obj->getID() << "], ";
+                        } else {
+                            std::cout << obj->getID() << ", ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+            }
+            toggleKeys[GLFW_KEY_SPACE] = false;
         }
     }
 

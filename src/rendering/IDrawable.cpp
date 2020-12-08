@@ -117,6 +117,18 @@ bool GLPL::IDrawable::isHoverable() {
     return hoverable;
 }
 
+void GLPL::IDrawable::setHoverable(bool isHoverable) {
+    hoverable = isHoverable;
+}
+
+bool GLPL::IDrawable::isSelected() {
+    return selected;
+}
+
+void GLPL::IDrawable::setSelected(bool isSelected) {
+    selected = isSelected;
+};
+
 std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVerts() {
     // Some children can lie outside the area -1 to 1, so to calculate if the mouse is over the particular area,
     // create a bounding box that includes all the children.

@@ -52,6 +52,7 @@ namespace GLPL {
 	    std::shared_ptr<ParentDimensions> getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
         void handleMouseMovement(double xpos, double ypos);
+        void updateSelection();
 	    void updateSizePx();
 	    void Draw();
         std::string getID();
@@ -77,6 +78,8 @@ namespace GLPL {
 
 	    // Selection
 	    std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> mousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();;
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> hoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();;
+        std::shared_ptr<GLPL::IDrawable> selected = {};
 
         // Keys
         bool keys[1024];

@@ -28,6 +28,9 @@ namespace GLPL {
         } else if (action == GLFW_RELEASE) {
             windowPt->setKeysByIndex(key, false);
         }
+
+        // Handle selection
+        windowPt->updateSelection();
     }
 
     static void reDraw(GLFWwindow *window, int width, int height) {
