@@ -54,7 +54,7 @@ namespace GLPL {
     }
 
     std::string TextString::getID() {
-        return "TextString:" + std::to_string(x) + ":" + std::to_string(y);
+        return "TextString:" + std::to_string(x) + ":" + std::to_string(y) + ":" + textString;
     }
 
     void TextString::setTextString(std::string newTextString) {

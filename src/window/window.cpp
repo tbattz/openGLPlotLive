@@ -119,7 +119,7 @@ namespace GLPL {
         // Convert from pixel space to -1 to 1
         if (getWidthPx() > 0 && getHeightPx() > 0) {
             xpos = 2 * (xpos / getWidthPx()) - 1;
-            ypos = 2 * (ypos / getHeightPx()) - 1;
+            ypos = -(2 * (ypos / getHeightPx()) - 1);
             // Determine children that mouse is over
             for (auto &child : children) {
                 if (child->canMouseOver()) {
