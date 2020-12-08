@@ -75,6 +75,9 @@ namespace GLPL {
 	    glm::mat4 transform = glm::mat4(1.0f);
 	    std::shared_ptr<ShaderSet> shaderSetPt;
 
+	    // Selection
+	    std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> mousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();;
+
         // Keys
         bool keys[1024];
         bool toggleKeys[1024];

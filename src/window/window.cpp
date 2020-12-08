@@ -115,7 +115,7 @@ namespace GLPL {
 
     void Window::handleMouseMovement(double xpos, double ypos) {
         // Create vector to store
-        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> mousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newMousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
         // Convert from pixel space to -1 to 1
         if (getWidthPx() > 0 && getHeightPx() > 0) {
             xpos = 2 * (xpos / getWidthPx()) - 1;
@@ -123,14 +123,32 @@ namespace GLPL {
             // Determine children that mouse is over
             for (auto &child : children) {
                 if (child->canMouseOver()) {
-                    child->getMousedOverChildren(xpos, ypos, mousedOverObjs);
+                    child->getMousedOverChildren(xpos, ypos, newMousedOverObjs);
                 }
             }
 
-            for (const auto& obj : *mousedOverObjs) {
-                std::cout << obj->getID() << ", ";
+            // Check if the moused over objects have changed
+            bool changed = false;
+            if (newMousedOverObjs->size() != mousedOverObjs->size()) {
+                changed = true;
+            } else {
+                for(unsigned int i=0; i < mousedOverObjs->size(); i ++) {
+                    if (newMousedOverObjs.get()[0][i].get() != mousedOverObjs.get()[0][i].get()) {
+                        changed = true;
+                        break;
+                    }
+                }
             }
-            std::cout << std::endl;
+
+            // Print changes in mouse over
+            if (changed) {
+                for (const auto& obj : *newMousedOverObjs) {
+                    std::cout << obj->getID() << ", ";
+                }
+                std::cout << std::endl;
+            }
+
+            this->mousedOverObjs = newMousedOverObjs;
         }
     }
 
