@@ -11,6 +11,8 @@
 
 // Standard Includes
 #include <memory>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 // Project Includes
 #include "../src/rendering/fonts.h"
@@ -116,13 +118,13 @@ int main(int argc, char **argv) {
     }
 
     // Graph 12 - Damping
-    std::vector<float> xVec12 = {0.0f, 1.0f};
+    std::vector<float> xVec12 = {0.0f, 0.0f};
     std::vector<float> yVec12 = {0.0f, 0.0f};
     xVec12.reserve(2000);
     yVec12.reserve(2000);
 
     // Graph 13 - Damping 2
-    std::vector<float> xVec13 = {0.0f, 1.0f};
+    std::vector<float> xVec13 = {0.0f, 0.0f};
     std::vector<float> yVec13 = {0.0f, 0.0f};
     xVec13.reserve(2000);
     yVec13.reserve(2000);
@@ -255,14 +257,14 @@ int main(int argc, char **argv) {
         //std::cout << yVal12 << std::endl;
         line12b->updateInternalData();
         i += 1;*/
-        line12b->dataPtX->push_back(2 + i);
-        yVal12 = cos((2 + i) / (25*M_PI)) * exp(-(i+2)/(25*8*M_PI));
+        line12b->dataPtX->push_back(i);
+        yVal12 = cos((i) / (25*M_PI)) * exp(-(i)/(25*8*M_PI));
         line12b->dataPtY->push_back(yVal12);
         line12b->updateInternalData();
 
         // Update graph 13
-        line13b->dataPtX->push_back(2 + i);
-        yVal13 = cos((2 + i) / (2*25*M_PI)) * exp(-(i+2)/(25*8*0.5*M_PI));
+        line13b->dataPtX->push_back(i);
+        yVal13 = cos((i) / (2*25*M_PI)) * exp(-(i)/(25*8*0.5*M_PI));
         line13b->dataPtY->push_back(yVal13);
         line13b->updateInternalData();
 
