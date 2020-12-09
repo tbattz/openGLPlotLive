@@ -31,7 +31,7 @@ namespace GLPL {
         void createAndSetupBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
-        void drawData(int numIndices);
+        void drawData(int numIndices, bool selected);
 
     protected:
         // Line Buffers

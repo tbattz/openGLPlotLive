@@ -90,7 +90,7 @@ namespace GLPL {
         }
 
         // Draw plot
-        drawData(nIndices);
+        drawData(nIndices, selected);
     }
 
     std::string ShadedLine2D2CircularVecs::getID() {

@@ -34,7 +34,7 @@ namespace GLPL {
                                     const void *vertDataAddress, const void *indicesDataAddress,
                                     int strideBytes, int glType);
 
-        void drawData(int nPts);
+        void drawData(int nPts, bool selected);
 
     protected:
         // Line Buffers

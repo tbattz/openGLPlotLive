@@ -183,6 +183,10 @@ namespace GLPL {
             // Render quad face
             glDrawArrays(GL_TRIANGLES,0,6);
         }
+
+        if (isSelected()) {
+            drawMouseOverBox();
+        }
     }
 
 }

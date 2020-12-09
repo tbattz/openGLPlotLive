@@ -51,7 +51,10 @@ namespace GLPL {
         }
 
         // Draw plot
-        drawData(nPts);
+        if (isSelected()) {
+            drawData(nPts, selected);
+        }
+        drawData(nPts, false);
     }
 
     std::string Line2D2Vecs::getID() {

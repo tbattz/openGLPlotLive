@@ -36,7 +36,7 @@ namespace GLPL {
         glBindVertexArray(0); // Unbind VAO
     }
 
-    void IShadedLine2D::drawData(int numIndices) {
+    void IShadedLine2D::drawData(int numIndices, bool selected) {
         // Draws the data currently stored in the shaded line corresponding to the given VAO
         // The VAO is bound to the EBO from earlier
         // Select Shader
@@ -44,8 +44,14 @@ namespace GLPL {
         shader->Use();
 
         glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
-                glm::value_ptr(*axesViewportTransform));
-        glm::vec4 inColor = glm::vec4(colour, opacityRatio);
+                           glm::value_ptr(*axesViewportTransform));
+        glm::vec4 inColor;
+        if (selected) {
+            inColor = glm::vec4(colour, 1.3*opacityRatio);
+        } else {
+            inColor = glm::vec4(colour, opacityRatio);
+        }
+
         GLfloat zDepthVal = getZDepthValue();
         glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
         glUniform1f(glGetUniformLocation(shader->Program, "z"), zDepthVal);
