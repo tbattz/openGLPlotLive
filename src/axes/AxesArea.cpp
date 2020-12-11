@@ -71,6 +71,9 @@ namespace GLPL {
             i.second->Draw();
         }
 
+        // Draw mouse over line
+        AxesArea::drawInteractor();
+
         // Draw Axes box
         if (axesBoxOn) {
             AxesArea::drawAxesBox();
@@ -214,6 +217,22 @@ namespace GLPL {
         }
     }
 
+    float AxesArea::convertMouseX2AxesX() {
+        // Calculate mouse position in x axes
+        // x interpolation
+        float xminVal = 2*getLeft() - 1;
+        float xmaxVal = 2*getRight() - 1;
+        float sx1 = (parentTransform * glm::vec4(xminVal, 0.0f, 0.5f, 1.0f))[0];;
+        float sx2 = (parentTransform * glm::vec4(xmaxVal, 0.0f, 0.5f, 1.0f))[0];
+        float ax1 = xmin;
+        float ax2 = xmax;
+        float mx = (ax2 - ax1) / (sx2 - sx1);
+        float cx = ax2 - (mx*sx2);
+        float mouseXAx = (mx*(float)mouseX) + cx;
+
+        return mouseXAx;
+    }
+
     void AxesArea::removeTextString(unsigned int textStringId) {
         if (textStringMap.count(textStringId) > 0) {
             std::shared_ptr<TextString> textString2Remove = textStringMap.at(textStringId);
@@ -328,6 +347,20 @@ namespace GLPL {
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINE_LOOP,0,4);
         glBindVertexArray(0);
+    }
+
+    void GLPL::AxesArea::drawInteractor() {
+        if (isHovered() && isMouseOver(mouseX, mouseY)) {
+            // Calculate mouse position in x
+            float mouseXAx = convertMouseX2AxesX();
+
+            for(auto & i : lineMap) {
+                if (i.second->isSelected()) {
+                    std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
+                    std::cout << std::get<0>(pt) << "," << std::get<1>(pt) << std::endl;
+                }
+            }
+        }
     }
 
     void GLPL::AxesArea::updateAxesLimits() {

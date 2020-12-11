@@ -9,6 +9,7 @@
 #include "../axes/IPlotable.h"
 #include "lineColours.h"
 #include "../rendering/ConstantXYDrawable.h"
+#include "../util/util.h"
 
 
 namespace GLPL {
@@ -24,6 +25,7 @@ namespace GLPL {
         void setOpacityRatio(float newOpacityRatio);
 
         virtual std::vector<float> getMinMax() = 0;
+        virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
 
     protected:
         // Data

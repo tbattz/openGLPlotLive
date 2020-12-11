@@ -127,6 +127,15 @@ namespace GLPL {
                 }
             }
 
+            // Update mouse over states
+            for(auto &oldMousedObj : *mousedOverObjs) {
+                oldMousedObj->setHovered(false);
+            }
+            for (auto &mousedObj : *newMousedOverObjs) {
+                mousedObj->setHovered(true);
+                mousedObj->setLastMousePos(xpos, ypos);
+            }
+
             // Check if the moused over objects have changed
             bool changed = false;
             if (newMousedOverObjs->size() != mousedOverObjs->size()) {
@@ -161,6 +170,11 @@ namespace GLPL {
                 selected = nullptr;
             }
 
+            // Update mouse position
+            if (selected != nullptr) {
+                selected->setLastMousePos(xpos, ypos);
+            }
+
             // Print changes in hoverable over
             if (changed) {
                 for (const auto& obj : *newHoverableObjs) {
@@ -182,6 +196,7 @@ namespace GLPL {
         // Check if we should increment the selection
         if (toggleKeys[GLFW_KEY_SPACE]) {
             if (hoverableObjs.get()[0].size() > 1) {
+                auto mousePos = selected->getLastMousePos();
                 selected->setSelected(false);
                 int index = -1;
                 for (unsigned int i = 0; i < hoverableObjs->size(); i++) {
@@ -208,6 +223,11 @@ namespace GLPL {
                     }
                     std::cout << std::endl;
                 }
+                // Update mouse position
+                if (selected != nullptr) {
+                    selected->setLastMousePos(std::get<0>(mousePos), std::get<1>(mousePos));
+                }
+
             }
             toggleKeys[GLFW_KEY_SPACE] = false;
         }

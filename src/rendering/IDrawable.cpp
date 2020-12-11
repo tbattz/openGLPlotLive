@@ -121,12 +121,22 @@ void GLPL::IDrawable::setHoverable(bool isHoverable) {
     hoverable = isHoverable;
 }
 
+bool GLPL::IDrawable::isHovered() {
+    return hovered;
+}
+
+void GLPL::IDrawable::setHovered(bool newHovered) {
+    hovered = newHovered;
+}
+
 bool GLPL::IDrawable::isSelected() {
     return selected;
 }
 
 void GLPL::IDrawable::setSelected(bool isSelected) {
     selected = isSelected;
+    mouseX = 0;
+    mouseY = 0;
 };
 
 std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVerts() {
@@ -200,6 +210,15 @@ void GLPL::IDrawable::getMousedOverChildren(double xpos, double ypos,
             i->getMousedOverChildren(xpos, ypos, mousedOverObjs);
         }
     }
+}
+
+void GLPL::IDrawable::setLastMousePos(double lastMouseX, double lastMouseY) {
+    mouseX = lastMouseX;
+    mouseY = lastMouseY;
+}
+
+std::tuple<double, double> GLPL::IDrawable::getLastMousePos() {
+    return std::make_tuple(mouseX, mouseY);
 }
 
 void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt) {

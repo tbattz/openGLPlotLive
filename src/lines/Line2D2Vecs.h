@@ -24,6 +24,7 @@ namespace GLPL  {
         void Draw();
         std::string getID();
         std::vector<float> getMinMax();
+        std::tuple<float, float> getClosestPoint(float xVal);
 
         std::vector<float>* dataPtX;
         std::vector<float>* dataPtY;

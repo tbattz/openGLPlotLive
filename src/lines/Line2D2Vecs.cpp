@@ -87,4 +87,13 @@ namespace GLPL {
 
         return std::vector<float> {xmin,xmax,ymin,ymax};
     }
+
+    std::tuple<float, float> Line2D2Vecs::getClosestPoint(float xVal) {
+        unsigned int ind = binarySearch(internalData, 0, (internalData.size()/2) - 1, xVal);
+        if (ind < internalData.size()/2) {
+            return std::make_tuple(internalData[2 * ind], internalData[2 * ind + 1]);
+        } else {
+            return std::make_tuple(0,0);
+        }
+    }
 }

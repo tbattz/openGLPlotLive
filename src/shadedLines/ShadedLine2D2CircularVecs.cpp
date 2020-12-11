@@ -124,4 +124,13 @@ namespace GLPL {
         return std::vector<float> {xmin,xmax,ymin,ymax};
     }
 
+    std::tuple<float, float> ShadedLine2D2CircularVecs::getClosestPoint(float xVal) {
+        unsigned int ind = binarySearch(internalData, 0, (internalData.size()/4) - 1, xVal, 4);
+        if (ind < internalData.size()/4) {
+            return std::make_tuple(internalData[4 * ind], internalData[4 * ind + 1]);
+        } else {
+            return std::make_tuple(0,0);
+        }
+    }
+
 }

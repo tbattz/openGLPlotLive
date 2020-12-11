@@ -79,13 +79,16 @@ namespace GLPL {
         bool canMouseOver();
         bool isHoverable();
         void setHoverable(bool isHoverable);
+        bool isHovered();
+        void setHovered(bool newHovered);
         bool isSelected();
         void setSelected(bool isSelected);
         std::vector<GLfloat> calcMouseOverVerts();
         bool isMouseOver(double xpos, double ypos);
         void getMousedOverChildren(double xpos, double ypos,
                                    const std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>>& mousedOverObjs);
-
+        void setLastMousePos(double lastMouseX, double lastMouseY);
+        std::tuple<double, double> getLastMousePos();
 
         virtual void Draw() = 0;
         void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
@@ -116,7 +119,10 @@ namespace GLPL {
         // Mouse Interaction
         bool mouseOverable = true;
         bool hoverable = true;
+        bool hovered = false;
         bool selected = false;
+        double mouseX = 0;
+        double mouseY = 0;
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables

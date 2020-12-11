@@ -38,6 +38,8 @@ namespace GLPL {
         void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(unsigned int textStringId);
         void removeTextString(unsigned int textStringId);
+        // Point Interactor
+        float convertMouseX2AxesX();
         // Other
         void updateAxesViewportTransform();
         void setPosition(float newX, float newY);
@@ -75,6 +77,7 @@ namespace GLPL {
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
         glm::mat4 scale2AxesLimits();
         void drawAxesBox();
+        void drawInteractor();
         void updateAxesLimits();
 
     };
