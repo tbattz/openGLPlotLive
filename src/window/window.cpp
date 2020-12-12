@@ -155,11 +155,23 @@ namespace GLPL {
 
             // Determine which objects are hoverable
             std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newHoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+            int newCursor = 0;
             for(const auto& obj : *newMousedOverObjs) {
                 if (obj->isHoverable()) {
                     newHoverableObjs->push_back(obj);
                 }
+                if (obj->isMouseOver(xpos, ypos) && obj->getHoverCursor() != 0) {
+                    newCursor = obj->getHoverCursor();
+                }
             }
+            // Check if cursor has changed
+            if (newCursor != lastCursorType) {
+                lastCursorType = newCursor;
+                glfwDestroyCursor(lastCursor);
+                lastCursor = glfwCreateStandardCursor(newCursor);
+                glfwSetCursor(window, lastCursor);
+            }
+
 
             // Handle selection
             if (!newHoverableObjs->empty()) {

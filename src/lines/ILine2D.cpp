@@ -35,4 +35,8 @@ namespace GLPL {
         this->opacityRatio = newOpacityRatio;
     }
 
+    int GLPL::ILine2D::getHoverCursor() {
+        return GLFW_CROSSHAIR_CURSOR;
+    }
+
 }

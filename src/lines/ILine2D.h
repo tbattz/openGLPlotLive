@@ -23,6 +23,7 @@ namespace GLPL {
         glm::vec3 getColour();
         GLenum getMode();
         void setOpacityRatio(float newOpacityRatio);
+        int getHoverCursor();
 
         virtual std::vector<float> getMinMax() = 0;
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;

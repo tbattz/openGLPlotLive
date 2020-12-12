@@ -92,6 +92,8 @@ namespace GLPL {
         void setLastMousePos(double lastMouseX, double lastMouseY);
         std::tuple<double, double> getLastMousePos();
 
+        virtual int getHoverCursor();
+
         virtual void Draw() = 0;
         void registerChild(const std::shared_ptr<IDrawable>& newChildPt);
         void removeChild(const std::shared_ptr<IDrawable>& childPt);

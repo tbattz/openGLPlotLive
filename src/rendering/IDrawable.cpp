@@ -225,6 +225,10 @@ std::tuple<double, double> GLPL::IDrawable::getLastMousePos() {
     return std::make_tuple(mouseX, mouseY);
 }
 
+int GLPL::IDrawable::getHoverCursor() {
+    return 0;
+}
+
 void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt) {
     // Update parent information for child
     std::shared_ptr<ParentDimensions> newParentDimensions = IDrawable::createParentDimensions();

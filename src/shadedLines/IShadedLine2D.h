@@ -32,6 +32,7 @@ namespace GLPL {
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
         void drawData(int numIndices, bool selected);
+        int getHoverCursor();
 
     protected:
         // Line Buffers

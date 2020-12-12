@@ -82,6 +82,10 @@ namespace GLPL {
         std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> hoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();;
         std::shared_ptr<GLPL::IDrawable> selected = {};
 
+        // Cursor
+        int lastCursorType = 0;
+        GLFWcursor* lastCursor = NULL;
+
         // Keys
         bool keys[1024];
         bool toggleKeys[1024];
