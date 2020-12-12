@@ -12,6 +12,7 @@
 #include "../lines/LineType.h"
 #include "../texts/textString.h"
 #include "AxesLineTicks.h"
+#include "../interaction/IButton.h"
 
 
 namespace GLPL {
@@ -38,6 +39,8 @@ namespace GLPL {
         void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(unsigned int textStringId);
         void removeTextString(unsigned int textStringId);
+        // Button
+        void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
         // Point Interactor
         float convertMouseX2AxesX();
         // Other
@@ -72,6 +75,8 @@ namespace GLPL {
         std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
         // Axes Lines
         std::unordered_map<std::string, std::shared_ptr<AxesLineTicks>> axesLines;
+        // Buttons
+        std::unordered_map<std::string, std::shared_ptr<IButton>> buttonMap;
 
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);

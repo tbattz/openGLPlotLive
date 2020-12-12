@@ -20,6 +20,7 @@
 // Project Includes
 #include "transforms.h"
 #include "ShaderSet.h"
+#include "../interaction/IClickable.h"
 
 
 namespace GLPL {
@@ -45,7 +46,7 @@ namespace GLPL {
         CENTRE
     };
 
-    class IDrawable {
+    class IDrawable : public IClickable {
         // Anything that is draw must implement the following
     public:
         // Constructor
@@ -61,6 +62,7 @@ namespace GLPL {
         float getTop();
         float getRight();
         float getBottom();
+        void onClick();
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;

@@ -60,11 +60,15 @@ namespace GLPL {
         // Initialise GLAD
         Window::initGLAD();
 
+        // Set Input mode to remember mouse states
+        glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+
         // Setup Callbacks for user input
         glfwSetKeyCallback(window, GLPL::key_callback);
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
         glfwSetCursorPosCallback(window, GLPL::cursorMoved);
+        glfwSetMouseButtonCallback(window, GLPL::mouseCallback);
 
         // Set viewport size
         glViewport(0,0,getWidthPx(),getHeightPx()); // Origin is bottom left
@@ -189,6 +193,13 @@ namespace GLPL {
 
             this->mousedOverObjs = newMousedOverObjs;
             this->hoverableObjs = newHoverableObjs;
+        }
+    }
+
+    void Window::handleMouseRelease() {
+        // Check if mouse is over an objective
+        for(auto &mousedObj : *mousedOverObjs) {
+            mousedObj->onClick();
         }
     }
 

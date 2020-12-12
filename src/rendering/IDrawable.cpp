@@ -11,7 +11,7 @@
 #include "transforms.h"
 
 
-GLPL::IDrawable::IDrawable() {
+GLPL::IDrawable::IDrawable() : IClickable() {
 
 };
 
@@ -53,6 +53,10 @@ float GLPL::IDrawable::getRight() {
 float GLPL::IDrawable::getBottom() {
     std::array<float, 2> xyPos = IDrawable::generateXYPositionFromPin();
     return xyPos[1];
+}
+
+void GLPL::IDrawable::onClick() {
+
 }
 
 void GLPL::IDrawable::drawBoundingBox() {

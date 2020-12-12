@@ -34,6 +34,11 @@ namespace GLPL {
         AxesArea::addText("x label", 0.5, -0.11, 12, CENTRE_TOP);
         AxesArea::addText("y label", -0.175, 0.5, 12, CENTRE_RIGHT);
 
+        // Add Buttons
+        AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
+        AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
+
+
     }
 
     std::string AxesArea::getID() {
@@ -68,6 +73,11 @@ namespace GLPL {
 
         // Draw Text
         for(auto & i : textStringMap) {
+            i.second->Draw();
+        }
+
+        // Draw Buttons
+        for(auto & i : buttonMap) {
             i.second->Draw();
         }
 
@@ -245,6 +255,23 @@ namespace GLPL {
         }
     }
 
+    void AxesArea::addButton(const std::string& buttonName, float x, float y, float width, float height,
+                             AttachLocation attachLocation, bool activeState) {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Register Child
+        std::shared_ptr<IDrawable> buttonObj = std::make_shared<IButton>(buttonName, x, y, width, height, newParentPointers);
+        std::shared_ptr<IButton> buttonObjPt = std::dynamic_pointer_cast<IButton>(buttonObj);
+        // Set pin position
+        buttonObjPt->setAttachLocation(attachLocation);
+        // Set state
+        buttonObjPt->setActive(activeState);
+        // Register Child
+        AxesArea::registerChild(buttonObj);
+        // Store button
+        buttonMap.insert(std::pair<std::string, std::shared_ptr<IButton>>(buttonName, buttonObjPt));
+    }
+
     void AxesArea::updateAxesViewportTransform() {
         // Update Transform
         glm::mat4 viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
@@ -364,28 +391,30 @@ namespace GLPL {
     }
 
     void GLPL::AxesArea::updateAxesLimits() {
-        // Get the overall maximum and minimum from all lines
-        xmin = -0.0;
-        xmax = 0.0;
-        ymin = -0.0;
-        ymax = 0.0;
-        for(std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
-            std::vector<float> minMax = lineInfo.second->getMinMax();
-            if (minMax[0] < xmin) { xmin = minMax[0]; };
-            if (minMax[1] > xmax) { xmax = minMax[1]; };
-            if (minMax[2] < ymin) { ymin = minMax[2]; };
-            if (minMax[3] > ymax) { ymax = minMax[3]; };
-        }
-        // Match axes lines sizing
-        float xFontSize = axesLines.at("x")->getFontSize();
-        float yFontSize = axesLines.at("y")->getFontSize();
-        if (xFontSize < yFontSize) {
-            axesLines.at("y")->setMajorTickFontSize(xFontSize);
-        } else if (yFontSize < xFontSize) {
-            axesLines.at("x")->setMajorTickFontSize(yFontSize);
-        }
+        if (buttonMap.find("Axes Limits Scaling")->second->isActive()) {
+            // Get the overall maximum and minimum from all lines
+            xmin = -0.0;
+            xmax = 0.0;
+            ymin = -0.0;
+            ymax = 0.0;
+            for (std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
+                std::vector<float> minMax = lineInfo.second->getMinMax();
+                if (minMax[0] < xmin) { xmin = minMax[0]; };
+                if (minMax[1] > xmax) { xmax = minMax[1]; };
+                if (minMax[2] < ymin) { ymin = minMax[2]; };
+                if (minMax[3] > ymax) { ymax = minMax[3]; };
+            }
+            // Match axes lines sizing
+            float xFontSize = axesLines.at("x")->getFontSize();
+            float yFontSize = axesLines.at("y")->getFontSize();
+            if (xFontSize < yFontSize) {
+                axesLines.at("y")->setMajorTickFontSize(xFontSize);
+            } else if (yFontSize < xFontSize) {
+                axesLines.at("x")->setMajorTickFontSize(yFontSize);
+            }
 
-        // Set axes limits
-        AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
+            // Set axes limits
+            AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
+        }
     }
 }

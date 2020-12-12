@@ -52,6 +52,7 @@ namespace GLPL {
 	    std::shared_ptr<ParentDimensions> getParentDimensions();
 	    void updateStoredSize(int newWidth, int newHeight);
         void handleMouseMovement(double xpos, double ypos);
+        void handleMouseRelease();
         void updateSelection();
 	    void updateSizePx();
 	    void Draw();
