@@ -391,7 +391,7 @@ namespace GLPL {
     }
 
     void GLPL::AxesArea::updateAxesLimits() {
-        if (buttonMap.find("Axes Limits Scaling")->second->isActive()) {
+        if (buttonMap["Axes Limits Scaling"]->isActive()) {
             // Get the overall maximum and minimum from all lines
             xmin = -0.0;
             xmax = 0.0;
