@@ -37,7 +37,7 @@ namespace GLPL {
         // Add Buttons
         AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
         AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
-
+        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
 
     }
 
