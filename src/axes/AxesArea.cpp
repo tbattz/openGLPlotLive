@@ -35,9 +35,9 @@ namespace GLPL {
         AxesArea::addText("y label", -0.175, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
-        AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
-        AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
-        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
+        AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, false);
 
         // Create Interactor
         AxesArea::createInteractor();
