@@ -36,7 +36,7 @@ namespace GLPL {
     }
 
     int GLPL::ILine2D::getHoverCursor() {
-        return GLFW_CROSSHAIR_CURSOR;
+        return 0;
     }
 
 }

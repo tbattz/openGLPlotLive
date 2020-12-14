@@ -62,7 +62,7 @@ namespace GLPL {
 
 
     int GLPL::IShadedLine2D::getHoverCursor() {
-        return GLFW_CROSSHAIR_CURSOR;
+        return 0;
     }
 
 

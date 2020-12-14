@@ -13,6 +13,7 @@
 #include "../texts/textString.h"
 #include "AxesLineTicks.h"
 #include "../interaction/IButton.h"
+#include "../lines/Line2D2Vecs.h"
 
 
 namespace GLPL {
@@ -43,6 +44,10 @@ namespace GLPL {
         void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
         // Point Interactor
         float convertMouseX2AxesX();
+        float convertMouseY2AxesY();
+        float convertMouseX2RelativeX();
+        float convertMouseY2RelativeY();
+        int getHoverCursor();
         // Other
         void updateAxesViewportTransform();
         void setPosition(float newX, float newY);
@@ -77,6 +82,13 @@ namespace GLPL {
         std::unordered_map<std::string, std::shared_ptr<AxesLineTicks>> axesLines;
         // Buttons
         std::unordered_map<std::string, std::shared_ptr<IButton>> buttonMap;
+        // Interactor
+        std::vector<float> interactorDataX = {};
+        std::vector<float> interactorDataY = {};
+        std::shared_ptr<Line2D2Vecs> interactorLine;
+        std::shared_ptr<TextString> interactorText;
+
+
 
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
@@ -84,6 +96,7 @@ namespace GLPL {
         void drawAxesBox();
         void drawInteractor();
         void updateAxesLimits();
+        void createInteractor();
 
     };
 

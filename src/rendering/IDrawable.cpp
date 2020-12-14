@@ -80,7 +80,7 @@ void GLPL::IDrawable::drawBoundingBox() {
 void GLPL::IDrawable::drawMouseOverBox() {
     // Reupdate buffers
     glBindBuffer(GL_ARRAY_BUFFER, mouseVBO);
-    glBufferData(GL_ARRAY_BUFFER, mouseOverVerts.size() * sizeof(GLfloat), &mouseOverVerts[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mouseOverVertsWithChildren.size() * sizeof(GLfloat), &mouseOverVertsWithChildren[0], GL_STATIC_DRAW);
 
     // Draw bounding box
     std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
@@ -143,10 +143,43 @@ void GLPL::IDrawable::setSelected(bool isSelected) {
     mouseY = 0;
 };
 
-std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVerts() {
+std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVertsWithChildren() {
     // Some children can lie outside the area -1 to 1, so to calculate if the mouse is over the particular area,
     // create a bounding box that includes all the children.
     // Note, that the parent should still only be selected, if the mouse is contained within the parents original verts.
+    // Calculate without children first
+    calcMouseOverVertsNoChildren();
+    float xmin = mouseOverVertsNoChildren[0];
+    float xmax = mouseOverVertsNoChildren[2];
+    float ymin = mouseOverVertsNoChildren[1];
+    float ymax = mouseOverVertsNoChildren[5];
+
+    // Check children
+    for(auto & child : children) {
+        if (child->isHoverable()) {
+            // Child verts are not relative at the moment, they should be
+            std::vector<GLfloat> childMouseVerts = child->calcMouseOverVertsWithChildren();
+            float childXmin = childMouseVerts[0];
+            float childXmax = childMouseVerts[2];
+            float childYmin = childMouseVerts[1];
+            float childYmax = childMouseVerts[5];
+
+            // Compare to previous values
+            if (childXmin < xmin) { xmin = childXmin; }
+            if (childXmax > xmax) { xmax = childXmax; }
+            if (childYmin < ymin) { ymin = childYmin; }
+            if (childYmax > ymax) { ymax = childYmax; }
+        }
+    }
+
+    // Update stored values (result is in -1 to 1)
+    mouseOverVertsWithChildren = {xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax};
+
+    return mouseOverVertsWithChildren;
+}
+
+std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVertsNoChildren() {
+    // Calculate mouse over verts, ignoring the children
     float xmin = getLeft();
     float xmax = getRight();
     float ymin = getBottom();
@@ -164,36 +197,27 @@ std::vector<GLfloat> GLPL::IDrawable::calcMouseOverVerts() {
     ymin = (parentTransform * glm::vec4(0.0f, ymin, 0.5f, 1.0f))[1];
     ymax = (parentTransform * glm::vec4(0.0f, ymax, 0.5f, 1.0f))[1];
 
-    for(auto & child : children) {
-        if (child->isHoverable()) {
-            // Child verts are not relative at the moment, they should be
-            std::vector<GLfloat> childMouseVerts = child->calcMouseOverVerts();
-            float childXmin = childMouseVerts[0];
-            float childXmax = childMouseVerts[2];
-            float childYmin = childMouseVerts[1];
-            float childYmax = childMouseVerts[5];
-
-            // Compare to previous values
-            if (childXmin < xmin) { xmin = childXmin; }
-            if (childXmax > xmax) { xmax = childXmax; }
-            if (childYmin < ymin) { ymin = childYmin; }
-            if (childYmax > ymax) { ymax = childYmax; }
-        }
-    }
-
     // Update stored values (result is in -1 to 1)
-    mouseOverVerts = {xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax};
+    mouseOverVertsNoChildren = {xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax};
 
-    return mouseOverVerts;
+    return mouseOverVertsNoChildren;
 }
 
-bool GLPL::IDrawable::isMouseOver(double xpos, double ypos) {
+bool GLPL::IDrawable::isMouseOver(double xpos, double ypos, bool withChildren) {
     // Check if mouses is over common bounding box (-1 to 1)
     if (canMouseOver()) {
-        float xmin = mouseOverVerts[0];
-        float xmax = mouseOverVerts[2];
-        float ymin = mouseOverVerts[1];
-        float ymax = mouseOverVerts[5];
+        float xmin, xmax, ymin, ymax;
+        if (withChildren) {
+            xmin = mouseOverVertsWithChildren[0];
+            xmax = mouseOverVertsWithChildren[2];
+            ymin = mouseOverVertsWithChildren[1];
+            ymax = mouseOverVertsWithChildren[5];
+        } else {
+            xmin = mouseOverVertsNoChildren[0];
+            xmax = mouseOverVertsNoChildren[2];
+            ymin = mouseOverVertsNoChildren[1];
+            ymax = mouseOverVertsNoChildren[5];
+        }
         // TODO - Make this an inside polygon check, instead of just checking the square bounding box
         if (xmin < xpos && xpos < xmax) {
             if (ymin < ypos && ypos < ymax) {
@@ -238,14 +262,14 @@ void GLPL::IDrawable::registerChild(const std::shared_ptr<IDrawable>& newChildPt
     // Resort children
     IDrawable::sortChildren();
     // Calculate mouse over verts
-    IDrawable::calcMouseOverVerts();
+    IDrawable::calcMouseOverVertsWithChildren();
 }
 
 void GLPL::IDrawable::removeChild(const std::shared_ptr<IDrawable>& childPt) {
     // Remove a child by value
     children.erase(std::remove(children.begin(), children.end(), childPt), children.end());
     // Calculate mouse over verts
-    IDrawable::calcMouseOverVerts();
+    IDrawable::calcMouseOverVertsWithChildren();
 }
 
 void GLPL::IDrawable::createAndSetupBuffers() {
@@ -273,7 +297,7 @@ void GLPL::IDrawable::createAndSetupBuffers() {
     // Setup Buffers
     glBindVertexArray(mouseVAO);
     glBindBuffer(GL_ARRAY_BUFFER,mouseVBO);
-    glBufferData(GL_ARRAY_BUFFER, mouseOverVerts.size()*sizeof(GLfloat),&mouseOverVerts[0],GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mouseOverVertsWithChildren.size()*sizeof(GLfloat),&mouseOverVertsWithChildren[0],GL_STATIC_DRAW);
 
     // Position Attributes
     glEnableVertexAttribArray(0);
@@ -288,7 +312,7 @@ void GLPL::IDrawable::updateTransforms() {
     this->viewportTransform = GLPL::Transforms::viewportTransform(xy[0], xy[1], width, height);
     this->overallTransform = parentTransform * viewportTransform;
 
-    IDrawable::calcMouseOverVerts();
+    IDrawable::calcMouseOverVertsWithChildren();
 }
 
 void GLPL::IDrawable::updatePositionPx() {

@@ -160,7 +160,7 @@ namespace GLPL {
                 if (obj->isHoverable()) {
                     newHoverableObjs->push_back(obj);
                 }
-                if (obj->isMouseOver(xpos, ypos) && obj->getHoverCursor() != 0) {
+                if (obj->isMouseOver(xpos, ypos, false) && obj->getHoverCursor() != 0) {
                     newCursor = obj->getHoverCursor();
                 }
             }

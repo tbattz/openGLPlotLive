@@ -23,6 +23,7 @@ namespace GLPL  {
         void updateInternalData();
         void Draw();
         std::string getID();
+        void clearData();
         std::vector<float> getMinMax();
         std::tuple<float, float> getClosestPoint(float xVal);
 

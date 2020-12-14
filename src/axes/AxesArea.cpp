@@ -39,6 +39,9 @@ namespace GLPL {
         AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
         AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT);
 
+        // Create Interactor
+        AxesArea::createInteractor();
+
     }
 
     std::string AxesArea::getID() {
@@ -243,6 +246,60 @@ namespace GLPL {
         return mouseXAx;
     }
 
+    float AxesArea::convertMouseY2AxesY() {
+        // Calculate mouse position in y axes
+        // y interpolation
+        float yminVal = 2*getBottom() - 1;
+        float ymaxVal = 2*getTop() - 1;
+        float sx1 = (parentTransform * glm::vec4(0.0f, yminVal, 0.5f, 1.0f))[1];;
+        float sx2 = (parentTransform * glm::vec4(0.0f, ymaxVal, 0.5f, 1.0f))[1];
+        float ax1 = ymin;
+        float ax2 = ymax;
+        float mx = (ax2 - ax1) / (sx2 - sx1);
+        float cx = ax2 - (mx*sx2);
+        float mouseYAx = (mx*(float)mouseY) + cx;
+
+        return mouseYAx;
+    }
+
+    float AxesArea::convertMouseX2RelativeX() {
+        // Calculate mouse position in relative x
+        // x interpolation
+        float rx1 = getLeft();
+        float rx2 = getRight();
+        float ax1 = (overallTransform * glm::vec4(getLeft(), 0.0f, 0.5f, 1.0f))[0];
+        float ax2 = (overallTransform * glm::vec4(getRight(), 0.0f, 0.5f, 1.0f))[0];
+        float mx = (rx2 - rx1) / (ax2 - ax1);
+        float cx = rx2 - (mx*ax2);
+        float mouseRelX = (mx*(float)mouseX) + cx;
+        mouseRelX = (mouseRelX + 1) / 2.0f;
+
+        return mouseRelX;
+    }
+
+    float AxesArea::convertMouseY2RelativeY() {
+        // Calculate mouse position in relative y
+        // y interpolation
+        float ry1 = getLeft();
+        float ry2 = getRight();
+        float ay1 = (overallTransform * glm::vec4(0.0f,getBottom(), 0.5f, 1.0f))[1];
+        float ay2 = (overallTransform * glm::vec4(0.0f,getTop(), 0.5f, 1.0f))[1];
+        float mx = (ry2 - ry1) / (ay2 - ay1);
+        float cx = ry2 - (mx*ay2);
+        float mouseRelY = (mx*(float)mouseY) + cx;
+        mouseRelY = (mouseRelY + 1) / 2.0f;
+
+        return mouseRelY;
+    }
+
+    int AxesArea::getHoverCursor() {
+        if (buttonMap["Interactor"]->isActive()) {
+            return GLFW_CROSSHAIR_CURSOR;
+        } else {
+            return 0;
+        }
+    }
+
     void AxesArea::removeTextString(unsigned int textStringId) {
         if (textStringMap.count(textStringId) > 0) {
             std::shared_ptr<TextString> textString2Remove = textStringMap.at(textStringId);
@@ -377,16 +434,56 @@ namespace GLPL {
     }
 
     void GLPL::AxesArea::drawInteractor() {
-        if (isHovered() && isMouseOver(mouseX, mouseY)) {
-            // Calculate mouse position in x
-            float mouseXAx = convertMouseX2AxesX();
+        if (buttonMap["Interactor"]->isActive()) {
+            if (isHovered() && isMouseOver(mouseX, mouseY)) {
+                // Calculate mouse position in x
+                float mouseXAx = convertMouseX2AxesX();
+                float mouseYAx = convertMouseY2AxesY();
+                float mouseRelX = convertMouseX2RelativeX();
+                float mouseRelY = convertMouseY2RelativeY();
 
-            for(auto & i : lineMap) {
-                if (i.second->isSelected()) {
-                    std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
-                    std::cout << std::get<0>(pt) << "," << std::get<1>(pt) << std::endl;
+                for (auto &i : lineMap) {
+                    if (i.second->isSelected()) {
+                        std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
+                        if (pt != std::make_tuple(0.0, 0.0)) {
+                            float x = std::get<0>(pt);
+                            float y1 = std::get<1>(pt);
+                            float y2 = mouseYAx;
+                            // Update line
+                            interactorLine->clearData();
+                            interactorLine->dataPtX->push_back(x);
+                            interactorLine->dataPtX->push_back(x);
+                            interactorLine->dataPtY->push_back(y1);
+                            interactorLine->dataPtY->push_back(y2);
+                            interactorLine->updateInternalData();
+                            // Update Text String
+                            char textBuf[50];
+                            const char *formatStr;
+                            if (abs(x) > 1000 || abs(y) > 1000) {
+                                formatStr = "(%.2e, %.2e)";
+                            } else {
+                                formatStr = "(%.2f, %.2f)";
+                            }
+                            sprintf(textBuf, formatStr, x, y1);
+                            interactorText->setPosition((float) mouseRelX, (float) mouseRelY);
+                            //std::cout << textBuf << std::endl;
+                            interactorText->setTextString(textBuf);
+                            // Check if the text string should be above or below
+                            if (y1 > y2) {
+                                interactorText->setAttachLocation(CENTRE_TOP);
+                            } else {
+                                interactorText->setAttachLocation(CENTRE_BOTTOM);
+                            }
+                        }
+                    }
                 }
+            } else {
+                interactorLine->clearData();
+                interactorText->setTextString("");
             }
+        } else {
+            interactorLine->clearData();
+            interactorText->setTextString("");
         }
     }
 
@@ -416,5 +513,34 @@ namespace GLPL {
             // Set axes limits
             AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
         }
+    }
+
+    void GLPL::AxesArea::createInteractor() {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+
+        // Create Line
+        interactorLine = std::make_shared<Line2D2Vecs>(&interactorDataX, &interactorDataY, newParentPointers);
+        // Register Children
+        AxesArea::registerChild(interactorLine);
+        // Set axes area transform
+        interactorLine->setAxesViewportTransform(axesViewportTransformation);
+        // Set not hoverable
+        interactorLine->setHoverable(false);
+        // Store line
+        lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, interactorLine));
+        lineCount += 1;
+
+        // Create text label
+        // Create label
+        interactorText = std::make_shared<TextString>("", x, y, 8, newParentPointers);
+        interactorText->setAttachLocation(CENTRE_BOTTOM);
+        interactorText->setHoverable(false);
+        // Register Child
+        AxesArea::registerChild(interactorText);
+        // Store Text String
+        textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, interactorText));
+        textStringCount += 1;
+
     }
 }

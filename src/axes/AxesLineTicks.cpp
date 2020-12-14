@@ -53,9 +53,9 @@ namespace GLPL {
             AxesLineTicks::updateSize();
         }
 
-
         // Update mouse over verts
-        IDrawable::calcMouseOverVerts();
+        IDrawable::calcMouseOverVertsWithChildren();
+        IDrawable::calcMouseOverVertsNoChildren();
     }
 
     void AxesLineTicks::generateAxesLines() {

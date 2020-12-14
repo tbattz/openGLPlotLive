@@ -85,8 +85,9 @@ namespace GLPL {
         void setHovered(bool newHovered);
         bool isSelected();
         void setSelected(bool isSelected);
-        std::vector<GLfloat> calcMouseOverVerts();
-        bool isMouseOver(double xpos, double ypos);
+        std::vector<GLfloat> calcMouseOverVertsWithChildren();
+        std::vector<GLfloat> calcMouseOverVertsNoChildren();
+        bool isMouseOver(double xpos, double ypos, bool withChildren = true);
         void getMousedOverChildren(double xpos, double ypos,
                                    const std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>>& mousedOverObjs);
         void setLastMousePos(double lastMouseX, double lastMouseY);
@@ -136,7 +137,8 @@ namespace GLPL {
         GLuint mouseVAO, mouseVBO;
         // Area
         std::vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
-        std::vector<GLfloat> mouseOverVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
+        std::vector<GLfloat> mouseOverVertsWithChildren = { -1, -1,    1, -1,    1,  1,    -1, 1};
+        std::vector<GLfloat> mouseOverVertsNoChildren =  { -1, -1,    1, -1,    1,  1,    -1, 1};
         glm::vec4 boundingBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         // Transforms
         glm::mat4 parentTransform;                      // Transform of the parent
