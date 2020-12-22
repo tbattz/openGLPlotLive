@@ -6,11 +6,11 @@
 #define OPENGLPLOTLIVE_LINE2DVECFVECGLMV3_H
 
 #include "../dataTypes/dataTypes.h"
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 
 
 namespace GLPL {
-    class Line2DVecfVecGLMV3 : public ILine2D {
+    class Line2DVecfVecGLMV3 : public ILine2D_OLD {
         // Line of vector<float> vs vector of glm::dvec3s
         // For plotting a vector of floats against an index selected form a vector of glm::dvec3s
         // For example plotting a vector of time data against a vector of glm::dvec3.

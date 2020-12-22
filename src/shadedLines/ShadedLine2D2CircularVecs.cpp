@@ -11,7 +11,9 @@
 #include "ShadedLine2D2CircularVecs.h"
 
 namespace GLPL {
-    ShadedLine2D2CircularVecs::ShadedLine2D2CircularVecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY, GLenum mode) {
+    ShadedLine2D2CircularVecs::ShadedLine2D2CircularVecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                                         std::shared_ptr<ParentDimensions> parentDimensions,
+                                                         GLenum mode) : IShadedLine2D(std::move(parentDimensions)) {
         this->dataPtX = dataPtX;
         this->dataPtY = dataPtY;
         this->setMode(mode);
@@ -20,7 +22,7 @@ namespace GLPL {
         updateInternalData(0);
         int vertDataSizeBytes = internalData.size()*sizeof(internalData[0]);
         int indicesDataSizeBytes = internalIndices.size()*sizeof(internalIndices[0]);
-        createAndSetupBuffers(&VAO, &VBO, &EBO, vertDataSizeBytes, indicesDataSizeBytes,
+        createAndSetupBuffers(vertDataSizeBytes, indicesDataSizeBytes,
                 &internalData[0], &internalIndices[0], 2*sizeof(internalData[0]));
     }
 
@@ -73,22 +75,26 @@ namespace GLPL {
         updated = true;
     }
 
-    void ShadedLine2D2CircularVecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth) {
+    void ShadedLine2D2CircularVecs::Draw() {
         // Check if the number of points changed
         if (updated) {
             nIndices = internalIndices.size();
             // Update buffer and attributes
             // VBO
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
             // EBO
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_DYNAMIC_DRAW);
             updated = false;
         }
 
         // Draw plot
-        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nIndices, zDepth, getMode());
+        drawData(nIndices, selected);
+    }
+
+    std::string ShadedLine2D2CircularVecs::getID() {
+        return "ShadedLine2D2CircularVecs:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
     std::vector<float> ShadedLine2D2CircularVecs::getMinMax() {
@@ -116,6 +122,15 @@ namespace GLPL {
         }
 
         return std::vector<float> {xmin,xmax,ymin,ymax};
+    }
+
+    std::tuple<float, float> ShadedLine2D2CircularVecs::getClosestPoint(float xVal) {
+        unsigned int ind = binarySearch(internalData, 0, (internalData.size()/4) - 1, xVal, 4);
+        if (ind < internalData.size()/4) {
+            return std::make_tuple(internalData[4 * ind], internalData[4 * ind + 1]);
+        } else {
+            return std::make_tuple(0,0);
+        }
     }
 
 }

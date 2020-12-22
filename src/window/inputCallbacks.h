@@ -28,11 +28,33 @@ namespace GLPL {
         } else if (action == GLFW_RELEASE) {
             windowPt->setKeysByIndex(key, false);
         }
+
+        // Handle selection
+        windowPt->updateSelection();
     }
 
     static void reDraw(GLFWwindow *window, int width, int height) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
         // Redraw window on resize
+        windowPt->updateStoredSize(width, height);
 
+    }
+
+    static void mouseCallback(GLFWwindow *window, int button, int action, int mods) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+            // Get Window class
+            auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+            // Handle mouse release
+            windowPt->handleMouseRelease();
+        }
+    }
+
+    static void cursorMoved(GLFWwindow *window, double xpos, double ypos) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+        // Handle mouse movement
+        windowPt->handleMouseMovement(xpos, ypos);
     }
 }
 

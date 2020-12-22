@@ -1,73 +1,42 @@
-/*
- * plot.h
- *
- *  Created on: 12Feb.,2017
- *      Author: bcub3d-laptop
- */
+//
+// Created by tbatt on 19/04/2020.
+//
 
-#ifndef P_PLOT_H_
-#define P_PLOT_H_
+#ifndef OPENGLPLOTLIVE_PROJ_PLOT_H
+#define OPENGLPLOTLIVE_PROJ_PLOT_H
 
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
-
-// Standard Includes
+// Standard Includese
 #include <memory>
 
 // Project Includes
-#include "../rendering/shader.h"
 #include "../axes/axes.h"
-
+#include "../rendering/ConstantXYDrawable.h"
 
 
 namespace GLPL {
-	class Plot {
-		// Plots contain sets of axes, labels and titles
+    class Plot : public ConstantXYDrawable {
+        // Plot contains sets of axes, labels and titles
     public:
-	    // Constructor
-        Plot(float x, float y, float width, float height, std::shared_ptr<IWindow> windowPt);
-	    // Destructor
-	    ~Plot();
+        // Constructor
+        Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
+        // Destructor
+        ~Plot();
 
         // Functions
+        std::shared_ptr<GLPL::Axes> addAxes(float x, float y, float width, float height);
+        std::shared_ptr<Axes> getAxes(unsigned int axesId);
+        void removeAxes(unsigned int axesId);
         void Draw();
-        void addLine(std::shared_ptr<ILine2D> linePt);
-        void addPosNegLine(std::shared_ptr<ILine2D> linePt);
-        void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
-        std::shared_ptr<GLPL::Axes> getAxes();
-        void setPlotOutlineOn(bool plotOutlineOn);
+        std::string getID();
 
-	private:
-	    // Functions
-        void createAndSetupBuffers();
-        void setupFontShader(GLuint screenWidth, GLuint screenHeight);
-        void drawPlotOutline(Shader shader, glm::mat4 plotViewportTrans);
+    private:
+        // Axes
+        unsigned int axesCount = 0;
+        std::unordered_map<unsigned int, std::shared_ptr<Axes>> axesMap;
 
-	    // Data
-		float x;			// Location of bottom left corner x position of plot in current window in 0 to 1
-		float y;			// Location of bottom left corner y position of plot in current window in 0 to 1
-		float width;  		// Width of plot as a proportion of the current window width
-		float height;		// Height of plot as a proportion of the current window height
-        std::shared_ptr<Axes> axes;
+    };
 
-        // Shaders
-        GLPL::Shader textShader;
-        GLPL::Shader plot2dShader;
-        GLPL::Shader plotPosNeg2DShader;
-        GLPL::Shader plotTransparent2dShader;
-
-        // Outlines
-        bool plotOutlineOn = true;
-
-		// Buffers
-		GLuint VAO, VBO;
-		// Area
-		std::vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
-		// Window Dimensions
-        std::shared_ptr<IWindow> windowPt;
-
-	};
 }
 
 
-#endif /* P_PLOT_H_ */
+#endif //OPENGLPLOTLIVE_PROJ_PLOT_H

@@ -8,23 +8,18 @@
  */
 
 
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
 
 // Standard Includes
 #include <memory>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 // Project Includes
 #include "../src/rendering/fonts.h"
 #include "../src/window/window.h"
-#include "../src/plot/plot.h"
 #include "../src/lines/Line2DVecVec.h"
-#include "../src/lines/Line2DVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
-#include "../src/lines/Line2DVecfVecGLMV3.h"
 #include "../src/lines/Line2D2Vecs.h"
-#include "../src/lines/Line2D2CircularVecs.h"
-#include "../src/shadedLines/ShadedLine2D2CircularVecs.h"
 
 
 int main(int argc, char **argv) {
@@ -32,11 +27,11 @@ int main(int argc, char **argv) {
 	 *                     Setup Window
 	   ====================================================== */
     // Window Size
-    int windowWidth  = 800;
+    int windowWidth  = 1600;
     int windowHeight = 800;
 
 	// Init GLFW
-	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight, false, false));
+	std::shared_ptr<GLPL::IWindow> window = std::shared_ptr<GLPL::IWindow>(new GLPL::Window(windowWidth, windowHeight,  false, false));
 	std::shared_ptr<GLPL::Window> window2 = std::dynamic_pointer_cast<GLPL::Window>(window);
 
 	/* ======================================================
@@ -64,7 +59,7 @@ int main(int argc, char **argv) {
 	}
 	// Graph 3
     std::vector<GLPL::pt2D> data3;
-	float i = -2000.0;
+	//float i = -2000.0;
 
 	// Graph 4 - Vector (Line uses template types)
     std::vector<float> data4;
@@ -104,7 +99,7 @@ int main(int argc, char **argv) {
     // Graph 10 - X and Y circular vectors
     std::vector<float> xVec10;
     std::vector<float> yVec10;
-    int j = 0;
+    //int j = 0;
     xVec10.reserve(2500);
     yVec10.reserve(2500);
     for(int i=-1000; i<1500; i++) {
@@ -112,12 +107,36 @@ int main(int argc, char **argv) {
         yVec10.push_back(5 - 0.25*pow(i/500.0, 2));
     }
 
+    // Graph 11
+    std::vector<float> xVec11;
+    std::vector<float> yVec11;
+    xVec11.reserve(2000);
+    yVec11.reserve(2000);
+    for(int i=-2000; i<1501; i++) {
+        xVec11.push_back(i/1000.0);
+        yVec11.push_back(i/1000.0);
+    }
+
+    // Graph 12 - Damping
+    std::vector<float> xVec12 = {0.0f, 0.0f};
+    std::vector<float> yVec12 = {0.0f, 0.0f};
+    xVec12.reserve(2000);
+    yVec12.reserve(2000);
+
+    // Graph 13 - Damping 2
+    std::vector<float> xVec13 = {0.0f, 0.0f};
+    std::vector<float> yVec13 = {0.0f, 0.0f};
+    xVec13.reserve(2000);
+    yVec13.reserve(2000);
 
 	/* ======================================================
 	 *                	    Create Plot
 	   ====================================================== */
 	// Create Plot
-	GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
+	std::shared_ptr<GLPL::Plot> myplot = std::make_shared<GLPL::Plot>(0.0, 0.0, 1.0, 1.0, window2->getParentDimensions());
+	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot);
+	window2->addPlot(myPlotPt);
+	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
 
 	// Create Lines
 	std::shared_ptr<GLPL::Line2DPts> line1 = std::shared_ptr<GLPL::Line2DPts>(new GLPL::Line2DPts(&data1));
@@ -153,12 +172,34 @@ int main(int argc, char **argv) {
     myplot.addLine(line10);
     myplot.addShadedLine(shaded9);
 	myplot.getAxes()->setAutoScaleRound(false);
-	myplot.getAxes()->setEqualAxes(true);
+	myplot.getAxes()->setEqualAxes(true);*/
+
+	// Axes 1
+    std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
+    std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    axesPt->setAxesBoxOn(false);
+    axesPt->setButtonState("Grid", false);
+
+    // Axes 2
+    //std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    //std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line12 = axesPt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line12b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line12);
+    //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
+    std::shared_ptr<GLPL::ILine2D> line13 = axesPt->addLine(&xVec13, &yVec13, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line13b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line13);
+
+    float yVal12 = 0;
+    float yVal13 = 0;
 
 
 	/* ======================================================
 	 *                     Drawing Loop
 	   ====================================================== */
+	float i = 0;
+
 	// Game Loop
 	while(!glfwWindowShouldClose(window->getWindow())) {
 
@@ -166,7 +207,7 @@ int main(int argc, char **argv) {
 		window2->preLoopDraw(true);
 
 		// Update Plot Data
-		GLPL::pt2D pt3;
+		/*GLPL::pt2D pt3;
 		for(int j=0; j<10; j++) {
 			float x = i/1000.0;
 			pt3.x = x;
@@ -210,10 +251,37 @@ int main(int argc, char **argv) {
 		// Update Axes Limits
 		//if(i > 500) {
 		//	myplot.axes.updateAxesLimits(-2.0,2.0,-2.0,2.0);
-		//}
+		//}*/
+
+        /// Update graph 12
+        /*line12b->dataPtX->push_back(2 + i);
+        yVal12 += 2*((rand() % 100)/100.0) - 1.0;
+        line12b->dataPtY->push_back(yVal12);
+        //std::cout << yVal12 << std::endl;
+        line12b->updateInternalData();
+        i += 1;*/
+        line12b->dataPtX->push_back(i);
+        yVal12 = cos((i) / (25*M_PI)) * exp(-(i)/(25*8*M_PI));
+        line12b->dataPtY->push_back(yVal12);
+        line12b->updateInternalData();
+
+        // Update graph 13
+        line13b->dataPtX->push_back(i);
+        yVal13 = cos((i) / (2*25*M_PI)) * exp(-(i)/(25*8*0.5*M_PI));
+        line13b->dataPtY->push_back(yVal13);
+        line13b->updateInternalData();
+
+        i += 1;
+        //i -= 1;
+
 
 		// Draw Plot
-		myplot.Draw();
+		//std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
+        //axesPt->setPosition(axesPt->getLeft() + 0.001, axesPt->getBottom() + 0.001);
+		myplot->Draw();
+		//myplot->drawBoundingBox();
+		//myplot->drawMouseOverBox();
+		// TODO - Convert children vector to set, automatic ordering given the function
 
 		// Post-loop draw
 		window2->postLoopDraw();

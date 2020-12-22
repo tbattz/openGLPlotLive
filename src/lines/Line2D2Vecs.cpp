@@ -4,8 +4,12 @@
 
 #include "Line2D2Vecs.h"
 
+#include <utility>
+
 namespace GLPL {
-    Line2D2Vecs::Line2D2Vecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY, GLenum mode) {
+    Line2D2Vecs::Line2D2Vecs(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                             std::shared_ptr<ParentDimensions> parentDimensions,
+                             GLenum mode) : ISingleLine2D(std::move(parentDimensions)) {
         this->dataPtX = dataPtX;
         this->dataPtY = dataPtY;
         this->setMode(mode);
@@ -13,7 +17,7 @@ namespace GLPL {
         /* Setup Buffers */
         updateInternalData();
         int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
-        createAndSetupBuffers(&VAO, &VBO, dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
+        createAndSetupBuffers(dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
 
         /* Set number of Points */
         nPts = internalData.size()/2.0;
@@ -36,18 +40,32 @@ namespace GLPL {
         }
     }
 
-    void Line2D2Vecs::Draw(GLPL::Shader shader, glm::mat4 axesLimitViewportTrans) {
+    void Line2D2Vecs::Draw() {
         // Check if the number of points changed
         int newPts = (internalData).size()/2;
         if (newPts != nPts) {
             nPts = newPts;
             // Update buffer and attributes
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
         }
 
         // Draw plot
-        drawData(shader, axesLimitViewportTrans, &VAO, getColour(), nPts, getMode());
+        if (isSelected()) {
+            drawData(nPts, selected);
+        }
+        drawData(nPts, false);
+    }
+
+    std::string Line2D2Vecs::getID() {
+        return "Line2D2Vecs:" + std::to_string(x) + ":" + std::to_string(y);
+    }
+
+    void Line2D2Vecs::clearData() {
+        this->dataPtX->clear();
+        this->dataPtY->clear();
+        this->updateInternalData();
+        nPts = 0;
     }
 
     std::vector<float> Line2D2Vecs::getMinMax() {
@@ -75,5 +93,14 @@ namespace GLPL {
         }
 
         return std::vector<float> {xmin,xmax,ymin,ymax};
+    }
+
+    std::tuple<float, float> Line2D2Vecs::getClosestPoint(float xVal) {
+        unsigned int ind = binarySearch(internalData, 0, (internalData.size()/2) - 1, xVal);
+        if (ind < internalData.size()/2) {
+            return std::make_tuple(internalData[2 * ind], internalData[2 * ind + 1]);
+        } else {
+            return std::make_tuple(0,0);
+        }
     }
 }

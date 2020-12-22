@@ -54,3 +54,4 @@ add_definitions(-DGLFW_INCLUDE_NONE)
 # Add subdirectories
 add_subdirectory(src)
 add_subdirectory(apps)
+add_subdirectory(docs)

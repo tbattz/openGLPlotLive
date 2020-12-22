@@ -3,23 +3,27 @@
 //
 
 #include "window.h"
+
+#include <utility>
 #include "inputCallbacks.h"
+
 
 namespace GLPL {
 
-    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) {
-        // Set window size
-        this->windowWidth = windowWidth;
-        this->windowHeight = windowHeight;
+    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) :
+    TopLevelDrawable(0.0f, 0.0f, windowWidth, windowHeight) {
+        // Set window options
         this->transparentBackground = transparentBackground;
         this->focusOnShow = focusOnShow;
 
         // Initialise GLFW
         Window::initGLFW();
 
+        // Create Shader Set
+        shaderSetPt = std::make_shared<ShaderSet>();
+
         // Update Stored Size
         Window::updateStoredSize();
-
     }
 
     Window::~Window() {
@@ -43,23 +47,31 @@ namespace GLPL {
             glfwWindowHint(GLFW_FOCUS_ON_SHOW, false);
         }
 
+        // Adjust window size for high DPI displays
+        glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
+
         // Use 4 samples for MSAA Anti-aliasing
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Screen Properties
-        window = glfwCreateWindow(windowWidth,windowHeight,"openGLPlotLive",nullptr,nullptr);
+        window = glfwCreateWindow(getWidthPx(),getHeightPx(),"openGLPlotLive",nullptr,nullptr);
         glfwMakeContextCurrent(window);
 
         // Initialise GLAD
         Window::initGLAD();
 
+        // Set Input mode to remember mouse states
+        glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+
         // Setup Callbacks for user input
         glfwSetKeyCallback(window, GLPL::key_callback);
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
+        glfwSetCursorPosCallback(window, GLPL::cursorMoved);
+        glfwSetMouseButtonCallback(window, GLPL::mouseCallback);
 
         // Set viewport size
-        glViewport(0,0,windowWidth,windowHeight); // Origin is bottom left
+        glViewport(0,0,getWidthPx(),getHeightPx()); // Origin is bottom left
 
         // Test for objects in front of each other
         glEnable(GL_DEPTH_TEST);
@@ -70,8 +82,7 @@ namespace GLPL {
         // Depth testing to ensure transparency works for shaded lines
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDepthMask(GL_FALSE);
-        glDepthFunc(GL_LESS);
+        glDepthFunc(GL_LEQUAL);
 
         // Line Width
         glLineWidth(1);
@@ -80,9 +91,173 @@ namespace GLPL {
     void Window::updateStoredSize() {
         // Updates the stored window size used for scaling and
         // transformations with the current window size.
+        // Get previous size
+        std::pair<int, int> oldSize = getSizePx();
+        // Get new size
+        int windowWidth, windowHeight;
         glfwGetWindowSize(window,&windowWidth,&windowHeight);
         // Update Viewport Dimensions
         glViewport(0, 0, windowWidth, windowHeight);
+        // Update children
+        if (windowWidth != oldSize.first || windowHeight != oldSize.second) {
+            // Update the stored size
+            TopLevelDrawable::setSize((float)windowWidth, (float)windowHeight);
+            for (unsigned int i = 0; i < children.size(); i++) {
+                this->children[i]->setParentDimensions(this->getParentDimensions());
+            }
+        }
+    }
+
+    void Window::updateStoredSize(int newWidth, int newHeight) {
+        // Set new size
+        TopLevelDrawable::setSize((float)newWidth, (float)newHeight);
+        // Update children
+        for(unsigned int i = 0; i < children.size(); i++) {
+            this->children[i]->setParentDimensions(this->getParentDimensions());
+        }
+    }
+
+    void Window::handleMouseMovement(double xpos, double ypos) {
+        // Create vector to store
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newMousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+        // Convert from pixel space to -1 to 1
+        if (getWidthPx() > 0 && getHeightPx() > 0) {
+            xpos = 2 * (xpos / getWidthPx()) - 1;
+            ypos = -(2 * (ypos / getHeightPx()) - 1);
+            // Determine children that mouse is over
+            for (auto &child : children) {
+                if (child->canMouseOver()) {
+                    child->getMousedOverChildren(xpos, ypos, newMousedOverObjs);
+                }
+            }
+
+            // Update mouse over states
+            for(auto &oldMousedObj : *mousedOverObjs) {
+                oldMousedObj->setHovered(false);
+            }
+            for (auto &mousedObj : *newMousedOverObjs) {
+                mousedObj->setHovered(true);
+                mousedObj->setLastMousePos(xpos, ypos);
+            }
+
+            // Check if the moused over objects have changed
+            bool changed = false;
+            if (newMousedOverObjs->size() != mousedOverObjs->size()) {
+                changed = true;
+            } else {
+                for(unsigned int i=0; i < mousedOverObjs->size(); i ++) {
+                    if (newMousedOverObjs.get()[0][i].get() != mousedOverObjs.get()[0][i].get()) {
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+
+            // Determine which objects are hoverable
+            std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newHoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+            int newCursor = 0;
+            for(const auto& obj : *newMousedOverObjs) {
+                if (obj->isHoverable()) {
+                    newHoverableObjs->push_back(obj);
+                }
+                if (obj->isMouseOver(xpos, ypos, false) && obj->getHoverCursor() != 0) {
+                    newCursor = obj->getHoverCursor();
+                }
+            }
+            // Check if cursor has changed
+            if (newCursor != lastCursorType) {
+                lastCursorType = newCursor;
+                glfwDestroyCursor(lastCursor);
+                lastCursor = glfwCreateStandardCursor(newCursor);
+                glfwSetCursor(window, lastCursor);
+            }
+
+
+            // Handle selection
+            if (!newHoverableObjs->empty()) {
+                if (selected == nullptr) {
+                    // Select first object in list
+                    newHoverableObjs.get()[0][0]->setSelected(true);
+                    selected = newHoverableObjs.get()[0][0];
+                }
+            } else if (selected != nullptr) {
+                // Reset selected
+                selected->setSelected(false);
+                selected = nullptr;
+            }
+
+            // Update mouse position
+            if (selected != nullptr) {
+                selected->setLastMousePos(xpos, ypos);
+            }
+
+            // Print changes in hoverable over
+            if (changed) {
+                for (const auto& obj : *newHoverableObjs) {
+                    if (obj->isSelected()) {
+                        std::cout << "[" << obj->getID() << "], ";
+                    } else {
+                        std::cout << obj->getID() << ", ";
+                    }
+                }
+                std::cout << std::endl;
+            }
+
+            this->mousedOverObjs = newMousedOverObjs;
+            this->hoverableObjs = newHoverableObjs;
+        }
+    }
+
+    void Window::handleMouseRelease() {
+        // Check if mouse is over an objective
+        for(auto &mousedObj : *mousedOverObjs) {
+            mousedObj->onClick();
+        }
+    }
+
+    void Window::updateSelection() {
+        // Check if we should increment the selection
+        if (toggleKeys[GLFW_KEY_SPACE]) {
+            if (hoverableObjs.get()[0].size() > 1) {
+                auto mousePos = selected->getLastMousePos();
+                selected->setSelected(false);
+                int index = -1;
+                for (unsigned int i = 0; i < hoverableObjs->size(); i++) {
+                    if (hoverableObjs.get()[0][i] == selected) {
+                        if (i + 1 < hoverableObjs.get()[0].size()) {
+                            index = (int)i + 1;
+                        } else {
+                            index = 0;
+                        }
+                        break;
+                    }
+                }
+                if (index != -1) {
+                    hoverableObjs.get()[0][index]->setSelected(true);
+                    selected = hoverableObjs.get()[0][index];
+
+                    // Print changes in hoverable over
+                    for (const auto& obj : *hoverableObjs) {
+                        if (obj->isSelected()) {
+                            std::cout << "[" << obj->getID() << "], ";
+                        } else {
+                            std::cout << obj->getID() << ", ";
+                        }
+                    }
+                    std::cout << std::endl;
+                }
+                // Update mouse position
+                if (selected != nullptr) {
+                    selected->setLastMousePos(std::get<0>(mousePos), std::get<1>(mousePos));
+                }
+
+            }
+            toggleKeys[GLFW_KEY_SPACE] = false;
+        }
+    }
+
+    void Window::updateSizePx() {
+
     }
 
     void Window::initGLAD() {
@@ -139,14 +314,6 @@ namespace GLPL {
         glfwSwapBuffers(Window::getWindow());
     }
 
-    int Window::getWidth() {
-        return windowWidth;
-    }
-
-    int Window::getHeight() {
-        return windowHeight;
-    }
-
     void Window::setFrameless(bool framelessOn) {
         glfwSetWindowAttrib(window, GLFW_DECORATED, !framelessOn);
     }
@@ -157,6 +324,30 @@ namespace GLPL {
 
     void Window::setBackgroundColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
         this->backgroundColor = {red, green, blue, alpha};
+    }
+
+    std::shared_ptr<ShaderSet> Window::getShaderSet() {
+        return shaderSetPt;
+    }
+
+    std::shared_ptr<ParentDimensions> Window::getParentDimensions() {
+        // Create parent pointers
+        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, 0.0, 0.0, getWidthPx(), getHeightPx(), shaderSetPt});
+
+        return parentDimensions;
+    }
+
+    void Window::Draw() {
+
+    }
+
+    std::string Window::getID() {
+        return "Window:" + std::to_string(x) + ":" + std::to_string(y);
+    }
+
+    void Window::addPlot(const std::shared_ptr<IDrawable>& plotPt) {
+        // Store plot pointer
+        children.push_back(plotPt);
     }
 
 };

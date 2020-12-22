@@ -5,10 +5,10 @@
 #ifndef OPENGLPLOTLIVE_LINE2DVECGLMV3_H
 #define OPENGLPLOTLIVE_LINE2DVECGLMV3_H
 
-#include "ILine2D.h"
+#include "ILine2D_OLD.h"
 
 namespace GLPL {
-    class Line2DVecGLMV3 : public  ILine2D {
+    class Line2DVecGLMV3 : public  ILine2D_OLD {
         // Line of vector of glm::dvec3s
     public:
         /* Constructor */

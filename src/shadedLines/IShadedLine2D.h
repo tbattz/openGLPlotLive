@@ -16,37 +16,28 @@
 // Project Includes
 #include "../rendering/shader.h"
 #include "../lines/lineColours.h"
+#include "../axes/IPlotable.h"
+#include "../lines/ILine2D.h"
 
 // Standard Includes
 #include <vector>
 
 
 namespace GLPL {
-    class IShadedLine2D {
+    class IShadedLine2D : public ILine2D {
     public:
-        IShadedLine2D();
+        IShadedLine2D(std::shared_ptr<ParentDimensions> parentDimensions);
 
-        void createAndSetupBuffers(GLuint *VAOPt, GLuint *VBOPt, GLuint *EBOPt,
-                                   int vertDataSizeBytes, int indicesDataSizeBytes,
+        void createAndSetupBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
-        void drawData(Shader shader, glm::mat4 axesLimitViewportTrans, GLuint *VAOPt, glm::vec3 colour,
-                int numIndices, float zDepth, GLenum mode);
-        void setShadeColour(glm::vec3 shadeColour);
-        void setMode(GLenum newMode);
-        void setOpacityRatio(float newOpacityRatio);
-        glm::vec3 getColour();
-        GLenum getMode();
+        void drawData(int numIndices, bool selected);
+        int getHoverCursor();
 
-        virtual void Draw(Shader shader, glm::mat4 axesLimitViewportTrans, float zDepth) = 0;
+    protected:
+        // Line Buffers
+        GLuint lineVAO, lineVBO, lineEBO;
 
-        virtual std::vector<float> getMinMax() = 0;
-
-    private:
-        /* Data */
-        glm::vec3 colour = LC_WHITE;
-        float opacityRatio = 1.0;
-        GLenum mode; // Mode, shaded or line
     };
 }
 

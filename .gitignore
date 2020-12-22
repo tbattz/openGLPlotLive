@@ -8,3 +8,5 @@
 *.swp
 *.idea
 include
+/docs/doxygen
+/docs/sphinx

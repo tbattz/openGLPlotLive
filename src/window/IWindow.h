@@ -7,6 +7,7 @@
 
 // GLFW (Multi-platform library for OpenGL)
 #include <GLFW/glfw3.h>
+#include "../rendering/IDrawable.h"
 
 
 namespace GLPL {
@@ -15,9 +16,8 @@ namespace GLPL {
     public:
         IWindow();
 
-        virtual int getWidth() = 0;
-        virtual int getHeight() = 0;
         virtual GLFWwindow *getWindow() = 0;
+        virtual void Draw() = 0;
     };
 
 }

@@ -162,6 +162,32 @@ To enable debugging, when running cmake, enable the debugging flag.
 cmake -DCMAKE_BUILD_TYPE=Debug
 ```
 
+## Documentation
+There are two ways to generate documentation, with the latter requiring the former.
+* Using Doxygen
+* Using Sphinx with Breathe and Doxygen
+
+### Doxygen
+To generate doxygen documentation, provided doxygen is in your path, run the following
+```
+cd build
+rm -rf *
+
+cmake ../                           # Linux
+cmake -G "MinGW Makefiles" ../      # Windows
+
+make doxygen
+```
+The main page is then generated at <project_root>/build/docs/html/index.html.
+
+### Sphinx
+Sphinx documentation requires first generating Doxygen documentation, then using the outputted xml with Breathe, to generated the sphinx documentation.
+```
+# First generate doxygen documentation as above
+cd build
+make sphinx
+```
+
 # Runnning an Example
 An example binary is created, examplePlot. To run this
 ```

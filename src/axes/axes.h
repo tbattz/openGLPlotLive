@@ -1,148 +1,52 @@
-/*
- * axes.h
- *
- *  Created on: 12Feb.,2017
- *      Author: bcub3d-laptop
- */
+//
+// Created by tbatt on 19/04/2020.
+//
 
-#ifndef P_AXES_H_
-#define P_AXES_H_
-
-// GLFW (Multi-platform library for OpenGL)
-#include <GLFW/glfw3.h>
-
-// Standard Includes
-#include <iomanip>
-#include <sstream>
-#include <memory>
-#include <math.h>
-
-// GLPL Includes
-#include "../rendering/transforms.h"
-#include "../window/window.h"
-#include "../rendering/shader.h"
-#include "../rendering/fonts.h"
+#ifndef OPENGLPLOTLIVE_PROJ_AXES_H
+#define OPENGLPLOTLIVE_PROJ_AXES_H
 
 // Project Includes
-#include "../lines/Line2DPts.h"
-#include "../shadedLines/IShadedLine2D.h"
+#include "../texts/textString.h"
+#include "AxesArea.h"
+#include "../rendering/ConstantXYDrawable.h"
+#include "AxesLineTicks.h"
+
 
 namespace GLPL {
+    class Axes : public ConstantXYDrawable {
+    public:
+        // Constructor
+        Axes(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions);
 
-	class Axes {
-		// Axes contains the axes draw space, axes and tick markings
-	public:
-	    // Constructor
-        Axes(float x,float y, float width, float height, std::shared_ptr<IWindow> windowPt, Shader* textShaderPt);
+        // Functions
+        // Text
+        void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
+        std::shared_ptr<TextString> getText(unsigned int textStringId);
+        void removeTextString(unsigned int textStringId);
+        // Line
+        std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType = SINGLE_LINE,
+                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+        // Axes
+        void setAxesBoxOn(bool axesBoxOnBool);
+        // Button
+        void setButtonState(const std::string& buttonName, bool activeState);
 
-	    // Functions
-	    // Text Shader
-        Shader* getTextShaderPt();
-	    // Drawing
-        void Draw(Shader shader, Shader posNegShader, Shader transparentShader, glm::mat4 plotViewportTrans);
-        void addLine(std::shared_ptr<ILine2D> linePt);
-        void addPosNegLine(std::shared_ptr<ILine2D> linePt);
-        void addShadedLine(std::shared_ptr<IShadedLine2D> shadedLinePt);
-        // Position
-        void setPositionSize(float x, float y, float width, float height);
-        // Tick marks
-        void setMajorTickSize(float newMajorTickSize);
-        void setMinorTickSize(float newMinorTickSize);
-        // Labels
-        void setAxesLabelsOn(bool axesLabelsOn);
-        // Limits
-        void updateAxesLimits(float xmin, float xmax, float ymin, float ymax,bool autoChange = true);
-        void updateAxesLimits(std::vector<float> minMax, bool autoChange = true);
-        void updateXAxesLimits(float xmin, float xmax, bool autoChange = true);
-        void updateYAxesLimits(float ymin, float ymax, bool autoChange = true);
-        void updateAxesLimitsAutoscale();
-        // Scaling
-        void setAutoScale(bool autoScaleOn);
-        void setAutoScaleRound(bool newAutoScaleRond);
-        void setEqualAxes(bool equalAxesBool);
-        void setFontScaling(float newFontScaling);
-        // Outlines
-        void setAxesAreaOutlineOn(bool axesAreaOutlineOn);
-        void setXYAxesOn(bool showXYAxes);
+        void Draw();
+        std::string getID();
 
     private:
-	    // Functions
-        void createAndSetupBuffers();
-        void createAndSetupAxesLineBuffers();
-        void createAndSetupAxesTickBuffers();
-        std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
-        void drawAxesAreaOutline(Shader shader, glm::mat4 axesAreaViewportTrans);
-        void drawAxesBox(Shader shader, glm::mat4 axesViewportTrans);
-        void drawAxesLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
-        void drawLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
-        void drawPosNegLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
-        void drawShadedLines(Shader shader, glm::mat4 axesLimitsViewportTrans);
-        void drawAxesTickMarks(Shader shader, glm::mat4 axesViewportTrans);
-        glm::mat4 scale2AxesLimits();
-        void drawMajorAxesTickLabels(glm::mat4 axesViewportTrans);
-        void compareMinMax(std::vector<float>* dataMinMaxPt,std::vector<float> minMax);
-        std::vector<float> getOverallMinMax();
-        void adjustSigFig(std::vector<float>* dataMinMaxPt);
-        void makeAxesEqual(std::vector<float>* dataMinMaxPt);
+        // Functions
+        void createAxesArea();
+        void createAxesLines();
 
-
-
-		// Position
-		float x; // Location of bottom left corner x position of axes in 0 to 1 (in plot area)
-		float y; // Location of bottom left corner y position of axes in 0 to 1 (in plot area)
-		float width; // Width of axes as a proportion of the current plot width, including tick marks
-		float height; // Height of axes as a proportion of the current plot height, including tick marks
-		// Axes Limits
-		float xmin = -1.0;
-		float xmax = 1.0;
-		float ymin = -1.0;
-		float ymax = 1.0;
-		bool autoScaleX = true; // True if the x-axes are to sale to the given data
-		bool autoScaleY = true; // True if the y-axes are to sale to the given data
-		bool autoScaleRound = true; // True to round auto scale limits to the nearest significant value
-		bool equalAxes = false; // Will adjust the plot limits so that the xrange and yrange are the same
-		// Axes Ticks
-		float majorTickSizeW = 0.03; // Size of major axes ticks (proportional to plot area width)
-		float minorTickSizeW = 0.015;// Size of minor axes ticks (proportional to plot area width)
-		float majorTickSizeH = 0.03; // Size of major axes ticks (proportional to plot area height)
-		float minorTickSizeH = 0.015;// Size of minor axes ticks (proportional to plot area height)
-		int majorTickNum = 5; 		 // The number of major tick marks
-		int minorTickNum = 3;		 // The number of minor tick marks between each set of major tick marks
-		int maxMajorTickNum = 20;	 // The maximum number of major tick marks (used to preallocate buffer)
-		int maxMinorTickNum = 5;	 // The maximum number of minor tick marks (used to preallocate buffer)
-		// Axes Labels
-		bool axesLabelsOn = true;
-		// Outlines
-		bool axesAreaOutlineOn = true;
-		bool xyAxesOn = true;
-		// Buffers
-		GLuint VAO, VBO;
-		GLuint axVAO, axVBO;
-		GLuint axtVAO, axtVBO;
-		// Axes Box
-		std::vector<GLfloat> boxVerts = { -1, -1,    1, -1,    1,  1,    -1, 1};
-		// Axes Lines
-        std::vector<GLfloat> axesVerts = {-1, -1,   1, -1,    1,  1,    -1, 1};
-		// Axes Ticks
-        std::vector<GLfloat> axesTicks = {0, 0, -1, 1};
-		// Line Data
-		std::vector<std::shared_ptr<ILine2D>> lines2D;
-		// PosNeg Line Data
-		std::vector<std::shared_ptr<ILine2D>> linesPosNeg2D;
-		// Shaded Line Data
-		std::vector<std::shared_ptr<IShadedLine2D>> shadedLines2D;
-		// Window Dimensions
-		std::shared_ptr<IWindow> windowPt;
-		// Font Shader
-		Shader* textShaderPt;
-		// Font Pointer
-		const GLchar* fontPath = FONTPATH;
-		GLFont axesTicksFont;
-		// Font Size
-		float fontScaling = 1.0;
-	};
+        // Data
+        // Axes Area
+        std::shared_ptr<AxesArea> axesArea;
+        // Text String
+        unsigned int textStringCount = 0;
+        std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
+    };
 }
 
 
-
-#endif /* P_AXES_H_ */
+#endif //OPENGLPLOTLIVE_PROJ_AXES_H
