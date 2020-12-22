@@ -8,7 +8,7 @@ Current data formats:
 * Vector of consecutive x,y values. e.g. {x1,y1,x2,y2,...,xn,yn}
 * Vector of 2-vector x,y pairs. e.g. {vector<float> {x1,y1}, vector<float> {x2,y2}, ... vector<float {xn,yn}}
 
-<img src="https://github.com/tbattz/openGLPlotLive/raw/master/Other/plotGif.gif" width="600" height="600">
+<img src="https://github.com/tbattz/openGLPlotLive/raw/master/Other/plotGif.gif" width="830" height="430">
 
 # Simple Plots
 ## Window Setup
