@@ -6,14 +6,12 @@
 #define OPENGLPLOTLIVE_PROJ_AXESAREA_H
 
 // Project Includes
-#include "../lines/ILine2D_OLD.h"
-#include "IPlotable.h"
-#include "../shadedLines/IShadedLine2D.h"
-#include "../lines/LineType.h"
-#include "../texts/textString.h"
+#include "../lines/ILine2D.h"
 #include "AxesLineTicks.h"
+#include "../lines/LineType.h"
 #include "../interaction/IButton.h"
 #include "../lines/Line2D2Vecs.h"
+#include "Grid.h"
 
 
 namespace GLPL {
@@ -42,6 +40,7 @@ namespace GLPL {
         void removeTextString(unsigned int textStringId);
         // Button
         void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
+        void setButtonState(const std::string& buttonName, bool activeState);
         // Point Interactor
         float convertMouseX2AxesX();
         float convertMouseY2AxesY();
@@ -87,16 +86,19 @@ namespace GLPL {
         std::vector<float> interactorDataY = {};
         std::shared_ptr<Line2D2Vecs> interactorLine;
         std::shared_ptr<TextString> interactorText;
-
+        // Grid
+        std::shared_ptr<Grid> grid;
 
 
         // Functions
         std::vector<float> calculateScissor(glm::mat4 axesLimitsViewportTrans);
         glm::mat4 scale2AxesLimits();
         void drawAxesBox();
+        void drawGrid();
         void drawInteractor();
         void updateAxesLimits();
         void createInteractor();
+        void createGrid();
 
     };
 

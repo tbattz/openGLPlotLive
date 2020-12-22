@@ -37,10 +37,13 @@ namespace GLPL {
         // Add Buttons
         AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
         AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, false);
+        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
 
         // Create Interactor
         AxesArea::createInteractor();
+
+        // Create Grid
+        AxesArea::createGrid();
 
     }
 
@@ -56,6 +59,9 @@ namespace GLPL {
         for(auto & i : axesLines) {
             i.second->Draw();
         }
+
+        // Draw Grid
+        AxesArea::drawGrid();
 
         // Scissor Test
         glEnable(GL_SCISSOR_TEST);
@@ -123,6 +129,12 @@ namespace GLPL {
         for(const auto& axesLine : axesLines) {
             axesLine.second->setMinMax(newXMin, newXMax, newYMin, newYMax);
         }
+        // Update Grid
+        grid->setMinMax(newXMin, newXMax, newYMin, newYMax);
+        std::vector<float> xAxesPos = axesLines.at("x")->getAxesTickPos();
+        std::vector<float> yAxesPos = axesLines.at("y")->getAxesTickPos();
+        grid->setXLines(xAxesPos);
+        grid->setYLines(yAxesPos);
         // Update Axes Area
         AxesArea::updateAxesViewportTransform();
     }
@@ -329,6 +341,14 @@ namespace GLPL {
         buttonMap.insert(std::pair<std::string, std::shared_ptr<IButton>>(buttonName, buttonObjPt));
     }
 
+    void AxesArea::setButtonState(const std::string& buttonName, bool activeState) {
+        if (buttonMap.count(buttonName) > 0) {
+            buttonMap.at(buttonName).get()->setActive(activeState);
+        } else {
+            std::cout << "Button " << buttonName << " does not exist!" << std::endl;
+        }
+    }
+
     void AxesArea::updateAxesViewportTransform() {
         // Update Transform
         glm::mat4 viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
@@ -337,6 +357,10 @@ namespace GLPL {
         // Update Children Lines
         for(auto & i : lineMap) {
             i.second->setAxesViewportTransform(axesViewportTransformation);
+        }
+        // Update Grid
+        if (grid != nullptr) {
+            grid->setAxesViewportTransform(axesViewportTransformation);
         }
     }
 
@@ -431,6 +455,12 @@ namespace GLPL {
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINE_LOOP,0,4);
         glBindVertexArray(0);
+    }
+
+    void GLPL::AxesArea::drawGrid() {
+        if (buttonMap["Grid"]->isActive()) {
+            grid->Draw();
+        }
     }
 
     void GLPL::AxesArea::drawInteractor() {
@@ -542,5 +572,18 @@ namespace GLPL {
         textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, interactorText));
         textStringCount += 1;
 
+    }
+
+    void GLPL::AxesArea::createGrid() {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Create grid
+        grid = std::make_shared<Grid>(newParentPointers);
+        // Register Children
+        AxesArea::registerChild(grid);
+        // Set axes area transform
+        grid->setAxesViewportTransform(axesViewportTransformation);
+        // Set not hoverable
+        grid->setHoverable(false);
     }
 }

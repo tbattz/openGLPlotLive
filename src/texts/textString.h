@@ -6,7 +6,6 @@
 #define OPENGLPLOTLIVE_PROJ_TEXTSTRING_H
 
 // Project Includes
-#include "../rendering/IDrawable.h"
 #include "../rendering/ConstantXYDrawable.h"
 
 

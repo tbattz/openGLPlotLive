@@ -101,4 +101,12 @@ namespace GLPL {
         return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
     }
 
+    void Axes::setAxesBoxOn(bool axesBoxOnBool) {
+        axesArea->setAxesBoxOn(axesBoxOnBool);
+    }
+
+    void Axes::setButtonState(const std::string& buttonName, bool activeState) {
+        axesArea->setButtonState(buttonName, activeState);
+    }
+
 }

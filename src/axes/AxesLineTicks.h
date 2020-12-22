@@ -7,11 +7,9 @@
 
 
 // Standard Includes
-#include <math.h>
+#include <cmath>
 
 // Project Includes
-#include "../rendering/IDrawable.h"
-#include "../rendering/ConstantXYDrawable.h"
 #include "../texts/textString.h"
 
 
@@ -48,6 +46,7 @@ namespace GLPL {
         void setMinMax(float newXMin, float newXMax, float newYMin, float newYMax);
         float getFontSize();
         void setMajorTickFontSize(float fontSize);
+        std::vector<float> getAxesTickPos();
 
 
     private:
@@ -69,7 +68,7 @@ namespace GLPL {
         void generateXTickVerts();
         void generateYTickVerts();
         void generateTickVerts();
-        std::pair<float, float>  generateTickLabelVerts(float xPos, float yPos);
+        std::pair<float, float> generateTickLabelVerts(float xPos, float yPos);
         // Axes Tick Labels
         AttachLocation generateMajorTickOffsetAttachLocation();
         std::string value2NeatStr(float inValue, unsigned int maxChar = 3, unsigned int maxDecimal = 2);
@@ -102,8 +101,8 @@ namespace GLPL {
         std::vector<float> minorTickAxesPos;    // Holds the graph value at this vertex
 
         // Axes Text Labels
-        float baseFontSize = 12.0f;
-        float currFontSize = 12.0f;
+        float baseFontSize = 10.0f;
+        float currFontSize = 10.0f;
         float xOffsetFactor = 1.2f;
         float yOffsetFactor = 1.2f;
         std::vector<std::shared_ptr<TextString>> majorTickTextStrings; // Holds the text labels for major axes ticks

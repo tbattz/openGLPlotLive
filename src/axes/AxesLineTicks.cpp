@@ -592,6 +592,10 @@ namespace GLPL {
         currFontSize = fontSize;
     }
 
+    std::vector<float> AxesLineTicks::getAxesTickPos() {
+        return majorTickAxesPos;
+    }
+
     void AxesLineTicks::generateMajorTickLabels() {
         // Generate labels
         unsigned int usedCount = 0;

@@ -26,6 +26,10 @@ namespace GLPL {
         // Line
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType = SINGLE_LINE,
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+        // Axes
+        void setAxesBoxOn(bool axesBoxOnBool);
+        // Button
+        void setButtonState(const std::string& buttonName, bool activeState);
 
         void Draw();
         std::string getID();
