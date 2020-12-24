@@ -11,6 +11,7 @@
 // Project Includes
 #include "shader.h"
 #include "../texts/CharacterLoader.h"
+#include "../textures/TextureManager.h"
 
 
 namespace GLPL {
@@ -34,9 +35,11 @@ namespace GLPL {
         float getYDpiScaling();
         std::shared_ptr<Shader> getTextShader();
         std::shared_ptr<Shader> getPlot2dShader();
+        std::shared_ptr<Shader> getTextureShader();
         std::shared_ptr<Shader> getPlotPosNeg2DShader();
         std::shared_ptr<Shader> getPlotTransparent2dShader();
         std::shared_ptr<CharacterLoader> getCharacterLoader();
+        std::shared_ptr<TextureManager> getTextureManager();
 
     private:
         // DPI Scaling
@@ -46,20 +49,24 @@ namespace GLPL {
         // Shaders
         Shader textShader = Shader("Shaders/font.vs", "Shaders/font.frag");
         Shader plot2dShader = Shader("Shaders/plot2d.vs","Shaders/plot2d.frag");
+        Shader textureShader = Shader("Shaders/texture.vs", "Shaders/texture.frag");
         Shader plotPosNeg2DShader = Shader("Shaders/plotPosNeg2d.vs", "Shaders/plotPosNeg2d.frag");
         Shader plotTransparent2dShader = Shader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag");
 
         // shared_ptr
         std::shared_ptr<Shader> textShaderPt;
         std::shared_ptr<Shader> plot2dShaderPt;
+        std::shared_ptr<Shader> textureShaderPt;
         std::shared_ptr<Shader> plotPosNeg2DShaderPt;
         std::shared_ptr<Shader> plotTransparent2dShaderPt;
         std::shared_ptr<CharacterLoader> characterLoaderPt;
+        std::shared_ptr<TextureManager> textureMangerPt;
 
 
         // Text
         CharacterLoader characterLoader = CharacterLoader(FONTPATH);
-
+        // Textures
+        TextureManager textureManager = TextureManager();
 
     };
 

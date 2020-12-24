@@ -28,7 +28,7 @@ namespace GLPL {
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
-        // Button
+        // PressButton
         void setButtonState(const std::string& buttonName, bool activeState);
 
         void Draw();

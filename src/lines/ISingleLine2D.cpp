@@ -62,23 +62,25 @@ namespace GLPL {
 
     void ISingleLine2D::drawData(int nPts, bool selected) {
         // Draws the data currently stored in the line corresponding to the given VAO
-        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
-        shader->Use();
-        glm::vec4 inColor;
-        if (!selected) {
-            glLineWidth(lineWidth);
-            inColor = glm::vec4(colour, 1.0);
-        } else {
-            glLineWidth(10*lineWidth);
-            inColor = glm::vec4(colour, 0.3);
+        if (nPts > 0) {
+            std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+            shader->Use();
+            glm::vec4 inColor;
+            if (!selected) {
+                glLineWidth(lineWidth);
+                inColor = glm::vec4(colour, 1.0);
+            } else {
+                glLineWidth(10 * lineWidth);
+                inColor = glm::vec4(colour, 0.3);
+            }
+            glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
+                               glm::value_ptr(*axesViewportTransform));
+            glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
+            glBindVertexArray(lineVAO);
+            glDrawArrays(mode, 0, nPts);
+            glBindVertexArray(0);
+            glLineWidth(1);
         }
-        glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
-                           glm::value_ptr(*axesViewportTransform));
-        glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
-        glBindVertexArray(lineVAO);
-        glDrawArrays(mode, 0, nPts);
-        glBindVertexArray(0);
-        glLineWidth(1);
     }
 
 

@@ -2,8 +2,8 @@
 // Created by bcub3d-laptop-dell on 12/12/20.
 //
 
-#ifndef OPENGLPLOTLIVE_PROJ_IBUTTON_H
-#define OPENGLPLOTLIVE_PROJ_IBUTTON_H
+#ifndef OPENGLPLOTLIVE_PROJ_PRESSBUTTON_H
+#define OPENGLPLOTLIVE_PROJ_PRESSBUTTON_H
 
 #include "../rendering/IDrawable.h"
 #include "../rendering/ConstantXYDrawable.h"
@@ -11,11 +11,11 @@
 
 namespace GLPL {
 
-    class IButton : public ConstantXYDrawable {
+    class PressButton : public ConstantXYDrawable {
     public:
         // Constructor
-        IButton(std::string newButtonName, float x, float y, float width, float height,
-                std::shared_ptr<ParentDimensions> parentDimensions);
+        PressButton(std::string newButtonName, float x, float y, float width, float height,
+                    std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
         void Draw();
@@ -33,10 +33,9 @@ namespace GLPL {
         // Functions
         void setupShadingBuffers();
         void drawButtonShading();
-        void drawButtonLogo();
         void drawButtonOutline();
 
-        // Button Appearance
+        // PressButton Appearance
         glm::vec4 buttonInactiveOutlineColor      = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec4 buttonInactiveOutlineHoverColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
         glm::vec4 buttonInactiveShadingColor      = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
@@ -52,4 +51,4 @@ namespace GLPL {
 }
 
 
-#endif //OPENGLPLOTLIVE_PROJ_IBUTTON_H
+#endif //OPENGLPLOTLIVE_PROJ_PRESSBUTTON_H

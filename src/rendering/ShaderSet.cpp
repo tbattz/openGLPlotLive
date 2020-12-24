@@ -13,9 +13,11 @@ namespace GLPL {
         // Make shared_ptrs
         textShaderPt = std::make_shared<Shader>(textShader);
         plot2dShaderPt = std::make_shared<Shader>(plot2dShader);
+        textureShaderPt = std::make_shared<Shader>(textureShader);
         plotPosNeg2DShaderPt = std::make_shared<Shader>(plotPosNeg2DShader);
         plotTransparent2dShaderPt = std::make_shared<Shader>(plotTransparent2dShader);
         characterLoaderPt = std::make_shared<CharacterLoader>(characterLoader);
+        textureMangerPt = std::make_shared<TextureManager>(textureManager);
     }
 
     GLPL::ShaderSet::~ShaderSet() {
@@ -40,6 +42,10 @@ namespace GLPL {
         return plot2dShaderPt;
     }
 
+    std::shared_ptr<Shader> GLPL::ShaderSet::getTextureShader() {
+        return textureShaderPt;
+    }
+
     std::shared_ptr<Shader> GLPL::ShaderSet::getPlotPosNeg2DShader() {
         return plotPosNeg2DShaderPt;
     }
@@ -50,6 +56,10 @@ namespace GLPL {
 
     std::shared_ptr<CharacterLoader> ShaderSet::getCharacterLoader() {
         return characterLoaderPt;
+    }
+
+    std::shared_ptr<TextureManager> ShaderSet::getTextureManager() {
+        return textureMangerPt;
     }
 
 }

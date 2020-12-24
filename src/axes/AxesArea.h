@@ -9,7 +9,7 @@
 #include "../lines/ILine2D.h"
 #include "AxesLineTicks.h"
 #include "../lines/LineType.h"
-#include "../interaction/IButton.h"
+#include "../interaction/PressButton.h"
 #include "../lines/Line2D2Vecs.h"
 #include "Grid.h"
 
@@ -38,8 +38,9 @@ namespace GLPL {
         void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(unsigned int textStringId);
         void removeTextString(unsigned int textStringId);
-        // Button
+        // PressButton
         void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
+        void addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
         void setButtonState(const std::string& buttonName, bool activeState);
         // Point Interactor
         float convertMouseX2AxesX();
@@ -80,7 +81,7 @@ namespace GLPL {
         // Axes Lines
         std::unordered_map<std::string, std::shared_ptr<AxesLineTicks>> axesLines;
         // Buttons
-        std::unordered_map<std::string, std::shared_ptr<IButton>> buttonMap;
+        std::unordered_map<std::string, std::shared_ptr<PressButton>> buttonMap;
         // Interactor
         std::vector<float> interactorDataX = {};
         std::vector<float> interactorDataY = {};

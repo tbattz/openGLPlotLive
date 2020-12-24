@@ -2,14 +2,14 @@
 // Created by bcub3d-laptop-dell on 12/12/20.
 //
 
-#include "IButton.h"
+#include "PressButton.h"
 
 #include <utility>
 
 namespace GLPL {
 
-    IButton::IButton(std::string newButtonName, float x, float y, float width, float height,
-                     std::shared_ptr<ParentDimensions> parentDimensions) :
+    PressButton::PressButton(std::string newButtonName, float x, float y, float width, float height,
+                             std::shared_ptr<ParentDimensions> parentDimensions) :
         ConstantXYDrawable(x, y, width, height, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
         // Set button name
         buttonName = std::move(newButtonName);
@@ -18,29 +18,26 @@ namespace GLPL {
         boundingBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         // Setup Shading Buffers
-        IButton::setupShadingBuffers();
+        PressButton::setupShadingBuffers();
     }
 
-    void IButton::Draw() {
+    void PressButton::Draw() {
         // Draw button shading
-        IButton::drawButtonShading();
-
-        // Draw button logo
-        // TODO - Implement button logo
+        PressButton::drawButtonShading();
 
         // Draw button outline
-        IButton::drawButtonOutline();
+        PressButton::drawButtonOutline();
     }
 
-    void IButton::onClick() {
+    void PressButton::onClick() {
         toggleActive();
     }
 
-    std::string IButton::getID() {
-        return "IButton:" + buttonName + ":" + std::to_string(x) + ":" + std::to_string(y);
+    std::string PressButton::getID() {
+        return "PressButton:" + buttonName + ":" + std::to_string(x) + ":" + std::to_string(y);
     }
 
-    void IButton::setupShadingBuffers() {
+    void PressButton::setupShadingBuffers() {
         unsigned int indicesDataSizeBytes = internalIndices.size()*sizeof(internalIndices[0]);
 
         glGenBuffers(1, &EBO);
@@ -59,7 +56,7 @@ namespace GLPL {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_STATIC_DRAW);
     }
 
-    void IButton::drawButtonShading() {
+    void PressButton::drawButtonShading() {
         // Draws the data currently stored in the shaded line corresponding to the given VAO
         // The VAO is bound to the EBO from earlier
         // Select colour
@@ -88,11 +85,7 @@ namespace GLPL {
 
     }
 
-    void IButton::drawButtonLogo() {
-
-    }
-
-    void IButton::drawButtonOutline() {
+    void PressButton::drawButtonOutline() {
         // Select colour
         glm::vec4 inColor;
         if (isHovered() && !isActive()) {

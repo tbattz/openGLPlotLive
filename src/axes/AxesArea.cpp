@@ -2,11 +2,16 @@
 // Created by tbatt on 19/06/2020.
 //
 
+// Standard Includes
+#include <utility>
+
+// Project Includes
 #include "AxesArea.h"
 #include "../shadedLines/ShadedLine2D2CircularVecs.h"
 #include "../lines/Line2D2Vecs.h"
+#include "../interaction/PressButtonWithImage.h"
 
-#include <utility>
+
 
 namespace GLPL {
 
@@ -35,7 +40,7 @@ namespace GLPL {
         AxesArea::addText("y label", -0.175, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
-        AxesArea::addButton("Interactor", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
         AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
         AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
 
@@ -329,8 +334,8 @@ namespace GLPL {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
-        std::shared_ptr<IDrawable> buttonObj = std::make_shared<IButton>(buttonName, x, y, width, height, newParentPointers);
-        std::shared_ptr<IButton> buttonObjPt = std::dynamic_pointer_cast<IButton>(buttonObj);
+        std::shared_ptr<IDrawable> buttonObj = std::make_shared<PressButton>(buttonName, x, y, width, height, newParentPointers);
+        std::shared_ptr<PressButton> buttonObjPt = std::dynamic_pointer_cast<PressButton>(buttonObj);
         // Set pin position
         buttonObjPt->setAttachLocation(attachLocation);
         // Set state
@@ -338,14 +343,31 @@ namespace GLPL {
         // Register Child
         AxesArea::registerChild(buttonObj);
         // Store button
-        buttonMap.insert(std::pair<std::string, std::shared_ptr<IButton>>(buttonName, buttonObjPt));
+        buttonMap.insert(std::pair<std::string, std::shared_ptr<PressButton>>(buttonName, buttonObjPt));
+    }
+
+    void AxesArea::addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height,
+                             AttachLocation attachLocation, bool activeState) {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Register Child
+        std::shared_ptr<IDrawable> buttonObj = std::make_shared<PressButtonWithImage>(buttonName, x, y, width, height, textureName, newParentPointers);
+        std::shared_ptr<PressButton> buttonObjPt = std::dynamic_pointer_cast<PressButton>(buttonObj);
+        // Set pin position
+        buttonObjPt->setAttachLocation(attachLocation);
+        // Set state
+        buttonObjPt->setActive(activeState);
+        // Register Child
+        AxesArea::registerChild(buttonObj);
+        // Store button
+        buttonMap.insert(std::pair<std::string, std::shared_ptr<PressButton>>(buttonName, buttonObjPt));
     }
 
     void AxesArea::setButtonState(const std::string& buttonName, bool activeState) {
         if (buttonMap.count(buttonName) > 0) {
             buttonMap.at(buttonName).get()->setActive(activeState);
         } else {
-            std::cout << "Button " << buttonName << " does not exist!" << std::endl;
+            std::cout << "PressButton " << buttonName << " does not exist!" << std::endl;
         }
     }
 
