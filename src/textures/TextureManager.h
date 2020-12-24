@@ -18,7 +18,7 @@ namespace GLPL {
         TextureManager();
 
         // Functions
-        void loadTexture(std::string textureName, const char* texturePath);
+        void loadTexture(const std::string& textureName, const char* texturePath);
         unsigned int getTextureId(std::string textureName);
 
     private:

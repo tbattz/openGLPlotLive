@@ -24,9 +24,11 @@ namespace GLPL {
 
     GLPL::TextureManager::TextureManager() {
         TextureManager::loadTexture("interactor-white", "textures/interactor-white.png");
+        TextureManager::loadTexture("axes-limits-white", "textures/axesLimits-white.png");
+        TextureManager::loadTexture("grid-white", "textures/grid-white.png");
     }
 
-    void TextureManager::loadTexture(std::string textureName, const char* texturePath) {
+    void TextureManager::loadTexture(const std::string& textureName, const char* texturePath) {
         // Bind to new texture
         unsigned int texture;
         glGenTextures(1, &texture);

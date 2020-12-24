@@ -28,10 +28,10 @@ namespace GLPL {
         unsigned int logoVAO, logoVBO, logoEBO;
 
         // Image                          // Positions        // Texture Coords
-        std::vector<GLfloat> logoVerts = { -1.0f, -1.0f,      1.0f, 1.0f,  // top right
+        std::vector<GLfloat> logoVerts = { -1.0f, -1.0f,      0.0f, 0.0f,  // bottom left
                                            1.0f, -1.0f,       1.0f, 0.0f,  // bottom right
-                                           1.0f,  1.0f,       0.0f, 0.0f,  // bottom left
-                                           -1.0f, 1.0f,       0.0f, 1.0};  // top left
+                                           1.0f,  1.0f,       1.0f, 1.0f,  // top right
+                                           -1.0f, 1.0f,       0.0f, 1.0f}; // top left
         std::vector<unsigned int> logoIndices = {0, 1, 3,   // First triangle
                                                  1, 2, 3};  // Second triangle
         std::string textureName;

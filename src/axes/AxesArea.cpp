@@ -41,8 +41,8 @@ namespace GLPL {
 
         // Add Buttons
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButton("Axes Limits Scaling", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButton("Grid", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("Axes Limits Scaling", "axes-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("Grid", "grid-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
 
         // Create Interactor
         AxesArea::createInteractor();
