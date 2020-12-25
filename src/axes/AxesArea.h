@@ -35,9 +35,11 @@ namespace GLPL {
         std::shared_ptr<IPlotable> getLine(unsigned int lineId);
         void removeLine(unsigned int lineId);
         // Text
-        void addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
-        std::shared_ptr<TextString> getText(unsigned int textStringId);
-        void removeTextString(unsigned int textStringId);
+        void addText(std::string textString, std::string stringId, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
+        std::shared_ptr<TextString> getText(std::string textStringId);
+        void setText(std::string stringId, std::string newTextString);
+        void setTextRotation(std::string stringId, TextRotation newTextRotation);
+        void removeTextString(std::string textStringId);
         // PressButton
         void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
         void addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
@@ -76,8 +78,7 @@ namespace GLPL {
         bool axesBoxOn = true;
         glm::vec4 axesBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         // Text String
-        unsigned int textStringCount = 0;
-        std::unordered_map<unsigned int, std::shared_ptr<TextString>> textStringMap;
+        std::unordered_map<std::string, std::shared_ptr<TextString>> textStringMap;
         // Axes Lines
         std::unordered_map<std::string, std::shared_ptr<AxesLineTicks>> axesLines;
         // Buttons

@@ -6,7 +6,7 @@
 #define OPENGLPLOTLIVE_PROJ_AXES_H
 
 // Project Includes
-#include "../texts/textString.h"
+#include "../texts/TextString.h"
 #include "AxesArea.h"
 #include "../rendering/ConstantXYDrawable.h"
 #include "AxesLineTicks.h"
@@ -28,6 +28,12 @@ namespace GLPL {
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
+        // Labels
+        void setTitle(std::string newTitle);
+        void setXLabel(std::string newXLabel);
+        void setYLabel(std::string newYLabel);
+        void setXLabelRotation(TextRotation newTextRotation);
+        void setYLabelRotation(TextRotation newTextRotation);
         // PressButton
         void setButtonState(const std::string& buttonName, bool activeState);
 

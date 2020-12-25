@@ -3,6 +3,7 @@
 //
 
 // Standard Includes
+#include <utility>
 
 // Project Includes
 #include "axes.h"
@@ -103,6 +104,26 @@ namespace GLPL {
 
     void Axes::setAxesBoxOn(bool axesBoxOnBool) {
         axesArea->setAxesBoxOn(axesBoxOnBool);
+    }
+
+    void Axes::setTitle(std::string newTitle) {
+        axesArea->setText("axes-title", std::move(newTitle));
+    }
+
+    void Axes::setXLabel(std::string newXLabel) {
+        axesArea->setText("x-label", std::move(newXLabel));
+    }
+
+    void Axes::setYLabel(std::string newYLabel) {
+        axesArea->setText("y-label", std::move(newYLabel));
+    }
+
+    void Axes::setXLabelRotation(TextRotation newTextRotation) {
+        axesArea->setTextRotation("x-label", newTextRotation);
+    }
+
+    void Axes::setYLabelRotation(TextRotation newTextRotation) {
+        axesArea->setTextRotation("y-label", newTextRotation);
     }
 
     void Axes::setButtonState(const std::string& buttonName, bool activeState) {

@@ -33,11 +33,11 @@ namespace GLPL {
         AxesArea::updateAxesViewportTransform();
 
         // Add Title
-        AxesArea::addText("Axes Title", 0.5, 1.1, 14, CENTRE_BOTTOM);
+        AxesArea::addText("Axes Title", "axes-title", 0.5, 1.1, 14, CENTRE_BOTTOM);
 
         // Add Axes Label
-        AxesArea::addText("x label", 0.5, -0.11, 12, CENTRE_TOP);
-        AxesArea::addText("y label", -0.175, 0.5, 12, CENTRE_RIGHT);
+        AxesArea::addText("x label", "x-label", 0.5, -0.11, 12, CENTRE_TOP);
+        AxesArea::addText("y label", "y-label", -0.175, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
@@ -223,27 +223,47 @@ namespace GLPL {
         }
     }
 
-    void AxesArea::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {
-        // Create Parent Dimensions
-        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
-        // Register Child
-        std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
-        std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
-        // Set pin position
-        textStringPt->setAttachLocation(attachLocation);
-        // Register Child
-        AxesArea::registerChild(textStringObj);
-        // Store Text String
-        textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, textStringPt));
-        textStringCount += 1;
+    void AxesArea::addText(std::string textString, std::string stringId, float x, float y, float fontSize, AttachLocation attachLocation) {
+        if (textStringMap.count(stringId) == 0) {
+            // Create Parent Dimensions
+            std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+            // Register Child
+            std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize,
+                                                                                    newParentPointers);
+            std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
+            // Set pin position
+            textStringPt->setAttachLocation(attachLocation);
+            // Register Child
+            AxesArea::registerChild(textStringObj);
+            // Store Text String
+            textStringMap.insert(std::pair<std::string, std::shared_ptr<TextString>>(stringId, textStringPt));
+        } else {
+            std::cout << "String " << stringId << "already exists!" << std::endl;
+        }
     }
 
-    std::shared_ptr<TextString> AxesArea::getText(unsigned int textStringId) {
+    std::shared_ptr<TextString> AxesArea::getText(std::string textStringId) {
         if (textStringMap.count(textStringId) > 0) {
             return textStringMap.at(textStringId);
         } else {
             std::cout << "TextString " << textStringId << " does not exist!" << std::endl;
             return nullptr;
+        }
+    }
+
+    void AxesArea::setText(std::string stringId, std::string newTextString) {
+        if (textStringMap.count(stringId) > 0) {
+            textStringMap.at(stringId)->setTextString(newTextString);
+        } else {
+            std::cout << "TextString " << stringId << " does not exist!" << std::endl;
+        }
+    }
+
+    void AxesArea::setTextRotation(std::string stringId, TextRotation newTextRotation) {
+        if (textStringMap.count(stringId) > 0) {
+            textStringMap.at(stringId)->setTextRotation(newTextRotation);
+        } else {
+            std::cout << "TextString " << stringId << " does not exist!" << std::endl;
         }
     }
 
@@ -317,7 +337,7 @@ namespace GLPL {
         }
     }
 
-    void AxesArea::removeTextString(unsigned int textStringId) {
+    void AxesArea::removeTextString(std::string textStringId) {
         if (textStringMap.count(textStringId) > 0) {
             std::shared_ptr<TextString> textString2Remove = textStringMap.at(textStringId);
             // Remove child
@@ -591,8 +611,7 @@ namespace GLPL {
         // Register Child
         AxesArea::registerChild(interactorText);
         // Store Text String
-        textStringMap.insert(std::pair<unsigned int, std::shared_ptr<TextString>>(textStringCount, interactorText));
-        textStringCount += 1;
+        textStringMap.insert(std::pair<std::string, std::shared_ptr<TextString>>("interactor-text", interactorText));
 
     }
 

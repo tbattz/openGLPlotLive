@@ -10,7 +10,7 @@
 #include <cmath>
 
 // Project Includes
-#include "../texts/textString.h"
+#include "../texts/TextString.h"
 
 
 namespace GLPL {
