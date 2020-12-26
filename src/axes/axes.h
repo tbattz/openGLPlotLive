@@ -29,7 +29,7 @@ namespace GLPL {
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
         // Scatter Plots
         std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         // Labels

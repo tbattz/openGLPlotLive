@@ -230,7 +230,7 @@ namespace GLPL {
     }
 
     std::shared_ptr<IScatterPlot> AxesArea::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                           glm::vec3 colour, float opacityRatio) {
+                                                           glm::vec3 colour, float opacityRatio, MarkerType markerType) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Create Scatter Plot
@@ -242,7 +242,10 @@ namespace GLPL {
 
         // Set Attributes
         scatterPt->setMarkerColour(colour);
+        scatterPt->setMarkerOutlineColour(colour);
         scatterPt->setOpacityRatio(opacityRatio);
+        scatterPt->setOutlineOpacityRatio(1.25*opacityRatio);
+        scatterPt->setMarkerType(markerType);
 
         // Register Children
         AxesArea::registerChild(scatterObj);
@@ -459,7 +462,7 @@ namespace GLPL {
         // Update Children Scatter Plots
         for(auto & i : scatterMap) {
             i.second->setAxesViewportTransform(axesViewportTransformation);
-            i.second->generateMarkerVerts();
+            i.second->generateAllMarkerVerts();
         }
         // Update Grid
         if (grid != nullptr) {
@@ -623,23 +626,23 @@ namespace GLPL {
     void GLPL::AxesArea::updateAxesLimits() {
         if (buttonMap["Axes Limits Scaling"]->isActive()) {
             // Get the overall maximum and minimum from all lines
-            xmin = -0.0;
-            xmax = 0.0;
-            ymin = -0.0;
-            ymax = 0.0;
+            float newXmin = -0.0;
+            float newXmax = 0.0;
+            float newYmin = -0.0;
+            float newYmax = 0.0;
             for (std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
                 std::vector<float> minMax = lineInfo.second->getMinMax();
-                if (minMax[0] < xmin) { xmin = minMax[0]; };
-                if (minMax[1] > xmax) { xmax = minMax[1]; };
-                if (minMax[2] < ymin) { ymin = minMax[2]; };
-                if (minMax[3] > ymax) { ymax = minMax[3]; };
+                if (minMax[0] < newXmin) { newXmin = minMax[0]; };
+                if (minMax[1] > newXmax) { newXmax = minMax[1]; };
+                if (minMax[2] < newYmin) { newYmin = minMax[2]; };
+                if (minMax[3] > newYmax) { newYmax = minMax[3]; };
             }
             for (std::pair<unsigned int, std::shared_ptr<IScatterPlot>> scatterInfo : scatterMap) {
                 std::vector<float> minMax = scatterInfo.second->getMinMax();
-                if (minMax[0] < xmin) { xmin = minMax[0]; };
-                if (minMax[1] > xmax) { xmax = minMax[1]; };
-                if (minMax[2] < ymin) { ymin = minMax[2]; };
-                if (minMax[3] > ymax) { ymax = minMax[3]; };
+                if (minMax[0] < newXmin) { newXmin = minMax[0]; };
+                if (minMax[1] > newXmax) { newXmax = minMax[1]; };
+                if (minMax[2] < newYmin) { newYmin = minMax[2]; };
+                if (minMax[3] > newYmax) { newYmax = minMax[3]; };
             }
             // Match axes lines sizing
             float xFontSize = axesLines.at("x")->getFontSize();
@@ -651,7 +654,14 @@ namespace GLPL {
             }
 
             // Set axes limits
-            AxesArea::setAxesLimits(xmin, xmax, ymin, ymax);
+            float absLim = 1e-10;
+            if ((abs(xmin - newXmin) > absLim) ||
+                (abs(xmax - newXmax) > absLim) ||
+                (abs(ymin - newYmin) > absLim) ||
+                (abs(ymax - newYmax) > absLim)) {
+                AxesArea::setAxesLimits(newXmin, newXmax, newYmin, newYmax);
+            }
+
         }
     }
 

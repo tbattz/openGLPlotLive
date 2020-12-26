@@ -19,6 +19,8 @@ namespace GLPL {
         virtual std::vector<float> getMinMax() = 0;
         void setAxesViewportTransform(std::shared_ptr<glm::mat4> newAxesViewportTransform);
 
+        virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
+
     protected:
         std::shared_ptr<glm::mat4> axesViewportTransform = std::make_shared<glm::mat4>(glm::mat4(1.0f));
 

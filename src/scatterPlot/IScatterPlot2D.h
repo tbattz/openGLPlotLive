@@ -25,7 +25,6 @@ namespace GLPL {
         void createAndSetupBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
                                    int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
 
-
         void drawData(int nPts, bool selected);
 
     protected:
@@ -35,8 +34,15 @@ namespace GLPL {
         GLuint scatterOutlineVAO, scatterOutlineVBO;
         GLuint markerOutlineVBO;
 
-        // Marker Size
-        float markerSizePx = 10; // Width/Height of the marker in pixels
+        // Marker Vertices
+        std::vector<float> markerVerts = {};    // positions (2)
+        std::vector<float> markerOutlineVerts = {};
+
+        // Functions
+        void generateAllMarkerVerts();
+        void generateMarkerEquallySpaced(unsigned int nCirclePoints, float thetaRadStart, float xHalfWidth, float yHalfHeight);
+        void generateMarkerSquareVerts(float xHalfWidth, float yHalfHeight);
+        void generateMarkerCircleVerts(float xHalfWidth, float yHalfHeight);
 
     };
 

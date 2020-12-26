@@ -37,7 +37,7 @@ namespace GLPL {
         void removeLine(unsigned int lineId);
         // Scatter Plot
         std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
         std::shared_ptr<IScatterPlot> getScatterPlot(unsigned int scatterId);
         void removeScatterPlot(unsigned int scatterID);
         // Text

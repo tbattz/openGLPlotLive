@@ -26,7 +26,6 @@ namespace GLPL {
         int getHoverCursor() override;
 
         virtual std::vector<float> getMinMax() = 0;
-        virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
 
     protected:
         // Data

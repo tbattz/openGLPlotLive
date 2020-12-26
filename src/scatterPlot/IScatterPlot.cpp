@@ -23,8 +23,20 @@ namespace GLPL {
         markerOutlineColour = newMarkerColour;
     }
 
+    void IScatterPlot::setMarkerSizePx(float newMarkerSizePx) {
+        markerSizePx = newMarkerSizePx;
+
+        generateAllMarkerVerts();
+    }
+
     void IScatterPlot::setOutlineOpacityRatio(float newOpacityRatio) {
         outlineOpacityRatio = newOpacityRatio;
+    }
+
+    void IScatterPlot::setMarkerType(MarkerType newMarkerType) {
+        markerType = newMarkerType;
+
+        generateAllMarkerVerts();
     }
 
     glm::vec3 IScatterPlot::getColour() {

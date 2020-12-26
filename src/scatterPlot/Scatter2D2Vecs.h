@@ -38,13 +38,6 @@ namespace GLPL {
 
         std::vector<float> internalData;
 
-        std::vector<float> markerVerts = {};    // positions (2)
-        std::vector<float> markerOutlineVerts = {};
-
-        // Functions
-        void generateMarkerVerts();
-
-
     };
 
 }

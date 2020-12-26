@@ -15,7 +15,7 @@ namespace GLPL {
         this->dataPtY = dataPtY;
 
         // Generate Marker Vertices
-        generateMarkerVerts();
+        generateAllMarkerVerts();
 
         // Setup Buffers
         updateInternalData();
@@ -115,44 +115,7 @@ namespace GLPL {
         }
     }
 
-    void Scatter2D2Vecs::generateMarkerVerts() {
-        // Check Scaling
-        float overallWidthRel = (overallTransform * glm::vec4(getRight(), 0.0f, 0.5f, 1.0f))[0] - (overallTransform * glm::vec4(getLeft(), 0.0f, 0.5f, 1.0f))[0];
-        float overallHeightRel = (overallTransform * glm::vec4(0.0f, getTop(), 0.5f, 1.0f))[1] - (overallTransform * glm::vec4(0.0f, getBottom(), 0.5f, 1.0f))[1];
-        float widthRelOnPx = overallWidthRel / (float)getWidthPx();
-        float heightRelOnPx = overallHeightRel / (float)getHeightPx();
-        // Generate the marker verts
-        float xHalfWidth = widthRelOnPx * markerSizePx;
-        float yHalfHeight = heightRelOnPx * markerSizePx;
 
-                       // positions
-        markerVerts = {-xHalfWidth, yHalfHeight,
-                       xHalfWidth,  -yHalfHeight,
-                       -xHalfWidth, -yHalfHeight,
-
-                       -xHalfWidth, yHalfHeight,
-                       xHalfWidth,  -yHalfHeight,
-                       xHalfWidth,  yHalfHeight};
-
-        // Update buffer
-        glBindBuffer(GL_ARRAY_BUFFER, scatterVBO);
-        int markerVertsSizeBytes = (int)markerVerts.size() * sizeof(markerVerts[0]);
-        glBufferData(GL_ARRAY_BUFFER, markerVertsSizeBytes, &markerVerts[0], GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // Update marker outline verts
-        markerOutlineVerts = {-xHalfWidth,  yHalfHeight,
-                               xHalfWidth,  yHalfHeight,
-                               xHalfWidth,  -yHalfHeight,
-                               -xHalfWidth, -yHalfHeight};
-
-        // Update buffer
-        glBindBuffer(GL_ARRAY_BUFFER, scatterOutlineVBO);
-        int markerOutlineVertsSizeBytes = (int)markerOutlineVerts.size() * sizeof(markerOutlineVerts[0]);
-        glBufferData(GL_ARRAY_BUFFER, markerOutlineVertsSizeBytes, &markerOutlineVerts[0], GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    }
 
 
 }

@@ -30,6 +30,8 @@ namespace GLPL {
         void setYLines(std::vector<float> yVals);
         void genLines();
 
+        std::tuple<float, float> getClosestPoint(float xVal);
+
     private:
 
         void createAndSetupAxesLineBuffers();

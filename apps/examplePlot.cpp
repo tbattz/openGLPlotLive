@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
     // Graph 14 - Random Scatter Plot
     std::vector<float> xVec14;
     std::vector<float> yVec14;
-    unsigned int n = 100;
+    unsigned int n = 20;
     int LO = -2;
     int HI = 2;
     xVec14.reserve(n);
@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
     std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
     std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
-    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_RED, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
     std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
     axesPt->setAxesBoxOn(false);
     axesPt->setButtonState("Grid", false);
@@ -205,6 +205,8 @@ int main(int argc, char **argv) {
     line9s->setOpacityRatio(0.6);
     line9s->setMarkerOutlineColour(glm::vec3(0.0f, 1.0f, 1.0f));
     line9s->setOutlineOpacityRatio(0.8);
+    line9s->setMarkerType(GLPL::CIRCLE);
+    line9s->setMarkerSizePx(15);
 
     // Axes 2
     //std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
