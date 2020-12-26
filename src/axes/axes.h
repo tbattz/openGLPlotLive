@@ -10,6 +10,7 @@
 #include "AxesArea.h"
 #include "../rendering/ConstantXYDrawable.h"
 #include "AxesLineTicks.h"
+#include "../scatterPlot/IScatterPlot.h"
 
 
 namespace GLPL {
@@ -26,6 +27,9 @@ namespace GLPL {
         // Line
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType = SINGLE_LINE,
                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+        // Scatter Plots
+        std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         // Labels

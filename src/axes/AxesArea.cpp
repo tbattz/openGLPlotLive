@@ -10,7 +10,8 @@
 #include "../shadedLines/ShadedLine2D2CircularVecs.h"
 #include "../lines/Line2D2Vecs.h"
 #include "../interaction/PressButtonWithImage.h"
-
+#include "../scatterPlot/IScatterPlot.h"
+#include "../scatterPlot/Scatter2D2Vecs.h"
 
 
 namespace GLPL {
@@ -74,6 +75,11 @@ namespace GLPL {
 
         // Draw lines
         for(auto & i : lineMap) {
+            i.second->Draw();
+        }
+
+        // Draw Scatter
+        for(auto & i : scatterMap) {
             i.second->Draw();
         }
 
@@ -220,6 +226,56 @@ namespace GLPL {
             lineMap.erase(lineId);
         } else {
             std::cout << "Cannot remove Line " << lineId << ", Line does not exist!" << std::endl;
+        }
+    }
+
+    std::shared_ptr<IScatterPlot> AxesArea::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                                           glm::vec3 colour, float opacityRatio) {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Create Scatter Plot
+        std::shared_ptr<IDrawable> scatterObj;
+        std::shared_ptr<IScatterPlot> scatterPt;
+
+        scatterObj = std::make_shared<Scatter2D2Vecs>(dataPtX, dataPtY, newParentPointers);
+        scatterPt = std::dynamic_pointer_cast<Scatter2D2Vecs>(scatterObj);
+
+        // Set Attributes
+        scatterPt->setMarkerColour(colour);
+        scatterPt->setOpacityRatio(opacityRatio);
+
+        // Register Children
+        AxesArea::registerChild(scatterObj);
+        // Set axes area transform
+        scatterPt->setAxesViewportTransform(axesViewportTransformation);
+        // Store line
+        scatterMap.insert(std::pair<unsigned int, std::shared_ptr<IScatterPlot>>(lineCount, scatterPt));
+        scatterCount += 1;
+
+        // Update limits for axes
+        AxesArea::updateAxesLimits();
+
+        return scatterPt;
+    }
+
+    std::shared_ptr<IScatterPlot> AxesArea::getScatterPlot(unsigned int scatterId) {
+        if (scatterMap.count(scatterId) > 0) {
+            return scatterMap.at(scatterId);
+        } else {
+            std::cout << "ScatterPlot " << scatterId << " does not exist!" << std::endl;
+            return nullptr;
+        }
+    }
+    void AxesArea::removeScatterPlot(unsigned int scatterID) {
+        if (scatterMap.count(scatterID) > 0) {
+            std::shared_ptr<IPlotable> scatter2Remove = scatterMap.at(scatterID);
+            std::shared_ptr<IDrawable> drawable2Remove = std::dynamic_pointer_cast<GLPL::IDrawable>(scatter2Remove);
+            // Remove child
+            IDrawable::removeChild(drawable2Remove);
+            // Remove axes
+            scatterMap.erase(scatterID);
+        } else {
+            std::cout << "Cannot remove ScatterPlot " << scatterID << ", ScatterPlot does not exist!" << std::endl;
         }
     }
 
@@ -400,6 +456,11 @@ namespace GLPL {
         for(auto & i : lineMap) {
             i.second->setAxesViewportTransform(axesViewportTransformation);
         }
+        // Update Children Scatter Plots
+        for(auto & i : scatterMap) {
+            i.second->setAxesViewportTransform(axesViewportTransformation);
+            i.second->generateMarkerVerts();
+        }
         // Update Grid
         if (grid != nullptr) {
             grid->setAxesViewportTransform(axesViewportTransformation);
@@ -568,6 +629,13 @@ namespace GLPL {
             ymax = 0.0;
             for (std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
                 std::vector<float> minMax = lineInfo.second->getMinMax();
+                if (minMax[0] < xmin) { xmin = minMax[0]; };
+                if (minMax[1] > xmax) { xmax = minMax[1]; };
+                if (minMax[2] < ymin) { ymin = minMax[2]; };
+                if (minMax[3] > ymax) { ymax = minMax[3]; };
+            }
+            for (std::pair<unsigned int, std::shared_ptr<IScatterPlot>> scatterInfo : scatterMap) {
+                std::vector<float> minMax = scatterInfo.second->getMinMax();
                 if (minMax[0] < xmin) { xmin = minMax[0]; };
                 if (minMax[1] > xmax) { xmax = minMax[1]; };
                 if (minMax[2] < ymin) { ymin = minMax[2]; };

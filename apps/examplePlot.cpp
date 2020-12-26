@@ -129,6 +129,21 @@ int main(int argc, char **argv) {
     xVec13.reserve(2000);
     yVec13.reserve(2000);
 
+    // Graph 14 - Random Scatter Plot
+    std::vector<float> xVec14;
+    std::vector<float> yVec14;
+    unsigned int n = 100;
+    int LO = -2;
+    int HI = 2;
+    xVec14.reserve(n);
+    yVec14.reserve(n);
+    for(int i=0; i<n; i++) {
+        float rX = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+        float rY = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+        xVec14.push_back(rX);
+        yVec14.push_back(rY);
+    }
+
 	/* ======================================================
 	 *                	    Create Plot
 	   ====================================================== */
@@ -155,7 +170,7 @@ int main(int argc, char **argv) {
 	line6->setLineColour(LC_YELLOW);
 	line7->setLineColour(LC_RED);
 	line9->setLineColour(LC_PURPLE);
-	line10->setLineColour(LC_SILVER);
+	line10->setMarkerColour(LC_SILVER);
 	shaded9->setShadeColour(LC_PURPLE);
 	shaded9->setOpacityRatio(0.5);
 
@@ -178,6 +193,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
     std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
     std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_RED, 0.5);
     std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
     axesPt->setAxesBoxOn(false);
     axesPt->setButtonState("Grid", false);
@@ -185,6 +201,8 @@ int main(int argc, char **argv) {
     axesPt->setYLabel("Displacement (m)");
     axesPt->setTitle("Spring Damping Over Time");
     axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
+    line9s->setMarkerColour(glm::vec3(1.0f, 0.5f, 0.5f));
+    line9s->setOpacityRatio(0.6);
 
     // Axes 2
     //std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);

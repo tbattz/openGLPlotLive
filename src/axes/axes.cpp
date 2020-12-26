@@ -102,6 +102,11 @@ namespace GLPL {
         return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
     }
 
+    std::shared_ptr<IScatterPlot> Axes::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
+                                                       glm::vec3 colour, float opacityRatio) {
+        return axesArea->addScatterPlot(dataPtX, dataPtY, colour, opacityRatio);
+    }
+
     void Axes::setAxesBoxOn(bool axesBoxOnBool) {
         axesArea->setAxesBoxOn(axesBoxOnBool);
     }

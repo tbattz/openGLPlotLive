@@ -23,6 +23,7 @@ add_subdirectory(texts)
 add_subdirectory(util)
 add_subdirectory(interaction)
 add_subdirectory(textures)
+add_subdirectory(scatterPlot)
 
 # Copy Shader files to build directory
 add_custom_command(TARGET openGLPlotLive PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/../Shaders $<TARGET_FILE_DIR:openGLPlotLive>/Shaders)
