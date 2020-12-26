@@ -19,6 +19,14 @@ namespace GLPL {
         opacityRatio = newOpacityRatio;
     }
 
+    void IScatterPlot::setMarkerOutlineColour(glm::vec3 newMarkerColour) {
+        markerOutlineColour = newMarkerColour;
+    }
+
+    void IScatterPlot::setOutlineOpacityRatio(float newOpacityRatio) {
+        outlineOpacityRatio = newOpacityRatio;
+    }
+
     glm::vec3 IScatterPlot::getColour() {
         return markerColour;
     }

@@ -18,14 +18,22 @@ namespace GLPL {
         IScatterPlot2D(std::shared_ptr<ParentDimensions> parentDimensions);
 
         void createAndSetupBuffers(int dataSizeBytes, const void *dataAddress,
-                                   int markerVertsSizeBytes, const void *markerVertsAddress);
+                                   int markerVertSizeBytes, const void *markerVertsAddress,
+                                   int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
+        void createAndSetupBuffersMarkerPolygons(int dataSizeBytes, const void *dataAddress,
+                                   int markerVertSizeBytes, const void *markerVertsAddress);
+        void createAndSetupBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
+                                   int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
+
 
         void drawData(int nPts, bool selected);
 
     protected:
         // Line Buffers
-        GLuint scatterVAO, scatterVBO, scatterEBO;
+        GLuint scatterVAO, scatterVBO;
         GLuint markerVBO;
+        GLuint scatterOutlineVAO, scatterOutlineVBO;
+        GLuint markerOutlineVBO;
 
         // Marker Size
         float markerSizePx = 10; // Width/Height of the marker in pixels

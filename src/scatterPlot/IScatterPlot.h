@@ -26,6 +26,8 @@ namespace GLPL {
 
         void setMarkerColour(glm::vec3 newMarkerColour);
         void setOpacityRatio(float newOpacityRatio);
+        void setMarkerOutlineColour(glm::vec3 newMarkerOutlineColour);
+        void setOutlineOpacityRatio(float newOpacityRatio);
         glm::vec3 getColour();
         int getHoverCursor() override;
 
@@ -38,6 +40,7 @@ namespace GLPL {
         glm::vec3 markerColour = LC_WHITE;
         glm::vec3 markerOutlineColour = LC_WHITE;
         float opacityRatio = 1.0;
+        float outlineOpacityRatio = 1.0;
 
     };
 

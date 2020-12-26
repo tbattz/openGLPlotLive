@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
     int HI = 2;
     xVec14.reserve(n);
     yVec14.reserve(n);
-    for(int i=0; i<n; i++) {
+    for(unsigned int i=0; i<n; i++) {
         float rX = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
         float rY = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
         xVec14.push_back(rX);
@@ -203,6 +203,8 @@ int main(int argc, char **argv) {
     axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
     line9s->setMarkerColour(glm::vec3(1.0f, 0.5f, 0.5f));
     line9s->setOpacityRatio(0.6);
+    line9s->setMarkerOutlineColour(glm::vec3(0.0f, 1.0f, 1.0f));
+    line9s->setOutlineOpacityRatio(0.8);
 
     // Axes 2
     //std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
