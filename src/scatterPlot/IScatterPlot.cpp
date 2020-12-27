@@ -8,8 +8,7 @@
 namespace GLPL {
 
     IScatterPlot::IScatterPlot(std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantXYDrawable(0.0f, 0.0f, 1.0f, 1.0f,
-                               CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {};
+            Plotable(std::move(parentDimensions)) {};
 
     void IScatterPlot::setMarkerColour(glm::vec3 newMarkerColour) {
         markerColour = newMarkerColour;

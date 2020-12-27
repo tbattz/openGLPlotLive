@@ -8,8 +8,7 @@
 
 namespace GLPL {
 
-    Grid::Grid(std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantXYDrawable(0.0f, 0.0f, 1.0f, 1.0f, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
+    Grid::Grid(std::shared_ptr<ParentDimensions> parentDimensions) : Plotable(std::move(parentDimensions)) {
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
         // Set Not Hoverable

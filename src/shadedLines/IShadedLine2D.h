@@ -16,7 +16,7 @@
 // Project Includes
 #include "../rendering/shader.h"
 #include "../lines/lineColours.h"
-#include "../axes/IPlotable.h"
+#include "../axes/Plotable.h"
 #include "../lines/ILine2D.h"
 
 // Standard Includes

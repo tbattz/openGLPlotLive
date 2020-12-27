@@ -6,14 +6,13 @@
 #define OPENGLPLOTLIVE_PROJ_ILINE2D_H
 
 // Project Includes
-#include "../axes/IPlotable.h"
+#include "../axes/Plotable.h"
 #include "lineColours.h"
-#include "../rendering/ConstantXYDrawable.h"
 #include "../util/util.h"
 
 
 namespace GLPL {
-    class ILine2D : public IPlotable, public ConstantXYDrawable {
+    class ILine2D : public Plotable {
     public:
         ILine2D(std::shared_ptr<ParentDimensions> parentDimensions);
 

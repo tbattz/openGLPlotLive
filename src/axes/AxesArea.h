@@ -30,16 +30,13 @@ namespace GLPL {
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
         void addAxesLine(const std::string& axesName, AxesDirection axesDirection);
         void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
-        // Lines
+        // Plotables
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
-        std::shared_ptr<IPlotable> getLine(unsigned int lineId);
-        void removeLine(unsigned int lineId);
-        // Scatter Plot
         std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
-        std::shared_ptr<IScatterPlot> getScatterPlot(unsigned int scatterId);
-        void removeScatterPlot(unsigned int scatterID);
+                glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
+        std::shared_ptr<Plotable> getPlotable(int plotableId);
+        void removePlotable(int plotableId);
         // Text
         void addText(std::string textString, std::string stringId, float x, float y, float fontSize, AttachLocation attachLocation=BOTTOM_LEFT);
         std::shared_ptr<TextString> getText(std::string textStringId);
@@ -72,10 +69,8 @@ namespace GLPL {
     private:
         // Data
         std::shared_ptr<glm::mat4> axesViewportTransformation = std::make_shared<glm::mat4>(1.0f);
-        unsigned int lineCount = 0;
-        unsigned int scatterCount = 0;
-        std::unordered_map<unsigned int, std::shared_ptr<ILine2D>> lineMap;
-        std::unordered_map<unsigned int, std::shared_ptr<IScatterPlot>> scatterMap;
+        int nextPlotableId = 0;
+        std::unordered_map<int, std::shared_ptr<Plotable>> plotableMap;
         std::vector<std::shared_ptr<IDrawable>> axesItems;
         // Axes Limits
         float xmin = -1.0;

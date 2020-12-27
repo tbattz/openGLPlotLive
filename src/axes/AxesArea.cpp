@@ -73,13 +73,8 @@ namespace GLPL {
         glEnable(GL_SCISSOR_TEST);
         glScissor(xPx, yPx, widthPx, heightPx);
 
-        // Draw lines
-        for(auto & i : lineMap) {
-            i.second->Draw();
-        }
-
-        // Draw Scatter
-        for(auto & i : scatterMap) {
+        // Draw lines, scatter plots
+        for(auto & i : plotableMap) {
             i.second->Draw();
         }
 
@@ -170,7 +165,7 @@ namespace GLPL {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Create Line
-        std::shared_ptr<IDrawable> lineObj;
+        std::shared_ptr<Plotable> lineObj;
         std::shared_ptr<ILine2D> linePt;
 
         switch(lineType) {
@@ -198,8 +193,9 @@ namespace GLPL {
         // Set axes area transform
         linePt->setAxesViewportTransform(axesViewportTransformation);
         // Store line
-        lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, linePt));
-        lineCount += 1;
+        linePt->setPlotableId(nextPlotableId);
+        plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, linePt));
+        nextPlotableId += 1;
 
         // Update limits for axes
         AxesArea::updateAxesLimits();
@@ -207,25 +203,25 @@ namespace GLPL {
         return linePt;
     }
 
-    std::shared_ptr<IPlotable> AxesArea::getLine(unsigned int lineId) {
-        if (lineMap.count(lineId) > 0) {
-            return lineMap.at(lineId);
+    std::shared_ptr<Plotable> AxesArea::getPlotable(int plotableId) {
+        if (plotableMap.count(plotableId) > 0) {
+            return plotableMap.at(plotableId);
         } else {
-            std::cout << "Line " << lineId << " does not exist!" << std::endl;
+            std::cout << "Plotable " << plotableId << " does not exist!" << std::endl;
             return nullptr;
         }
     }
 
-    void AxesArea::removeLine(unsigned int lineId) {
-        if (lineMap.count(lineId) > 0) {
-            std::shared_ptr<IPlotable> line2Remove = lineMap.at(lineId);
+    void AxesArea::removePlotable(int plotableId) {
+        if (plotableMap.count(plotableId) > 0) {
+            std::shared_ptr<Plotable> line2Remove = plotableMap.at(plotableId);
             std::shared_ptr<IDrawable> drawable2Remove = std::dynamic_pointer_cast<GLPL::IDrawable>(line2Remove);
             // Remove child
             IDrawable::removeChild(drawable2Remove);
             // Remove axes
-            lineMap.erase(lineId);
+            plotableMap.erase(plotableId);
         } else {
-            std::cout << "Cannot remove Line " << lineId << ", Line does not exist!" << std::endl;
+            std::cout << "Cannot remove Plotable " << plotableId << ", Plotable does not exist!" << std::endl;
         }
     }
 
@@ -234,7 +230,7 @@ namespace GLPL {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Create Scatter Plot
-        std::shared_ptr<IDrawable> scatterObj;
+        std::shared_ptr<Plotable> scatterObj;
         std::shared_ptr<IScatterPlot> scatterPt;
 
         scatterObj = std::make_shared<Scatter2D2Vecs>(dataPtX, dataPtY, newParentPointers);
@@ -244,7 +240,7 @@ namespace GLPL {
         scatterPt->setMarkerColour(colour);
         scatterPt->setMarkerOutlineColour(colour);
         scatterPt->setOpacityRatio(opacityRatio);
-        scatterPt->setOutlineOpacityRatio(1.25*opacityRatio);
+        scatterPt->setOutlineOpacityRatio(1.25f*opacityRatio);
         scatterPt->setMarkerType(markerType);
 
         // Register Children
@@ -252,34 +248,14 @@ namespace GLPL {
         // Set axes area transform
         scatterPt->setAxesViewportTransform(axesViewportTransformation);
         // Store line
-        scatterMap.insert(std::pair<unsigned int, std::shared_ptr<IScatterPlot>>(lineCount, scatterPt));
-        scatterCount += 1;
+        scatterPt->setPlotableId(nextPlotableId);
+        plotableMap.insert(std::pair<unsigned int, std::shared_ptr<IScatterPlot>>(nextPlotableId, scatterPt));
+        nextPlotableId += 1;
 
         // Update limits for axes
         AxesArea::updateAxesLimits();
 
         return scatterPt;
-    }
-
-    std::shared_ptr<IScatterPlot> AxesArea::getScatterPlot(unsigned int scatterId) {
-        if (scatterMap.count(scatterId) > 0) {
-            return scatterMap.at(scatterId);
-        } else {
-            std::cout << "ScatterPlot " << scatterId << " does not exist!" << std::endl;
-            return nullptr;
-        }
-    }
-    void AxesArea::removeScatterPlot(unsigned int scatterID) {
-        if (scatterMap.count(scatterID) > 0) {
-            std::shared_ptr<IPlotable> scatter2Remove = scatterMap.at(scatterID);
-            std::shared_ptr<IDrawable> drawable2Remove = std::dynamic_pointer_cast<GLPL::IDrawable>(scatter2Remove);
-            // Remove child
-            IDrawable::removeChild(drawable2Remove);
-            // Remove axes
-            scatterMap.erase(scatterID);
-        } else {
-            std::cout << "Cannot remove ScatterPlot " << scatterID << ", ScatterPlot does not exist!" << std::endl;
-        }
     }
 
     void AxesArea::addText(std::string textString, std::string stringId, float x, float y, float fontSize, AttachLocation attachLocation) {
@@ -455,15 +431,11 @@ namespace GLPL {
         glm::mat4 viewportTransform = GLPL::Transforms::viewportTransform(x, y, width, height);
         glm::mat4 axesLimitsTransform = AxesArea::scale2AxesLimits();
         axesViewportTransformation = std::make_shared<glm::mat4>(parentTransform * viewportTransform * axesLimitsTransform);
-        // Update Children Lines
-        for(auto & i : lineMap) {
+        // Update Children Lines, Scatter Plots
+        for(auto & i : plotableMap) {
             i.second->setAxesViewportTransform(axesViewportTransformation);
         }
-        // Update Children Scatter Plots
-        for(auto & i : scatterMap) {
-            i.second->setAxesViewportTransform(axesViewportTransformation);
-            i.second->generateAllMarkerVerts();
-        }
+
         // Update Grid
         if (grid != nullptr) {
             grid->setAxesViewportTransform(axesViewportTransformation);
@@ -578,7 +550,7 @@ namespace GLPL {
                 float mouseRelX = convertMouseX2RelativeX();
                 float mouseRelY = convertMouseY2RelativeY();
 
-                for (auto &i : lineMap) {
+                for (auto &i : plotableMap) {
                     if (i.second->isSelected()) {
                         std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
                         if (pt != std::make_tuple(0.0, 0.0)) {
@@ -630,15 +602,8 @@ namespace GLPL {
             float newXmax = 0.0;
             float newYmin = -0.0;
             float newYmax = 0.0;
-            for (std::pair<unsigned int, std::shared_ptr<ILine2D>> lineInfo : lineMap) {
+            for (std::pair<unsigned int, std::shared_ptr<Plotable>> lineInfo : plotableMap) {
                 std::vector<float> minMax = lineInfo.second->getMinMax();
-                if (minMax[0] < newXmin) { newXmin = minMax[0]; };
-                if (minMax[1] > newXmax) { newXmax = minMax[1]; };
-                if (minMax[2] < newYmin) { newYmin = minMax[2]; };
-                if (minMax[3] > newYmax) { newYmax = minMax[3]; };
-            }
-            for (std::pair<unsigned int, std::shared_ptr<IScatterPlot>> scatterInfo : scatterMap) {
-                std::vector<float> minMax = scatterInfo.second->getMinMax();
                 if (minMax[0] < newXmin) { newXmin = minMax[0]; };
                 if (minMax[1] > newXmax) { newXmax = minMax[1]; };
                 if (minMax[2] < newYmin) { newYmin = minMax[2]; };
@@ -678,8 +643,9 @@ namespace GLPL {
         // Set not hoverable
         interactorLine->setHoverable(false);
         // Store line
-        lineMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(lineCount, interactorLine));
-        lineCount += 1;
+        interactorLine->setPlotableId(nextPlotableId);
+        plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, interactorLine));
+        nextPlotableId += 1;
 
         // Create text label
         // Create label

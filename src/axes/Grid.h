@@ -10,13 +10,12 @@
 #include <cmath>
 
 // Project Includes
-#include "../rendering/ConstantXYDrawable.h"
-#include "IPlotable.h"
+#include "Plotable.h"
 
 
 namespace GLPL {
 
-    class Grid : public IPlotable, public ConstantXYDrawable {
+    class Grid : public Plotable {
     public:
         // Constructor
         Grid(std::shared_ptr<ParentDimensions> parentDimensions);

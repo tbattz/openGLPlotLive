@@ -7,9 +7,7 @@
 
 namespace GLPL {
 
-    ILine2D::ILine2D(std::shared_ptr<ParentDimensions> parentDimensions) :
-            ConstantXYDrawable(0.0f, 0.0f, 1.0f, 1.0f,
-                    CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {};
+    ILine2D::ILine2D(std::shared_ptr<ParentDimensions> parentDimensions) : Plotable(std::move(parentDimensions)) {};
 
     void ILine2D::setLineColour(glm::vec3 lineColor) {
         this->colour = lineColor;

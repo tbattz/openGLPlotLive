@@ -144,9 +144,22 @@ int main(int argc, char **argv) {
         yVec14.push_back(rY);
     }
 
-	/* ======================================================
-	 *                	    Create Plot
-	   ====================================================== */
+    // Graph 15 - Damping Exponential
+    std::vector<float> xVec15 = {0.0f, 0.0f};
+    std::vector<float> yVec15 = {0.0f, 0.0f};
+    xVec13.reserve(2000);
+    yVec13.reserve(2000);
+
+    // Graph 16 - Damping Exponential Mirror
+    std::vector<float> xVec16 = {0.0f, 0.0f};
+    std::vector<float> yVec16 = {0.0f, 0.0f};
+    xVec13.reserve(2000);
+    yVec13.reserve(2000);
+
+
+    /* ======================================================
+     *                	    Create Plot
+       ====================================================== */
 	// Create Plot
 	std::shared_ptr<GLPL::Plot> myplot = std::make_shared<GLPL::Plot>(0.0, 0.0, 1.0, 1.0, window2->getParentDimensions());
 	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot);
@@ -216,12 +229,18 @@ int main(int argc, char **argv) {
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
     std::shared_ptr<GLPL::ILine2D> line13 = axesPt->addLine(&xVec13, &yVec13, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line13b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line13);
+    std::shared_ptr<GLPL::ILine2D> line15 = axesPt->addLine(&xVec15, &yVec15, GLPL::SINGLE_LINE, LC_BLUE, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line15b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line15);
+    std::shared_ptr<GLPL::ILine2D> line16 = axesPt->addLine(&xVec16, &yVec16, GLPL::SINGLE_LINE, LC_BLUE, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line16b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line16);
     axes2Pt->setTitle("Simple Plots");
     axes2Pt->setXLabel("x");
     axes2Pt->setYLabel("y");
 
     float yVal12 = 0;
     float yVal13 = 0;
+    float yVal15 = 0;
+    float yVal16 = 0;
 
 
 	/* ======================================================
@@ -299,6 +318,18 @@ int main(int argc, char **argv) {
         yVal13 = cos((i) / (2*25*M_PI)) * exp(-(i)/(25*8*0.5*M_PI));
         line13b->dataPtY->push_back(yVal13);
         line13b->updateInternalData();
+
+        // Update Graph 15
+        line15b->dataPtX->push_back(i);
+        yVal15 = exp(-(i)/(25*8*M_PI));
+        line15b->dataPtY->push_back(yVal15);
+        line15b->updateInternalData();
+
+        // Update Graph 16
+        line16b->dataPtX->push_back(i);
+        yVal16 = -exp(-(i)/(25*8*M_PI));
+        line16b->dataPtY->push_back(yVal16);
+        line16b->updateInternalData();
 
         i += 1;
         //i -= 1;

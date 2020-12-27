@@ -10,9 +10,7 @@
 #include <memory>
 
 // Project Includes
-#include "../rendering/IDrawable.h"
-#include "../rendering/ConstantXYDrawable.h"
-#include "../axes/IPlotable.h"
+#include "../axes/Plotable.h"
 #include "../lines/lineColours.h"
 
 
@@ -28,7 +26,7 @@ namespace GLPL {
         TRIANGLE_RIGHT
     };
 
-    class IScatterPlot : public IPlotable, public ConstantXYDrawable {
+    class IScatterPlot : public Plotable {
     public:
 
         IScatterPlot(std::shared_ptr<ParentDimensions> parentDimensions);
