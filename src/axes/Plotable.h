@@ -5,6 +5,9 @@
 #ifndef OPENGLPLOTLIVE_PROJ_PLOTABLE_H
 #define OPENGLPLOTLIVE_PROJ_PLOTABLE_H
 
+// Standard Includes
+#include <numeric>
+
 // Project Includes
 #include "../rendering/ConstantXYDrawable.h"
 
@@ -19,6 +22,9 @@ namespace GLPL {
         virtual std::vector<float> getMinMax() = 0;
         void setAxesViewportTransform(std::shared_ptr<glm::mat4> newAxesViewportTransform);
         void setPlotableId(int newPlotableId);
+
+        std::vector<int> genIndicesSortedVector(std::vector<float>* unsortedVector);
+        std::vector<float> sortVectorByIndices(std::vector<float>* unsortedVector, std::vector<int> indices);
 
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
 

@@ -36,6 +36,17 @@ namespace GLPL {
         unsigned int totLen = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
         internalData.resize(4*totLen); // x1, y1, x1, 0 for each point added
+        sortedInternalData.clear();
+        sortedInternalData.resize(2*totLen);
+        // Sort by x value
+        std::vector<int> sortedIndices = genIndicesSortedVector(dataPtX);
+        std::vector<float> sortedX = sortVectorByIndices(dataPtX, sortedIndices);
+        std::vector<float> sortedY = sortVectorByIndices(dataPtY, sortedIndices);
+        // Store sorted data
+        for(int i=0; i<totLen; i++) {
+            sortedInternalData[2*i] = sortedX[i];
+            sortedInternalData[2*i + 1] = sortedY[i];
+        }
         // Update with new data, for each point we add (2 values), add the corresponding point on the x-axes (2 values)
         // First slice
         unsigned int len1 = totLen - currIndex;
@@ -125,9 +136,18 @@ namespace GLPL {
     }
 
     std::tuple<float, float> ShadedLine2D2CircularVecs::getClosestPoint(float xVal) {
-        unsigned int ind = binarySearch(internalData, 0, (internalData.size()/4) - 1, xVal, 4);
-        if (ind < internalData.size()/4) {
-            return std::make_tuple(internalData[4 * ind], internalData[4 * ind + 1]);
+        unsigned int ind = binarySearch(sortedInternalData, 0, (sortedInternalData.size()/2) - 1, xVal, 2);
+        if (ind < sortedInternalData.size()/2) {
+            // Check which point is closer
+            if (ind > 1 && ind < sortedInternalData.size()/2.0 - 1) {
+                float diffLeft = abs(sortedInternalData[2 * ind] - xVal);
+                float diffRight = abs(sortedInternalData[2 * (ind + 1)] - xVal);
+                if (diffRight < diffLeft) {
+                    // Use the right index
+                    ind += 1;
+                }
+            }
+            return std::make_tuple(sortedInternalData[2 * ind], sortedInternalData[2* ind + 1]);
         } else {
             return std::make_tuple(0,0);
         }

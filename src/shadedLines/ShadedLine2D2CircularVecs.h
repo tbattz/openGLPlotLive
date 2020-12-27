@@ -25,6 +25,7 @@ namespace GLPL {
 
         /* Functions */
         void updateInternalData(unsigned int currIndex);
+        void updateIncrementalInternalData();
         void Draw();
         std::string getID();
         std::vector<float> getMinMax();
@@ -39,6 +40,8 @@ namespace GLPL {
         int nIndices = 0;
         std::vector<float> internalData;
         std::vector<int> internalIndices;
+        // Sorted data for interactor
+        std::vector<float> sortedInternalData;
 
     };
 

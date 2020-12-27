@@ -77,7 +77,7 @@ namespace GLPL {
                                glm::value_ptr(*axesViewportTransform));
             glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
             glBindVertexArray(lineVAO);
-            glDrawArrays(mode, 0, nPts);
+            glDrawElements(mode, nPts, GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
             glLineWidth(1);
         }

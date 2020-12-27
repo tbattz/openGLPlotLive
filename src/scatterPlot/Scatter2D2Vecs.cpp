@@ -41,11 +41,21 @@ namespace GLPL {
         int len = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
         internalData.resize(2*len);
+        // Sort by x value
+        std::vector<int> sortedIndices = genIndicesSortedVector(dataPtX);
+        // Sort data by these indices
+        std::vector<float> sortedX = sortVectorByIndices(dataPtX, sortedIndices);
+        std::vector<float> sortedY = sortVectorByIndices(dataPtY, sortedIndices);
+
         // Update with new data
         for(int i=0; i<len; i++) {
-            internalData[2*i] = (*dataPtX)[i];
-            internalData[2*i + 1] = (*dataPtY)[i];
+            internalData[2*i] = sortedX[i];
+            internalData[2*i + 1] = sortedY[i];
         }
+    }
+
+    void Scatter2D2Vecs::updateIncrementalInternalData() {
+
     }
 
     void Scatter2D2Vecs::Draw() {
@@ -109,6 +119,15 @@ namespace GLPL {
     std::tuple<float, float> Scatter2D2Vecs::getClosestPoint(float xVal) {
         unsigned int ind = binarySearch(internalData, 0, (internalData.size()/2) - 1, xVal);
         if (ind < internalData.size()/2) {
+            // Check which point is closer
+            if (ind > 1 && ind < internalData.size()/2 - 1) {
+                float diffLeft = abs(internalData[2 * ind] - xVal);
+                float diffRight = abs(internalData[2 * (ind + 1)] - xVal);
+                if (diffRight < diffLeft) {
+                    // Use the right index
+                    ind += 1;
+                }
+            }
             return std::make_tuple(internalData[2 * ind], internalData[2 * ind + 1]);
         } else {
             return std::make_tuple(0,0);

@@ -16,8 +16,11 @@ namespace GLPL {
 
         /* Setup Buffers */
         updateInternalData();
-        int dataSizeBytes = internalData.size()*sizeof(internalData[0]);
-        createAndSetupBuffers(dataSizeBytes, &internalData[0], 2*sizeof(internalData[0]));
+        int vertDataSizeBytes = internalData.size()*sizeof(internalData[0]);
+        int indicesDataSizeBytes = internalIndices.size()*sizeof(internalIndices[0]);
+        createAndSetupBuffers(vertDataSizeBytes, indicesDataSizeBytes,
+                              &internalData[0], &internalIndices[0],
+                              2*sizeof(internalData[0]));
 
         /* Set number of Points */
         nPts = internalData.size()/2.0;
@@ -33,23 +36,38 @@ namespace GLPL {
         int len = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
         internalData.resize(2*len);
+        // Sort by x value
+        internalIndices = genIndicesSortedVector(dataPtX);
+        // Sort data by these indices
+        std::vector<float> sortedX = sortVectorByIndices(dataPtX, internalIndices);
+        std::vector<float> sortedY = sortVectorByIndices(dataPtY, internalIndices);
+
         // Update with new data
         for(int i=0; i<len; i++) {
-            internalData[2*i] = (*dataPtX)[i];
-            internalData[2*i + 1] = (*dataPtY)[i];
+            internalData[2*i] = sortedX[i];
+            internalData[2*i + 1] = sortedY[i];
         }
+
+        // Check if the number of points changed
+        int newPts = (internalData).size()/2;
+        //if (newPts != nPts) {
+        nPts = newPts;
+        // Update buffer and attributes
+        // Pts
+        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+        glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
+        // Indices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_DYNAMIC_DRAW);
+        //}
+    }
+
+    void Line2D2Vecs::updateIncrementalInternalData() {
+        // Only updates the internal data past the last position the data pointers were updated from
+
     }
 
     void Line2D2Vecs::Draw() {
-        // Check if the number of points changed
-        int newPts = (internalData).size()/2;
-        if (newPts != nPts) {
-            nPts = newPts;
-            // Update buffer and attributes
-            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-            glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
-        }
-
         // Draw plot
         if (isSelected()) {
             drawData(nPts, selected);
@@ -98,6 +116,15 @@ namespace GLPL {
     std::tuple<float, float> Line2D2Vecs::getClosestPoint(float xVal) {
         unsigned int ind = binarySearch(internalData, 0, (internalData.size()/2) - 1, xVal);
         if (ind < internalData.size()/2) {
+            // Check which point is closer
+            if (ind > 1 && ind < internalData.size()/2 - 1) {
+                float diffLeft = abs(internalData[2 * ind] - xVal);
+                float diffRight = abs(internalData[2 * (ind + 1)] - xVal);
+                if (diffRight < diffLeft) {
+                    // Use the right index
+                    ind += 1;
+                }
+            }
             return std::make_tuple(internalData[2 * ind], internalData[2 * ind + 1]);
         } else {
             return std::make_tuple(0,0);

@@ -21,6 +21,7 @@ namespace GLPL  {
 
         /* Functions */
         void updateInternalData();
+        void updateIncrementalInternalData();
         void Draw();
         std::string getID();
         void clearData();
@@ -34,7 +35,8 @@ namespace GLPL  {
         /* Data */
         int nPts = 0;
 
-        std::vector<float> internalData;
+        std::vector<float> internalData;    // This is sorted by x values
+        std::vector<int> internalIndices;   // This keeps track of the indices in their original order, for plotting
 
     };
 

@@ -22,5 +22,29 @@ namespace GLPL {
         plotableId = newPlotableId;
     }
 
+    std::vector<int> Plotable::genIndicesSortedVector(std::vector<float>* unsortedVector) {
+        // Create vector of indices
+        std::vector<int> indices(unsortedVector->size());
+        std::iota(indices.begin(), indices.end(), 0);
+        // Sort by values in unsorted vector
+        std::sort(indices.begin(), indices.end(),
+                [&](int A, int B) -> bool {
+                    return (*unsortedVector)[A] < (*unsortedVector)[B];
+        });
+
+        return indices;
+    }
+
+    std::vector<float> Plotable::sortVectorByIndices(std::vector<float>* unsortedVector, std::vector<int> indices) {
+        // Sort vector by indices vector
+        std::vector<float> sortedVector;
+        sortedVector.reserve(unsortedVector->size());
+        for(unsigned int i=0; i < indices.size(); i++) {
+            sortedVector.push_back((*unsortedVector)[indices[i]]);
+        }
+
+        return sortedVector;
+    }
+
 
 }

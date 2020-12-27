@@ -23,6 +23,7 @@ namespace GLPL {
 
         // Functions
         void updateInternalData();
+        void updateIncrementalInternalData();
         void Draw();
         std::string getID();
         void clearData();
