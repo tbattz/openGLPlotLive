@@ -118,14 +118,9 @@ namespace GLPL {
     }
 
     void IScatterPlot2D::generateAllMarkerVerts() {
-        // Check Scaling
-        float overallWidthRel = (overallTransform * glm::vec4(getRight(), 0.0f, 0.5f, 1.0f))[0] - (overallTransform * glm::vec4(getLeft(), 0.0f, 0.5f, 1.0f))[0];
-        float overallHeightRel = (overallTransform * glm::vec4(0.0f, getTop(), 0.5f, 1.0f))[1] - (overallTransform * glm::vec4(0.0f, getBottom(), 0.5f, 1.0f))[1];
-        float widthRelOnPx = overallWidthRel / (float)getWidthPx();
-        float heightRelOnPx = overallHeightRel / (float)getHeightPx();
         // Generate the marker verts
-        float xHalfWidth = widthRelOnPx * markerSizePx;
-        float yHalfHeight = heightRelOnPx * markerSizePx;
+        float xHalfWidth = convertHorizontalPx2ObjRel(markerSizePx);
+        float yHalfHeight = convertVerticalPx2ObjRel(markerSizePx);
 
         switch(markerType) {
             case SQUARE: {

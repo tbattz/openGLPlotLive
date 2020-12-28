@@ -75,6 +75,9 @@ namespace GLPL {
                                          int newParentHeightPx) = 0;
         virtual void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions) = 0;
         std::shared_ptr<ParentDimensions> createParentDimensions();
+        // Conversions
+        float convertHorizontalPx2ObjRel(float horSizePx);
+        float convertVerticalPx2ObjRel(float vertSizePx);
         // Identifier
         virtual std::string getID() = 0;
         // Mouse Interaction
@@ -128,6 +131,7 @@ namespace GLPL {
         bool selected = false;
         double mouseX = 0;
         double mouseY = 0;
+        float mouseHeightPx = 64;
 
         // Children
         std::vector<std::shared_ptr<IDrawable>> children; // List of child drawables

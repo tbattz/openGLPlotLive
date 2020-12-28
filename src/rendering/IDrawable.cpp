@@ -112,6 +112,26 @@ std::shared_ptr<GLPL::ParentDimensions> GLPL::IDrawable::createParentDimensions(
     return newParentDimensions;
 }
 
+float GLPL::IDrawable::convertHorizontalPx2ObjRel(float horSizePx) {
+    // Check Scaling
+    float overallWidthRel = (overallTransform * glm::vec4(getRight(), 0.0f, 0.5f, 1.0f))[0] - (overallTransform * glm::vec4(getLeft(), 0.0f, 0.5f, 1.0f))[0];
+    float widthRelOnPx = overallWidthRel / (float)getWidthPx();
+    // Generate the marker verts
+    float horRelSize = widthRelOnPx * horSizePx;
+
+    return horRelSize;
+}
+
+float GLPL::IDrawable::convertVerticalPx2ObjRel(float vertSizePx) {
+    // Check Scaling
+    float overallHeightRel = (overallTransform * glm::vec4(0.0f, getTop(), 0.5f, 1.0f))[1] - (overallTransform * glm::vec4(0.0f, getBottom(), 0.5f, 1.0f))[1];
+    float heightRelOnPx = overallHeightRel / (float)getHeightPx();
+    // Generate the marker verts
+    float vertRelSize = heightRelOnPx * vertSizePx;
+
+    return vertRelSize;
+}
+
 
 bool GLPL::IDrawable::canMouseOver() {
     return mouseOverable;

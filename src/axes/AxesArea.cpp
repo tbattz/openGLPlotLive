@@ -573,13 +573,15 @@ namespace GLPL {
                                 formatStr = "(%.2f, %.2f)";
                             }
                             sprintf(textBuf, formatStr, x, y1);
-                            interactorText->setPosition((float) mouseRelX, (float) mouseRelY);
-                            //std::cout << textBuf << std::endl;
                             interactorText->setTextString(textBuf);
                             // Check if the text string should be above or below
                             if (y1 > y2) {
+                                // Require offset to account for the height of the cursor
+                                float mouseRelYOffset = convertVerticalPx2ObjRel(mouseHeightPx);
+                                interactorText->setPosition((float) mouseRelX, (float) mouseRelY - mouseRelYOffset);
                                 interactorText->setAttachLocation(CENTRE_TOP);
                             } else {
+                                interactorText->setPosition((float) mouseRelX, (float) mouseRelY);
                                 interactorText->setAttachLocation(CENTRE_BOTTOM);
                             }
                         }
