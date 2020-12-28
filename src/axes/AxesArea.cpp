@@ -110,6 +110,26 @@ namespace GLPL {
         AxesArea::zoomAxes(yoffset);
     }
 
+    void AxesArea::onRightDrag(bool dragging, double origXPos, double origYPos) {
+        rightMouseHeld = dragging;
+        rightHeldX = origXPos;
+        rightHeldY = origYPos;
+
+        xMinDrag = xmin;
+        xMaxDrag = xmax;
+        yMinDrag = ymin;
+        yMaxDrag = ymax;
+    }
+
+    void AxesArea::setLastMousePos(double lastMouseX, double lastMouseY) {
+        IDrawable::setLastMousePos(lastMouseX, lastMouseY);
+
+        // Change zoom if right mouse is being dragged
+        if (rightMouseHeld) {
+            zoomAxesByDragging();
+        }
+    }
+
     void AxesArea::setAxesBoxOn(bool axesBoxOnBool) {
         axesBoxOn = axesBoxOnBool;
     }
@@ -636,7 +656,8 @@ namespace GLPL {
         }
     }
 
-    std::pair<float, float> GLPL::AxesArea::calcScrolledVals(float minVal, float maxVal, float currVal, bool dir) {
+    std::pair<float, float>
+    GLPL::AxesArea::calcScrolledVals(float minVal, float maxVal, float currVal, float zoomFrac, bool dir) {
         // a, b are before scroll
         // c, d are after scroll
         // a + b = Ro
@@ -651,9 +672,9 @@ namespace GLPL {
 
         float newRange;
         if (dir) {
-            newRange = (1 + zoomRatio) * oldRange;
+            newRange = (1 + zoomFrac) * oldRange;
         } else {
-            newRange = (1 - zoomRatio) * oldRange;
+            newRange = (1 - zoomFrac) * oldRange;
         }
         float c = a*newRange / (a + b);
         float d = newRange - c;
@@ -670,12 +691,30 @@ namespace GLPL {
 
         std::pair<float, float> newX, newY;
         if (zoomDir > 0) {
-            newX = calcScrolledVals(xmin, xmax, mouseXAx, true);
-            newY = calcScrolledVals(ymin, ymax, mouseYAx, true);
+            newX = calcScrolledVals(xmin, xmax, mouseXAx, zoomRatio, true);
+            newY = calcScrolledVals(ymin, ymax, mouseYAx, zoomRatio, true);
         } else {
-            newX = calcScrolledVals(xmin, xmax, mouseXAx, false);
-            newY = calcScrolledVals(ymin, ymax, mouseYAx, false);
+            newX = calcScrolledVals(xmin, xmax, mouseXAx, zoomRatio, false);
+            newY = calcScrolledVals(ymin, ymax, mouseYAx, zoomRatio, false);
         }
+        AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
+    }
+
+    void GLPL::AxesArea::zoomAxesByDragging() {
+        // Zoom centered around the current mouse position by dragging the mouse
+        // The change in zoom is proportional to the drag distance in x and y
+        float xDiff = mouseX - rightHeldX;
+        float yDiff = mouseY - rightHeldY;
+        float xFrac = abs(dragZoomFactor * xDiff / 2.0f);
+        float yFrac = abs(dragZoomFactor * yDiff / 2.0f);
+
+        float mouseXAx = convertMouseX2AxesX();
+        float mouseYAx = convertMouseY2AxesY();
+
+        std::pair<float, float> newX, newY;
+        newX = calcScrolledVals(xMinDrag, xMaxDrag, mouseXAx, xFrac, xDiff < 0);
+        newY = calcScrolledVals(yMinDrag, yMaxDrag, mouseYAx, yFrac, yDiff < 0);
+
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
 

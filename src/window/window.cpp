@@ -265,6 +265,26 @@ namespace GLPL {
         }
     }
 
+    void Window::handleRightMouseHeld(bool buttonHeld) {
+        // Get mouse location
+        double xpos, ypos;
+        if (buttonHeld) {
+            glfwGetCursorPos(window, &xpos, &ypos);
+        } else {
+            xpos = 0.0;
+            ypos = 0.0;
+        }
+        // Convert from pixel space to -1 to 1
+        xpos = 2 * (xpos / getWidthPx()) - 1;
+        ypos = -(2 * (ypos / getHeightPx()) - 1);
+
+        // Check if mouse is over an object
+        for(auto &mousedObj : *mousedOverObjs) {
+            mousedObj->onRightDrag(buttonHeld, xpos, ypos);
+        }
+
+    }
+
     void Window::updateSizePx() {
 
     }

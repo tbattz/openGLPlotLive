@@ -42,11 +42,18 @@ namespace GLPL {
     }
 
     static void mouseCallback(GLFWwindow *window, int button, int action, int mods) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-            // Get Window class
-            auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
             // Handle mouse release
             windowPt->handleMouseRelease();
+        } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            if (action == GLFW_PRESS) {
+                windowPt->handleRightMouseHeld(true);
+            } else if (action == GLFW_RELEASE) {
+                windowPt->handleRightMouseHeld(false);
+            }
         }
     }
 

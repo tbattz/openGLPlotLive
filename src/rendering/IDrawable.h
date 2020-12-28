@@ -64,6 +64,7 @@ namespace GLPL {
         float getBottom();
         virtual void onClick();
         virtual void onScroll(double xoffset, double yoffset);
+        virtual void onRightDrag(bool dragging, double origXPos, double origYPos);
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;
@@ -94,7 +95,7 @@ namespace GLPL {
         bool isMouseOver(double xpos, double ypos, bool withChildren = true);
         void getMousedOverChildren(double xpos, double ypos,
                                    const std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>>& mousedOverObjs);
-        void setLastMousePos(double lastMouseX, double lastMouseY);
+        virtual void setLastMousePos(double lastMouseX, double lastMouseY);
         std::tuple<double, double> getLastMousePos();
 
         virtual int getHoverCursor();

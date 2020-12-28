@@ -55,6 +55,7 @@ namespace GLPL {
         void handleMouseRelease();
         void handleMouseScroll(double xoffset, double yoffset);
         void updateSelection();
+        void handleRightMouseHeld(bool buttonHeld);
 	    void updateSizePx();
 	    void Draw();
         std::string getID();
@@ -70,8 +71,6 @@ namespace GLPL {
 	    // Data
 	    // Base Window
         GLFWwindow* window;
-	    //int windowWidth;        // In Pixels
-	    //int windowHeight;       // In Pixels
 	    std::array<GLfloat, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	    bool transparentBackground;
 	    bool focusOnShow;
