@@ -69,6 +69,8 @@ namespace GLPL {
         glfwSetWindowSizeCallback(window, GLPL::reDraw);
         glfwSetCursorPosCallback(window, GLPL::cursorMoved);
         glfwSetMouseButtonCallback(window, GLPL::mouseCallback);
+        glfwSetScrollCallback(window, GLPL::mouseScrolled);
+
 
         // Set viewport size
         glViewport(0,0,getWidthPx(),getHeightPx()); // Origin is bottom left
@@ -209,9 +211,16 @@ namespace GLPL {
     }
 
     void Window::handleMouseRelease() {
-        // Check if mouse is over an objective
+        // Check if mouse is over an object
         for(auto &mousedObj : *mousedOverObjs) {
             mousedObj->onClick();
+        }
+    }
+
+    void Window::handleMouseScroll(double xoffset, double yoffset) {
+        // Check if mouse is over an object
+        for(auto &mousedObj : *mousedOverObjs) {
+            mousedObj->onScroll(xoffset, yoffset);
         }
     }
 

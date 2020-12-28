@@ -59,6 +59,10 @@ void GLPL::IDrawable::onClick() {
 
 }
 
+void GLPL::IDrawable::onScroll(double xoffset, double yoffset) {
+
+}
+
 void GLPL::IDrawable::drawBoundingBox() {
     // Draw bounding box
     std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();

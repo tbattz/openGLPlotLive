@@ -56,6 +56,13 @@ namespace GLPL {
         // Handle mouse movement
         windowPt->handleMouseMovement(xpos, ypos);
     }
+
+    static void mouseScrolled(GLFWwindow* window, double xoffset, double yoffset) {
+        // Get Window class
+        auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+        // Handle scrolling
+        windowPt->handleMouseScroll(xoffset, yoffset);
+    }
 }
 
 

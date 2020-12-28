@@ -62,7 +62,8 @@ namespace GLPL {
         float getTop();
         float getRight();
         float getBottom();
-        void onClick();
+        virtual void onClick();
+        virtual void onScroll(double xoffset, double yoffset);
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;

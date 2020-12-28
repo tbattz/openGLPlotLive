@@ -53,6 +53,7 @@ namespace GLPL {
 	    void updateStoredSize(int newWidth, int newHeight);
         void handleMouseMovement(double xpos, double ypos);
         void handleMouseRelease();
+        void handleMouseScroll(double xoffset, double yoffset);
         void updateSelection();
 	    void updateSizePx();
 	    void Draw();

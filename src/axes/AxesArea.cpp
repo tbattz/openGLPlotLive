@@ -106,6 +106,10 @@ namespace GLPL {
 
     }
 
+    void AxesArea::onScroll(double xoffset, double yoffset) {
+        AxesArea::zoomAxes(yoffset);
+    }
+
     void AxesArea::setAxesBoxOn(bool axesBoxOnBool) {
         axesBoxOn = axesBoxOnBool;
     }
@@ -630,6 +634,49 @@ namespace GLPL {
             }
 
         }
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcScrolledVals(float minVal, float maxVal, float currVal, bool dir) {
+        // a, b are before scroll
+        // c, d are after scroll
+        // a + b = Ro
+        // c + d = Rn
+        // Ro = xmax - xmin
+        // Rn = (1+r)*Ro
+        // a/(a+b) = c/(c+d) => c = a*Rn/(a+b)
+        // d = Rn - c
+        float oldRange = maxVal - minVal;
+        float a = currVal - minVal;
+        float b = maxVal - currVal;
+
+        float newRange;
+        if (dir) {
+            newRange = (1 + zoomRatio) * oldRange;
+        } else {
+            newRange = (1 - zoomRatio) * oldRange;
+        }
+        float c = a*newRange / (a + b);
+        float d = newRange - c;
+        float newMin = currVal - c;
+        float newMax = currVal + d;
+
+        return std::pair<float, float>(newMin, newMax);
+    }
+
+    void GLPL::AxesArea::zoomAxes(float zoomDir) {
+        // Zoom centered around the current mouse position
+        float mouseXAx = convertMouseX2AxesX();
+        float mouseYAx = convertMouseY2AxesY();
+
+        std::pair<float, float> newX, newY;
+        if (zoomDir > 0) {
+            newX = calcScrolledVals(xmin, xmax, mouseXAx, true);
+            newY = calcScrolledVals(ymin, ymax, mouseYAx, true);
+        } else {
+            newX = calcScrolledVals(xmin, xmax, mouseXAx, false);
+            newY = calcScrolledVals(ymin, ymax, mouseYAx, false);
+        }
+        AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
 
     void GLPL::AxesArea::createInteractor() {

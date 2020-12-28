@@ -25,6 +25,7 @@ namespace GLPL {
         // Functions
         std::string getID();
         void Draw();
+        void onScroll(double xoffset, double yoffset) override;
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
@@ -93,6 +94,8 @@ namespace GLPL {
         std::shared_ptr<TextString> interactorText;
         // Grid
         std::shared_ptr<Grid> grid;
+        // Zoom Interaction
+        float zoomRatio = 0.2;  // 10% on each scroll
 
 
         // Functions
@@ -102,6 +105,8 @@ namespace GLPL {
         void drawGrid();
         void drawInteractor();
         void updateAxesLimits();
+        std::pair<float, float> calcScrolledVals(float minVal, float maxVal, float currVal, bool dir);
+        void zoomAxes(float zoomDir);
         void createInteractor();
         void createGrid();
 
