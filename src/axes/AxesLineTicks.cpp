@@ -324,7 +324,7 @@ namespace GLPL {
         std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
         // Generate vertices
         for(unsigned int i=0; i < relPos.size(); i++) {
-            if (axesPos[i] >= xMin && axesPos[i] <= xMax) {
+            if (axesPos[i] >= (xMin - abs(0.01 * xMin)) && axesPos[i] <= (xMax + abs(0.01 * xMax))) {
                 switch (axesDirection) {
                     case X_AXES_TOP: {
                         AxesLineTicks::generateXTopTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
@@ -361,7 +361,7 @@ namespace GLPL {
         std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
         // Generate vertices
         for (unsigned int i = 0; i < relPos.size(); i++) {
-            if (axesPos[i] >= yMin && axesPos[i] <= yMax) {
+            if (axesPos[i] >= (yMin - abs(0.01 * yMin)) && axesPos[i] <= (yMax + abs(0.01 * yMax))) {
                 switch (axesDirection) {
                     case X_AXES_TOP:
                     case X_AXES_BOTTOM:
