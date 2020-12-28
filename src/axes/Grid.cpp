@@ -82,8 +82,10 @@ namespace GLPL {
 
     void Grid::updateAxesLineBuffers() {
         // Major Ticks
+        glBindVertexArray(vertsVAO);
         glBindBuffer(GL_ARRAY_BUFFER, vertsVBO);
         glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(verts[0]), &verts[0], GL_STATIC_DRAW);
+        glBindVertexArray(0);
     }
 
     void Grid::Draw() {

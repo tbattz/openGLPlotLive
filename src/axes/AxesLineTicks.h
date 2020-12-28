@@ -11,6 +11,7 @@
 
 // Project Includes
 #include "../texts/TextString.h"
+#include "../util/util.h"
 
 
 namespace GLPL {

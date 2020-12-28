@@ -3,6 +3,7 @@
 //
 
 #include "util.h"
+
 namespace GLPL {
 
 
@@ -27,4 +28,9 @@ namespace GLPL {
         }
         return -1;
     }
+
+    float clip(float inVal, float minVal, float maxVal) {
+        return std::max(minVal, std::min(inVal, maxVal));
+    }
+
 }

@@ -79,7 +79,7 @@ namespace GLPL {
             case X_AXES_CENTRE: {
                 // Line in centre
                 // Calculate the position within the window
-                float yMid = -yMin/(yMax - yMin);   // In 0 to 1
+                float yMid = clip(-yMin/(yMax - yMin), 0.0f, 1.0f);   // In 0 to 1
                 axesLineVerts = {-1.0, 0.0, 1.0, 0.0};
                 setXYScale(CONSTANT_SCALE, CONSTANT_SIZE);
                 setAttachLocation(CENTRE);
@@ -105,7 +105,7 @@ namespace GLPL {
             case Y_AXES_CENTRE: {
                 // Line in centre
                 // Calculate the position within the window
-                float xMid = -xMin/(xMax - xMin);   // In 0 to 1
+                float xMid = clip(-xMin/(xMax - xMin), 0.0f, 1.0f);   // In 0 to 1
                 axesLineVerts = {0.0, -1.0, 0.0, 1.0};
                 setXYScale(CONSTANT_SIZE, CONSTANT_SCALE);
                 setAttachLocation(CENTRE);
@@ -324,23 +324,25 @@ namespace GLPL {
         std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
         // Generate vertices
         for(unsigned int i=0; i < relPos.size(); i++) {
-            switch (axesDirection) {
-                case X_AXES_TOP: {
-                    AxesLineTicks::generateXTopTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                case X_AXES_BOTTOM: {
-                    AxesLineTicks::generateXBottomTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                case X_AXES_CENTRE: {
-                    AxesLineTicks::generateXCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                case Y_AXES_LEFT:
-                case Y_AXES_RIGHT:
-                case Y_AXES_CENTRE:
-                default: {
+            if (axesPos[i] >= xMin && axesPos[i] <= xMax) {
+                switch (axesDirection) {
+                    case X_AXES_TOP: {
+                        AxesLineTicks::generateXTopTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    case X_AXES_BOTTOM: {
+                        AxesLineTicks::generateXBottomTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    case X_AXES_CENTRE: {
+                        AxesLineTicks::generateXCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    case Y_AXES_LEFT:
+                    case Y_AXES_RIGHT:
+                    case Y_AXES_CENTRE:
+                    default: {
+                    }
                 }
             }
         }
@@ -359,25 +361,27 @@ namespace GLPL {
         std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
         // Generate vertices
         for (unsigned int i = 0; i < relPos.size(); i++) {
-            switch (axesDirection) {
-                case X_AXES_TOP:
-                case X_AXES_BOTTOM:
-                case X_AXES_CENTRE: {
-                    break;
-                }
-                case Y_AXES_LEFT: {
-                    AxesLineTicks::generateYLeftTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                case Y_AXES_RIGHT: {
-                    AxesLineTicks::generateYRightTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                case Y_AXES_CENTRE: {
-                    AxesLineTicks::generateYCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
-                    break;
-                }
-                default: {
+            if (axesPos[i] >= yMin && axesPos[i] <= yMax) {
+                switch (axesDirection) {
+                    case X_AXES_TOP:
+                    case X_AXES_BOTTOM:
+                    case X_AXES_CENTRE: {
+                        break;
+                    }
+                    case Y_AXES_LEFT: {
+                        AxesLineTicks::generateYLeftTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    case Y_AXES_RIGHT: {
+                        AxesLineTicks::generateYRightTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    case Y_AXES_CENTRE: {
+                        AxesLineTicks::generateYCentreTickVerts(tickSpacingType[i], relPos[i], axesPos[i]);
+                        break;
+                    }
+                    default: {
+                    }
                 }
             }
         }
