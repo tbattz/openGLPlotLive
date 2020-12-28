@@ -118,14 +118,14 @@ int main(int argc, char **argv) {
     }
 
     // Graph 12 - Damping
-    std::vector<float> xVec12 = {0.0f, 0.0f};
-    std::vector<float> yVec12 = {0.0f, 0.0f};
+    std::vector<float> xVec12 = {};
+    std::vector<float> yVec12 = {};
     xVec12.reserve(2000);
     yVec12.reserve(2000);
 
     // Graph 13 - Damping 2
-    std::vector<float> xVec13 = {0.0f, 0.0f};
-    std::vector<float> yVec13 = {0.0f, 0.0f};
+    std::vector<float> xVec13 = {};
+    std::vector<float> yVec13 = {};
     xVec13.reserve(2000);
     yVec13.reserve(2000);
 
@@ -145,14 +145,14 @@ int main(int argc, char **argv) {
     }
 
     // Graph 15 - Damping Exponential
-    std::vector<float> xVec15 = {0.0f, 0.0f};
-    std::vector<float> yVec15 = {0.0f, 0.0f};
+    std::vector<float> xVec15 = {};
+    std::vector<float> yVec15 = {};
     xVec13.reserve(2000);
     yVec13.reserve(2000);
 
     // Graph 16 - Damping Exponential Mirror
-    std::vector<float> xVec16 = {0.0f, 0.0f};
-    std::vector<float> yVec16 = {0.0f, 0.0f};
+    std::vector<float> xVec16 = {};
+    std::vector<float> yVec16 = {};
     xVec13.reserve(2000);
     yVec13.reserve(2000);
 
