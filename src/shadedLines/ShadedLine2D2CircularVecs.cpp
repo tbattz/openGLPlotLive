@@ -43,7 +43,7 @@ namespace GLPL {
         std::vector<float> sortedX = sortVectorByIndices(dataPtX, sortedIndices);
         std::vector<float> sortedY = sortVectorByIndices(dataPtY, sortedIndices);
         // Store sorted data
-        for(int i=0; i<totLen; i++) {
+        for(unsigned int i=0; i<totLen; i++) {
             sortedInternalData[2*i] = sortedX[i];
             sortedInternalData[2*i + 1] = sortedY[i];
         }
@@ -90,18 +90,27 @@ namespace GLPL {
         // Check if the number of points changed
         if (updated) {
             nIndices = internalIndices.size();
-            // Update buffer and attributes
-            // VBO
-            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-            glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
-            // EBO
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_DYNAMIC_DRAW);
+            if (nIndices > 0) {
+                // Update buffer and attributes
+                glBindVertexArray(lineVAO);
+                // VBO
+                glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+                glBufferData(GL_ARRAY_BUFFER, internalData.size() * sizeof(internalData[0]), &internalData[0],
+                             GL_DYNAMIC_DRAW);
+                // EBO
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size() * sizeof(internalIndices[0]),
+                             &internalIndices[0], GL_DYNAMIC_DRAW);
+
+                glBindVertexArray(0);
+            }
             updated = false;
         }
 
         // Draw plot
-        drawData(nIndices, selected);
+        if (nIndices > 0) {
+            drawData(nIndices, selected);
+        }
     }
 
     std::string ShadedLine2D2CircularVecs::getID() {

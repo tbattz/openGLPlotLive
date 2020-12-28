@@ -62,14 +62,18 @@ namespace GLPL {
     void Scatter2D2Vecs::Draw() {
         // Check if the number of points changed
         int newPts = (internalData).size()/2;
-        if (newPts != nPts) {
+        if (newPts != nPts && nPts > 0) {
             nPts = newPts;
             // Update buffer and attributes
+            glBindVertexArray(scatterVAO);
             glBindBuffer(GL_ARRAY_BUFFER, markerVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
 
+            glBindVertexArray(scatterOutlineVAO);
             glBindBuffer(GL_ARRAY_BUFFER, markerOutlineVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
+
+            glBindVertexArray(0);
         }
 
         // Draw plot

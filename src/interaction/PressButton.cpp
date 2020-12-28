@@ -45,15 +45,11 @@ namespace GLPL {
         // Setup Buffers
         // Bind to existing VAO
         glBindVertexArray(VAO);
-        // EBO
+        // EBO - Send Indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesDataSizeBytes, &internalIndices[0], GL_STATIC_DRAW);
 
         glBindVertexArray(0); // Unbind VAO
-
-        // EBO - Send Indices
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_STATIC_DRAW);
     }
 
     void PressButton::drawButtonShading() {

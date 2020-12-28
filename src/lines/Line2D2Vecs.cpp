@@ -52,14 +52,18 @@ namespace GLPL {
         int newPts = (internalData).size()/2;
         //if (newPts != nPts) {
         nPts = newPts;
-        // Update buffer and attributes
-        // Pts
-        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-        glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
-        // Indices
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_DYNAMIC_DRAW);
-        //}
+        if (nPts > 0) {
+            // Update buffer and attributes
+            glBindVertexArray(lineVAO);
+            // Pts
+            glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+            glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
+            // Indices
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lineEBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, internalIndices.size()*sizeof(internalIndices[0]), &internalIndices[0], GL_DYNAMIC_DRAW);
+
+            glBindVertexArray(0);
+        }
     }
 
     void Line2D2Vecs::updateIncrementalInternalData() {

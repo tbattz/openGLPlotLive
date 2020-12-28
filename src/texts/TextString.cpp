@@ -39,10 +39,10 @@ namespace GLPL {
         std::shared_ptr<Shader> shader = this->shaderSetPt->getTextShader();
         shader->Use();
         // Setup Uniforms
+        glBindVertexArray(this->textVAO);
         glUniform3f(glGetUniformLocation(shader->Program, "textColor"), textColor.x, textColor.y, textColor.z);
         glUniformMatrix4fv(glGetUniformLocation(shader->Program,"transformViewport"), 1, GL_FALSE, glm::value_ptr(overallTransform));
         glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(this->textVAO);
 
         // Iterate through each character
         drawText();
@@ -379,6 +379,7 @@ namespace GLPL {
             std::shared_ptr<Character3> ch = characterLoader->getCharacter(c);
 
             // Render glyph texture over quad face
+            glBindVertexArray(textVAO);
             glBindTexture(GL_TEXTURE_2D, ch->TextureID);
             // Update VBO memory
             glBindBuffer(GL_ARRAY_BUFFER,this->textVBO);
@@ -386,6 +387,7 @@ namespace GLPL {
             glBindBuffer(GL_ARRAY_BUFFER,0);
             // Render quad face
             glDrawArrays(GL_TRIANGLES,0,6);
+            glBindVertexArray(0);
         }
 
         if (isSelected()) {

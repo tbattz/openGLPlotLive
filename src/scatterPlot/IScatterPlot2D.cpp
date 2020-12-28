@@ -27,6 +27,9 @@ namespace GLPL {
         // Marker Instance
         // Create Buffers
         glGenBuffers(1, &markerVBO);
+        glGenVertexArrays(1, &scatterVAO);
+        glGenBuffers(1, &scatterVBO);
+        glBindVertexArray(scatterVAO);
 
         // Setup Buffers
         glBindBuffer(GL_ARRAY_BUFFER, markerVBO);
@@ -34,12 +37,7 @@ namespace GLPL {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // Data Pts
-        // Create Buffers
-        glGenVertexArrays(1, &scatterVAO);
-        glGenBuffers(1, &scatterVBO);
-
         // Setup Buffers
-        glBindVertexArray(scatterVAO);
         glBindBuffer(GL_ARRAY_BUFFER, scatterVBO);
         // Copy data into buffer
         glBufferData(GL_ARRAY_BUFFER, markerVertsSizeBytes, markerVertsAddress, GL_DYNAMIC_DRAW);
@@ -54,6 +52,7 @@ namespace GLPL {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glVertexAttribDivisor(1, 1); // Tell OpenGL this is an instance vertex attribute
 
+        glBindVertexArray(0);
     }
 
     void IScatterPlot2D::createAndSetupBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
@@ -61,6 +60,9 @@ namespace GLPL {
         // Marker Instance
         // Create Buffers
         glGenBuffers(1, &markerOutlineVBO);
+        glGenVertexArrays(1, &scatterOutlineVAO);
+        glGenBuffers(1, &scatterOutlineVBO);
+        glBindVertexArray(scatterOutlineVAO);
 
         // Setup Buffers
         glBindBuffer(GL_ARRAY_BUFFER, markerOutlineVBO);
@@ -68,12 +70,7 @@ namespace GLPL {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // Data Pts
-        // Create Buffers
-        glGenVertexArrays(1, &scatterOutlineVAO);
-        glGenBuffers(1, &scatterOutlineVBO);
-
         // Setup Buffers
-        glBindVertexArray(scatterOutlineVAO);
         glBindBuffer(GL_ARRAY_BUFFER, scatterOutlineVBO);
         // Copy data into buffer
         glBufferData(GL_ARRAY_BUFFER, markerOutlineIndicesDataSizeBytes, markerOutlineIndicesDataAddress, GL_DYNAMIC_DRAW);
@@ -87,6 +84,8 @@ namespace GLPL {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glVertexAttribDivisor(1, 1); // Tell OpenGL this is an instance vertex attribute
+
+        glBindVertexArray(0);
 
     }
 
