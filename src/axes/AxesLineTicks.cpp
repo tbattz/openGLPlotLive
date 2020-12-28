@@ -129,7 +129,7 @@ namespace GLPL {
         std::vector<float> relPos;
         std::vector<float> axesPos;
         unsigned int count = 0;
-        while (currRelPos > -1.0f) {
+        while (currRelPos >= -1.0f && currRelPos <= 1.0f) {
             // Store tick type
             if (count % (minorSpacingsPerMajor + 1) == 0) {
                 tickSpacingType.push_back(MAJOR_SPACING);
@@ -152,7 +152,7 @@ namespace GLPL {
         currRelPos = midRelPos;
         currAxesPos = 0.0f;
         count = 0;
-        while (currRelPos < 1.0f) {
+        while (currRelPos <= 1.0f && currRelPos >= -1.0f) {
             // Store tick type
             if (count % (minorSpacingsPerMajor + 1) == 0) {
                 tickSpacingType.push_back(MAJOR_SPACING);

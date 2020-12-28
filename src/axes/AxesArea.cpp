@@ -676,10 +676,18 @@ namespace GLPL {
         } else {
             newRange = (1 - zoomFrac) * oldRange;
         }
-        float c = a*newRange / (a + b);
-        float d = newRange - c;
-        float newMin = currVal - c;
-        float newMax = currVal + d;
+        // Cap max range
+        float newMin, newMax;
+        if (abs(a) < 1e6) {
+            // Calculate new limits
+            float c = a * newRange / (a + b);
+            float d = newRange - c;
+            newMin = currVal - c;
+            newMax = currVal + d;
+        } else {
+            newMin = minVal;
+            newMax = maxVal;
+        }
 
         return std::pair<float, float>(newMin, newMax);
     }
