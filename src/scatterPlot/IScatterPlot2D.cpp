@@ -2,10 +2,13 @@
 // Created by bcub3d-desktop on 26/12/20.
 //
 
-#include "IScatterPlot2D.h"
-
-#include <cmath>
+// Standard Includes
 #include <utility>
+
+// Project Includes
+#include "IScatterPlot2D.h"
+#include "../src/util/util.h"
+
 
 namespace GLPL {
 

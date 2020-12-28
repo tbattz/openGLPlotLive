@@ -11,8 +11,6 @@
 
 // Standard Includes
 #include <memory>
-#define _USE_MATH_DEFINES
-#include <cmath>
 
 // Project Includes
 #include "../src/rendering/fonts.h"
@@ -20,6 +18,7 @@
 #include "../src/lines/Line2DVecVec.h"
 #include "../src/lines/Line2DVecGLMV3.h"
 #include "../src/lines/Line2D2Vecs.h"
+#include "../src/util/util.h"
 
 
 int main(int argc, char **argv) {
