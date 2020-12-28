@@ -45,14 +45,22 @@ namespace GLPL {
         // Get Window class
         auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
 
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-            // Handle mouse release
-            windowPt->handleMouseRelease();
-        } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            // Handing Right Mouse
             if (action == GLFW_PRESS) {
                 windowPt->handleRightMouseHeld(true);
             } else if (action == GLFW_RELEASE) {
                 windowPt->handleRightMouseHeld(false);
+            }
+        } else if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            // Handle left mouse button
+            if (action == GLFW_PRESS) {
+                windowPt->handleLeftMouseHeld(true);
+            } else if (action == GLFW_RELEASE) {
+                // Handle mouse release
+                windowPt->handleMouseRelease();
+                // Handle left mouse release
+                windowPt->handleLeftMouseHeld(false);
             }
         }
     }

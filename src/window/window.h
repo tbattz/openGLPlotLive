@@ -56,6 +56,7 @@ namespace GLPL {
         void handleMouseScroll(double xoffset, double yoffset);
         void updateSelection();
         void handleRightMouseHeld(bool buttonHeld);
+        void handleLeftMouseHeld(bool buttonHeld);
 	    void updateSizePx();
 	    void Draw();
         std::string getID();

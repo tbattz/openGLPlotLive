@@ -65,6 +65,7 @@ namespace GLPL {
         virtual void onClick();
         virtual void onScroll(double xoffset, double yoffset);
         virtual void onRightDrag(bool dragging, double origXPos, double origYPos);
+        virtual void onLeftDrag(bool dragging, double origXPos, double origYPos);
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;

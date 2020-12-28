@@ -27,6 +27,7 @@ namespace GLPL {
         void Draw();
         void onScroll(double xoffset, double yoffset) override;
         void onRightDrag(bool dragging, double origXPos, double origYPos) override;
+        void onLeftDrag(bool dragging, double origXPos, double origYPos) override;
         void setLastMousePos(double lastMouseX, double lastMouseY) override;
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
@@ -51,8 +52,8 @@ namespace GLPL {
         void addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
         void setButtonState(const std::string& buttonName, bool activeState);
         // Point Interactor
-        float convertMouseX2AxesX();
-        float convertMouseY2AxesY();
+        float convertMouseX2AxesX(float mouseXVal);
+        float convertMouseY2AxesY(float mouseYVal);
         float convertMouseX2RelativeX();
         float convertMouseY2RelativeY();
         int getHoverCursor();
@@ -98,10 +99,15 @@ namespace GLPL {
         std::shared_ptr<Grid> grid;
         // Zoom Interaction
         float zoomRatio = 0.2;  // 10% on each scroll
+        // Drag Zoom Box
+        std::vector<float> zoomBoxX = {};
+        std::vector<float> zoomBoxY = {};
+        std::shared_ptr<Line2D2Vecs> zoomBoxLine;
         // Mouse
         bool rightMouseHeld = false;
-        double rightHeldX = 0;
-        double rightHeldY = 0;
+        bool leftMouseHeld = false;
+        double mouseHeldX = 0;
+        double mouseHeldY = 0;
         float dragZoomFactor = 5.0;
         float xMinDrag = 0;
         float xMaxDrag = 0;
@@ -114,13 +120,15 @@ namespace GLPL {
         glm::mat4 scale2AxesLimits();
         void drawAxesBox();
         void drawGrid();
-        void drawInteractor();
+        void updateInteractor();
+        void updateZoomDragBox();
         void updateAxesLimits();
         std::pair<float, float> calcScrolledVals(float minVal, float maxVal, float currVal, float zoomFrac, bool dir);
         void zoomAxes(float zoomDir);
         void zoomAxesByDragging();
         void createInteractor();
         void createGrid();
+        void createZoomBox();
 
     };
 
