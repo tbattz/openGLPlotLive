@@ -40,6 +40,7 @@ namespace GLPL {
         // Get minimum length of both vectors
         int len = std::min(this->dataPtX->size(), this->dataPtY->size());
         // Resize vector to data
+        internalData.clear();
         internalData.resize(2*len);
         // Sort by x value
         std::vector<int> sortedIndices = genIndicesSortedVector(dataPtX);
@@ -64,10 +65,10 @@ namespace GLPL {
         if (newPts != nPts) {
             nPts = newPts;
             // Update buffer and attributes
-            glBindBuffer(GL_ARRAY_BUFFER, scatterVBO);
+            glBindBuffer(GL_ARRAY_BUFFER, markerVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
 
-            glBindBuffer(GL_ARRAY_BUFFER, scatterOutlineVBO);
+            glBindBuffer(GL_ARRAY_BUFFER, markerOutlineVBO);
             glBufferData(GL_ARRAY_BUFFER, internalData.size()*sizeof(internalData[0]), &internalData[0], GL_DYNAMIC_DRAW);
         }
 
