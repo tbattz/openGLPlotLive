@@ -112,6 +112,10 @@ namespace GLPL {
         return std::make_tuple(0.0, 0.0);
     }
 
+    std::tuple<float, float> Grid::getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) {
+        return std::make_tuple(0.0, 0.0);
+    }
+
 
 }
 

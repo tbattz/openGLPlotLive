@@ -597,7 +597,7 @@ namespace GLPL {
 
                 for (auto &i : plotableMap) {
                     if (i.second->isSelected()) {
-                        std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
+                        std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx, xmin, xmax, ymin, ymax);
                         if (pt != std::make_tuple(0.0, 0.0)) {
                             float x1 = std::get<0>(pt);
                             float y1 = std::get<1>(pt);

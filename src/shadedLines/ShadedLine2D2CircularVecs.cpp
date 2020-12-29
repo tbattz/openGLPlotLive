@@ -162,4 +162,42 @@ namespace GLPL {
         }
     }
 
+    std::tuple<float, float>
+    ShadedLine2D2CircularVecs::getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) {
+        // Scale by a little amount
+        xmin = xmin - (0.01f*abs(xmin));
+        xmax = xmax + (0.01f*abs(xmax));
+        ymin = ymin - (0.01f*abs(ymin));
+        ymax = ymax + (0.01f*abs(ymax));
+        // Get the closest point, but within the window of provided ranges
+        std::vector<float> filteredData;
+        for(unsigned int i=0; i < sortedInternalData.size()/2.0; i++) {
+            float x = sortedInternalData[2*i];
+            float y = sortedInternalData[2*i + 1];
+            if (x >= xmin && x <= xmax && y >= ymin && y <= ymax) {
+                filteredData.push_back(x);
+                filteredData.push_back(y);
+            }
+        }
+
+        // Find the closest value
+        if (filteredData.size() > 1) {
+            unsigned int ind = binarySearch(filteredData, 0, (filteredData.size()/2) - 1, xVal, 2);
+            if (ind < filteredData.size()/2) {
+                // Check which point is closer
+                if (ind > 1 && ind < filteredData.size() / 2.0 - 1) {
+                    float diffLeft = abs(filteredData[2 * ind] - xVal);
+                    float diffRight = abs(filteredData[2 * (ind + 1)] - xVal);
+                    if (diffRight < diffLeft) {
+                        // Use the right index
+                        ind += 1;
+                    }
+                }
+                return std::make_tuple(filteredData[2 * ind], filteredData[2 * ind + 1]);
+            }
+        }
+
+        return std::make_tuple(0,0);
+    }
+
 }

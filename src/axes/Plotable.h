@@ -27,6 +27,7 @@ namespace GLPL {
         std::vector<float> sortVectorByIndices(std::vector<float>* unsortedVector, std::vector<int> indices);
 
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
+        virtual std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) = 0;
 
     protected:
         std::shared_ptr<glm::mat4> axesViewportTransform = std::make_shared<glm::mat4>(glm::mat4(1.0f));

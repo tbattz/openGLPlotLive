@@ -30,6 +30,7 @@ namespace GLPL {
         void genLines();
 
         std::tuple<float, float> getClosestPoint(float xVal);
+        std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax);
 
     private:
 

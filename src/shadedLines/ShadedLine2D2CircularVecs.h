@@ -30,6 +30,7 @@ namespace GLPL {
         std::string getID();
         std::vector<float> getMinMax();
         std::tuple<float, float> getClosestPoint(float xVal);
+        std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax);
 
         std::vector<float>* dataPtX;
         std::vector<float>* dataPtY;
