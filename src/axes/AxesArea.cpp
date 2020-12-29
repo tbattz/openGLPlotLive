@@ -599,13 +599,14 @@ namespace GLPL {
                     if (i.second->isSelected()) {
                         std::tuple<float, float> pt = i.second->getClosestPoint(mouseXAx);
                         if (pt != std::make_tuple(0.0, 0.0)) {
-                            float x = std::get<0>(pt);
+                            float x1 = std::get<0>(pt);
                             float y1 = std::get<1>(pt);
+                            float x2 = mouseXAx;
                             float y2 = mouseYAx;
                             // Update line
                             interactorLine->clearData();
-                            interactorLine->dataPtX->push_back(x);
-                            interactorLine->dataPtX->push_back(x);
+                            interactorLine->dataPtX->push_back(x1);
+                            interactorLine->dataPtX->push_back(x2);
                             interactorLine->dataPtY->push_back(y1);
                             interactorLine->dataPtY->push_back(y2);
                             interactorLine->updateInternalData();
