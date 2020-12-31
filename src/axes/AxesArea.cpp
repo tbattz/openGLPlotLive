@@ -44,6 +44,8 @@ namespace GLPL {
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
         AxesArea::addButtonWithTexture("Axes Limits Scaling", "axes-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
         AxesArea::addButtonWithTexture("Grid", "grid-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("Axes", "axes-white", 0.73, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("AxesBox", "axes-box-white", 0.64, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
 
         // Create Interactor
         AxesArea::createInteractor();
@@ -71,8 +73,10 @@ namespace GLPL {
         AxesArea::updateZoomDragBox();
 
         // Draw Axes
-        for(auto & i : axesLines) {
-            i.second->Draw();
+        if (buttonMap["Axes"]->isActive()) {
+            for (auto &i : axesLines) {
+                i.second->Draw();
+            }
         }
 
         // Draw Grid
@@ -106,7 +110,7 @@ namespace GLPL {
         }
 
         // Draw Axes box
-        if (axesBoxOn) {
+        if (buttonMap["AxesBox"]->isActive()) {
             AxesArea::drawAxesBox();
         }
 
@@ -152,7 +156,7 @@ namespace GLPL {
     }
 
     void AxesArea::setAxesBoxOn(bool axesBoxOnBool) {
-        axesBoxOn = axesBoxOnBool;
+        (buttonMap["AxesBox"]->setActive(axesBoxOnBool));
     }
 
     void AxesArea::setAxesBoxColor(glm::vec4 newAxesBoxColour) {

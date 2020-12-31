@@ -82,7 +82,6 @@ namespace GLPL {
         float ymin = -1.0;
         float ymax = 1.0;
         // Axes Settings
-        bool axesBoxOn = true;
         glm::vec4 axesBoxColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         // Text String
         std::unordered_map<std::string, std::shared_ptr<TextString>> textStringMap;
