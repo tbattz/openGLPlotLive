@@ -132,9 +132,11 @@ namespace GLPL {
     }
 
     void AxesArea::onLeftDrag(bool dragging, double origXPos, double origYPos) {
-        leftMouseHeld = dragging;
-        mouseHeldX = origXPos;
-        mouseHeldY = origYPos;
+        if (isHovered() && isMouseOver(mouseX, mouseY, false)) {
+            leftMouseHeld = dragging;
+            mouseHeldX = origXPos;
+            mouseHeldY = origYPos;
+        }
 
         // On Release, set the current axes limits to that of the zoom box line
         if (!dragging && isHovered() && isMouseOver(mouseX, mouseY, false)) {
