@@ -171,4 +171,14 @@ namespace GLPL {
 
         return std::make_tuple(0,0);
     }
+
+    std::vector<float> Line2D2Vecs::getInternalData() {
+        return internalData;
+    }
+
+    std::vector<int> Line2D2Vecs::getInternalIndices() {
+        return internalIndices;
+    }
+
+
 }

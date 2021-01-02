@@ -27,7 +27,7 @@ namespace GLPL {
         std::vector<int> indices(unsortedVector->size());
         std::iota(indices.begin(), indices.end(), 0);
         // Sort by values in unsorted vector
-        std::sort(indices.begin(), indices.end(),
+        std::stable_sort(indices.begin(), indices.end(),
                 [&](int A, int B) -> bool {
                     return (*unsortedVector)[A] < (*unsortedVector)[B];
         });

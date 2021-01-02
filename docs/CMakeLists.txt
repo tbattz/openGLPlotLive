@@ -59,3 +59,7 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
 
 # Nice named target so we can run the job easily
 add_custom_target(sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
+
+# Add target that depends on both
+add_custom_target(docs)
+add_dependencies(docs doxygen sphinx)

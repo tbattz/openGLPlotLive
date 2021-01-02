@@ -156,6 +156,17 @@ Compile the program.
 make -j4
 ```
 
+There are a number of different make targets.
+
+| Target         | Description                                     | Output (build directory)                                |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------- |
+| all            | Make all the targets below                      |                                                         |
+| examplePlot    | Make the example plot window                    | apps/examplePlot                                        |
+| openGLPlotLive | Make the shared library libopenGLPlotLive.so    | src/libOpenGLPlotLive.so                                |
+| docs           | Makes both the doxygen and sphinx documentation | docs/doxygen/html/index.html,<br>docs/sphinx/index.html |
+| tests          | Make the test suite runner using gtest          | tests/openGLPlotLive-proj_tests                         |
+
+
 ## Debugging
 To enable debugging, when running cmake, enable the debugging flag.
 ```
@@ -206,3 +217,13 @@ Then import the project into Eclipse using File >> Import >> General >> Existing
 
 # Debugging
 A useful tool for debugging anything at the opengl level is qrenderdoc - https://github.com/baldurk/renderdoc
+
+# Tests with googletest
+Some simple tests have been written for debugging purposes. These use the googletest framework. To compile and run the tests,
+```
+cd build
+make tests -j4
+cd tests
+./openGLPlotLive-proj_tests
+```
+
