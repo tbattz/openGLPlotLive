@@ -7,7 +7,7 @@
 
 // Standard Includes
 #include <unordered_map>
-
+#include <vector>
 
 
 namespace GLPL {
@@ -22,7 +22,13 @@ namespace GLPL {
         unsigned int getTextureId(std::string textureName);
 
     private:
+        // Data
         std::unordered_map<std::string, unsigned int> textureMap;
+
+        // Functions
+        std::vector<std::string> getFilesInDir();
+        bool hasExt(const std::string &str, const std::string &suffix);
+        void loadPngTextures();
     };
 
 }

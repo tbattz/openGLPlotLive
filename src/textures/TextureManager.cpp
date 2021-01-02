@@ -16,16 +16,15 @@
 #include "TextureManager.h"
 
 #include <unistd.h>
-
+#include <dirent.h>
 
 
 namespace GLPL {
 
 
     GLPL::TextureManager::TextureManager() {
-        TextureManager::loadTexture("interactor-white", "textures/interactor-white.png");
-        TextureManager::loadTexture("axes-limits-white", "textures/axesLimits-white.png");
-        TextureManager::loadTexture("grid-white", "textures/grid-white.png");
+        TextureManager::loadPngTextures();
+
     }
 
     void TextureManager::loadTexture(const std::string& textureName, const char* texturePath) {
@@ -66,6 +65,38 @@ namespace GLPL {
         } else {
             std::cout << "Texture " << textureName << " not found in texture map!" << std::endl;
             return 0;
+        }
+    }
+
+    std::vector<std::string> TextureManager::getFilesInDir() {
+        std::vector<std::string> files;
+        DIR *dir = opendir("textures");
+        if (!dir) {
+            std::cout << "Texture directory does not exist!" << std::endl;
+        } else {
+            dirent *entry;
+            while ((entry = readdir(dir)) != nullptr)  {
+                files.emplace_back(entry->d_name);
+            }
+        }
+        closedir(dir);
+
+        return files;
+    }
+
+    bool TextureManager::hasExt(const std::string &str, const std::string &suffix) {
+        return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+    }
+
+    void TextureManager::loadPngTextures() {
+        std::vector<std::string> files = TextureManager::getFilesInDir();
+
+        for(const auto& file : files) {
+            if (TextureManager::hasExt(file, ".png")) {
+                std::string noExt = file.substr(0, file.size()-4);
+                std::string path = "textures/" + file;
+                TextureManager::loadTexture(noExt, path.c_str());
+            }
         }
     }
 }
