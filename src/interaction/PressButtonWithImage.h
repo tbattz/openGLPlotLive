@@ -17,7 +17,8 @@ namespace GLPL {
         // Constructor
         PressButtonWithImage(std::string newButtonName, float x, float y, float width, float height,
                              std::string textureName,
-                             std::shared_ptr<ParentDimensions> parentDimensions);
+                             std::shared_ptr<ParentDimensions> parentDimensions,
+                             std::string tooltipText = "");
 
         // Functions
         void Draw() override;

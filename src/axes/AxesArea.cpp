@@ -41,11 +41,11 @@ namespace GLPL {
         AxesArea::addText("y label", "y-label", -0.175, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
-        AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButtonWithTexture("Axes Limits Scaling", "axes-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButtonWithTexture("Grid", "grid-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButtonWithTexture("Axes", "axes-white", 0.73, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
-        AxesArea::addButtonWithTexture("AxesBox", "axes-box-white", 0.64, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true);
+        AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle the interactor");
+        AxesArea::addButtonWithTexture("Axes Limits Scaling", "axes-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Enable/disable axes auto scaling");
+        AxesArea::addButtonWithTexture("Grid", "grid-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle grid");
+        AxesArea::addButtonWithTexture("Axes", "axes-white", 0.73, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes");
+        AxesArea::addButtonWithTexture("AxesBox", "axes-box-white", 0.64, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes box");
 
         // Create Interactor
         AxesArea::createInteractor();
@@ -487,11 +487,11 @@ namespace GLPL {
     }
 
     void AxesArea::addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height,
-                             AttachLocation attachLocation, bool activeState) {
+                             AttachLocation attachLocation, bool activeState, const std::string& tooltipText) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Register Child
-        std::shared_ptr<IDrawable> buttonObj = std::make_shared<PressButtonWithImage>(buttonName, x, y, width, height, textureName, newParentPointers);
+        std::shared_ptr<IDrawable> buttonObj = std::make_shared<PressButtonWithImage>(buttonName, x, y, width, height, textureName, newParentPointers, tooltipText);
         std::shared_ptr<PressButton> buttonObjPt = std::dynamic_pointer_cast<PressButton>(buttonObj);
         // Set pin position
         buttonObjPt->setAttachLocation(attachLocation);

@@ -93,7 +93,7 @@ namespace GLPL {
         bool isHoverable();
         void setHoverable(bool isHoverable);
         bool isHovered();
-        void setHovered(bool newHovered);
+        virtual void setHovered(bool newHovered);
         bool isSelected();
         void setSelected(bool isSelected);
         std::vector<GLfloat> calcMouseOverVertsWithChildren();

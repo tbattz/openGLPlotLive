@@ -8,6 +8,8 @@
 #include "../rendering/IDrawable.h"
 #include "../rendering/ConstantXYDrawable.h"
 #include "IClickable.h"
+#include "Tooltip.h"
+
 
 namespace GLPL {
 
@@ -15,12 +17,14 @@ namespace GLPL {
     public:
         // Constructor
         PressButton(std::string newButtonName, float x, float y, float width, float height,
-                    std::shared_ptr<ParentDimensions> parentDimensions);
+                    std::shared_ptr<ParentDimensions> parentDimensions,
+                    std::string tooltipText = "");
 
         // Functions
         void Draw();
         void onLeftClick() override;
         std::string getID();
+        void setHovered(bool newHovered);
 
 
     private:
@@ -34,6 +38,7 @@ namespace GLPL {
         void setupShadingBuffers();
         void drawButtonShading();
         void drawButtonOutline();
+        void drawTooltip();
 
         // PressButton Appearance
         glm::vec4 buttonInactiveOutlineColor      = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -45,6 +50,10 @@ namespace GLPL {
         glm::vec4 buttonActiveShadingColor        = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
         glm::vec4 buttonActiveShadingHoverColor   = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
 
+        // Tooltip
+        float tooltipHoverTimeS = 0.5; // The hover time until the tooltip is shown, in seconds
+        float hoverBeginTime = -1;          // The time at which the button was first hovered for the current hover period
+        std::shared_ptr<Tooltip> tooltipPt = nullptr;
 
     };
 

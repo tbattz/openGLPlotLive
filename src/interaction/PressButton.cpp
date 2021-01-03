@@ -9,7 +9,8 @@
 namespace GLPL {
 
     PressButton::PressButton(std::string newButtonName, float x, float y, float width, float height,
-                             std::shared_ptr<ParentDimensions> parentDimensions) :
+                             std::shared_ptr<ParentDimensions> parentDimensions,
+                             std::string tooltipText) :
         ConstantXYDrawable(x, y, width, height, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
         // Set button name
         buttonName = std::move(newButtonName);
@@ -19,6 +20,14 @@ namespace GLPL {
 
         // Setup Shading Buffers
         PressButton::setupShadingBuffers();
+
+        // Create tooltip
+        std::shared_ptr<ParentDimensions> buttonParentDimensions = createParentDimensions();
+        tooltipPt = std::make_shared<Tooltip>("", 0.0f, -0.1f, 10.0f, buttonParentDimensions);
+        tooltipPt->setAttachLocation(CENTRE_TOP);
+        tooltipPt->setTextString(std::move(tooltipText));
+        tooltipPt->setFontSize(8.0);
+        tooltipPt->setTextColor(glm::vec3(0.0f, 0.0f, 0.0f));
     }
 
     void PressButton::Draw() {
@@ -27,6 +36,9 @@ namespace GLPL {
 
         // Draw button outline
         PressButton::drawButtonOutline();
+
+        // Draw tooltip
+        PressButton::drawTooltip();
     }
 
     void PressButton::onLeftClick() {
@@ -35,6 +47,16 @@ namespace GLPL {
 
     std::string PressButton::getID() {
         return "PressButton:" + buttonName + ":" + std::to_string(x) + ":" + std::to_string(y);
+    }
+
+    void PressButton::setHovered(bool newHovered) {
+        IDrawable::setHovered(newHovered);
+
+        if (newHovered) {
+            hoverBeginTime = (float)glfwGetTime();
+        } else {
+            hoverBeginTime = -1;
+        }
     }
 
     void PressButton::setupShadingBuffers() {
@@ -103,6 +125,15 @@ namespace GLPL {
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINE_LOOP,0,4);
         glBindVertexArray(0);
+    }
+
+    void PressButton::drawTooltip() {
+        auto currTime = (float)glfwGetTime();
+        if (tooltipPt->getTextString().size() > 0) {
+            if (hoverBeginTime > 0 && currTime - hoverBeginTime > tooltipHoverTimeS) {
+                tooltipPt->Draw();
+            }
+        }
     }
 
 }

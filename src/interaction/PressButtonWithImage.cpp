@@ -12,8 +12,9 @@ namespace GLPL {
 
     PressButtonWithImage::PressButtonWithImage(std::string newButtonName, float x, float y, float width, float height,
                                                std::string newTextureName,
-                                               std::shared_ptr<ParentDimensions> parentDimensions) : PressButton(
-            std::move(newButtonName), x, y, width, height, std::move(parentDimensions)) {
+                                               std::shared_ptr<ParentDimensions> parentDimensions,
+                                               std::string tooltipText) : PressButton(
+            std::move(newButtonName), x, y, width, height, std::move(parentDimensions), std::move(tooltipText)) {
 
         textureName = std::move(newTextureName);
         textureManager = shaderSetPt->getTextureManager();

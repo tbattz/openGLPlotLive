@@ -50,7 +50,8 @@ namespace GLPL {
         void removeTextString(std::string textStringId);
         // PressButton
         void addButton(const std::string& buttonName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
-        void addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height, AttachLocation attachLocation, bool activeState = true);
+        void addButtonWithTexture(const std::string& buttonName, const std::string& textureName, float x, float y, float width, float height, AttachLocation attachLocation,
+                bool activeState = true, const std::string& tooltipText = "");
         void setButtonState(const std::string& buttonName, bool activeState);
         // Point Interactor
         float convertMouseX2AxesX(float mouseXVal);
