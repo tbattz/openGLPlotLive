@@ -206,6 +206,17 @@ cd build/apps
 ./examplePlot
 ```
 
+# Controls
+When autoscaling is disabled, the following controls allows the user to manipulate the axes area:
+
+| Control Input                     | Description                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| Scroll Wheel                      | Zooms the axes in and out                                            |
+| Right Click & Drag                | Zoom the x & y axes at different scales, based on the drag distance  |
+| Left Click & Drag                 | Pan the axes left, right, up or down                                 |
+| Left Click, hold Shift Key & Drag | Drag a zoom box, that will zoom to the extents of the box on release |
+| Spacebar                          | Iterates through plotables in the view, when the view is hovered     |
+
 # Compiling an Eclipse Project
 To generate an Eclipse project, from the root directory,
 ```
