@@ -22,11 +22,11 @@ namespace GLPL {
         }
         // Set key states
         if (action == GLFW_PRESS) {
-            windowPt->setKeysByIndex(key, true);
+            windowPt->setKeysByIndex(key, true, mode);
             // Set toggle states
-            windowPt->setToggleKeysByIndex(key, !windowPt->getToggleKeyStateByIndex(key));
+            windowPt->setToggleKeysByIndex(key, !windowPt->getToggleKeyStateByIndex(key, mode), mode);
         } else if (action == GLFW_RELEASE) {
-            windowPt->setKeysByIndex(key, false);
+            windowPt->setKeysByIndex(key, false, mode);
         }
 
         // Handle selection
@@ -44,25 +44,9 @@ namespace GLPL {
     static void mouseCallback(GLFWwindow *window, int button, int action, int mods) {
         // Get Window class
         auto *windowPt = (GLPL::Window *) glfwGetWindowUserPointer(window);
+        // Handle mouse click
+        windowPt->handleMouseClick(button, action, mods);
 
-        if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-            // Handing Right Mouse
-            if (action == GLFW_PRESS) {
-                windowPt->handleRightMouseHeld(true);
-            } else if (action == GLFW_RELEASE) {
-                windowPt->handleRightMouseHeld(false);
-            }
-        } else if (button == GLFW_MOUSE_BUTTON_LEFT) {
-            // Handle left mouse button
-            if (action == GLFW_PRESS) {
-                windowPt->handleLeftMouseHeld(true);
-            } else if (action == GLFW_RELEASE) {
-                // Handle mouse release
-                windowPt->handleMouseRelease();
-                // Handle left mouse release
-                windowPt->handleLeftMouseHeld(false);
-            }
-        }
     }
 
     static void cursorMoved(GLFWwindow *window, double xpos, double ypos) {

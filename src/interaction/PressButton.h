@@ -19,7 +19,7 @@ namespace GLPL {
 
         // Functions
         void Draw();
-        void onClick() override;
+        void onLeftClick() override;
         std::string getID();
 
 

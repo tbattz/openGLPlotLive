@@ -11,7 +11,7 @@
 namespace GLPL {
 
     Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) :
-    TopLevelDrawable(0.0f, 0.0f, windowWidth, windowHeight) {
+            TopLevelDrawable(0.0f, 0.0f, windowWidth, windowHeight) {
         // Set window options
         this->transparentBackground = transparentBackground;
         this->focusOnShow = focusOnShow;
@@ -119,101 +119,159 @@ namespace GLPL {
         }
     }
 
+    void Window::handleMouseClick(int button, int action, int mods) {
+        // State machine for determining action
+        switch (currentAction) {
+            case NO_ACTION: {
+                if (action == GLFW_PRESS) {
+                    glfwGetCursorPos(window, &xPressed, &yPressed);
+                    // Check to start a new action
+                    if (button == GLFW_MOUSE_BUTTON_LEFT && mods == 0) {
+                        currentAction = LEFT_MOUSE_PRESSED;
+                    } else if (button == GLFW_MOUSE_BUTTON_LEFT && mods == GLFW_MOD_SHIFT) {
+                        currentAction = LEFT_MOUSE_SHIFT_PRESSED;
+                    } else if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == 0) {
+                        currentAction = RIGHT_MOUSE_PRESSED;
+                    } else if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == GLFW_MOD_SHIFT) {
+                        currentAction = RIGHT_MOUSE_SHIFT_PRESSED;
+                    }
+                }
+
+                break;
+            }
+            case LEFT_MOUSE_PRESSED: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_LEFT && mods == 0) {
+                        // Mouse has been clicked and released
+                        for(auto &mousedObj : *mousedOverObjs) {
+                            mousedObj->onLeftClick();
+                        }
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+
+                }
+                break;
+            }
+            case LEFT_MOUSE_SHIFT_PRESSED: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_LEFT && mods == GLFW_MOD_SHIFT) {
+                        // Mouse has been clicked and released
+                        for (auto &mousedObj : *mousedOverObjs) {
+                            mousedObj->onLeftShiftClick();
+                        }
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_PRESSED: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == 0) {
+                        // Mouse has been clicked and released
+                        for (auto &mousedObj : *mousedOverObjs) {
+                            mousedObj->onRightClick();
+                        }
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_SHIFT_PRESSED: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == GLFW_MOD_SHIFT) {
+                        // Mouse has been clicked and released
+                        for (auto &mousedObj : *mousedOverObjs) {
+                            mousedObj->onRightShiftClick();
+                        }
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case LEFT_MOUSE_DRAG: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                        // Mouse dragging has stopped
+                        Window::handleLeftMouseHeld(false);
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case LEFT_MOUSE_SHIFT_DRAG: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                        // Mouse dragging has stopped
+                        Window::handleLeftShiftMouseHeld(false);
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_DRAG: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+                        // Mouse dragging has stopped
+                        Window::handleRightMouseHeld(false);
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_SHIFT_DRAG: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+                        // Mouse dragging has stopped
+                        Window::handleRightShiftMouseHeld(false);
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+
+            default: {
+                std::cout << "Unknown Action! " << currentAction << std::endl;
+            }
+        }
+
+    }
+
     void Window::handleMouseMovement(double xpos, double ypos) {
-        // Create vector to store
-        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newMousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+
         // Convert from pixel space to -1 to 1
         if (getWidthPx() > 0 && getHeightPx() > 0) {
             xpos = 2 * (xpos / getWidthPx()) - 1;
             ypos = -(2 * (ypos / getHeightPx()) - 1);
-            // Determine children that mouse is over
-            for (auto &child : children) {
-                if (child->canMouseOver()) {
-                    child->getMousedOverChildren(xpos, ypos, newMousedOverObjs);
-                }
-            }
 
             // Update mouse over states
-            for(auto &oldMousedObj : *mousedOverObjs) {
-                oldMousedObj->setHovered(false);
-            }
-            for (auto &mousedObj : *newMousedOverObjs) {
-                mousedObj->setHovered(true);
-                mousedObj->setLastMousePos(xpos, ypos);
-            }
+            bool changed = Window::updateMouseOverStates(xpos, ypos);
 
-            // Check if the moused over objects have changed
-            bool changed = false;
-            if (newMousedOverObjs->size() != mousedOverObjs->size()) {
-                changed = true;
-            } else {
-                for(unsigned int i=0; i < mousedOverObjs->size(); i ++) {
-                    if (newMousedOverObjs.get()[0][i].get() != mousedOverObjs.get()[0][i].get()) {
-                        changed = true;
-                        break;
-                    }
-                }
-            }
+            // Update Hoverable states & cursor
+            Window::updateHoverableStates(xpos, ypos);
 
-            // Determine which objects are hoverable
-            std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newHoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
-            int newCursor = 0;
-            for(const auto& obj : *newMousedOverObjs) {
-                if (obj->isHoverable()) {
-                    newHoverableObjs->push_back(obj);
-                }
-                if (obj->isMouseOver(xpos, ypos, false) && obj->getHoverCursor() != 0) {
-                    newCursor = obj->getHoverCursor();
-                }
-            }
-            // Check if cursor has changed
-            if (newCursor != lastCursorType) {
-                lastCursorType = newCursor;
-                glfwDestroyCursor(lastCursor);
-                lastCursor = glfwCreateStandardCursor(newCursor);
-                glfwSetCursor(window, lastCursor);
-            }
-
-
-            // Handle selection
-            if (!newHoverableObjs->empty()) {
-                if (selected == nullptr) {
-                    // Select first object in list
-                    newHoverableObjs.get()[0][0]->setSelected(true);
-                    selected = newHoverableObjs.get()[0][0];
-                }
-            } else if (selected != nullptr) {
-                // Reset selected
-                selected->setSelected(false);
-                selected = nullptr;
-            }
-
-            // Update mouse position
-            if (selected != nullptr) {
-                selected->setLastMousePos(xpos, ypos);
-            }
-
-            // Print changes in hoverable over
+            // Print changes in hovered overs
             if (changed) {
-                for (const auto& obj : *newHoverableObjs) {
-                    if (obj->isSelected()) {
-                        std::cout << "[" << obj->getID() << "], ";
-                    } else {
-                        std::cout << obj->getID() << ", ";
-                    }
-                }
-                std::cout << std::endl;
+                Window::printSelection();
             }
 
-            this->mousedOverObjs = newMousedOverObjs;
-            this->hoverableObjs = newHoverableObjs;
-        }
-    }
+            // Update Drag Action States
+            Window::updateDragActionStates();
 
-    void Window::handleMouseRelease() {
-        // Check if mouse is over an object
-        for(auto &mousedObj : *mousedOverObjs) {
-            mousedObj->onClick();
         }
     }
 
@@ -246,14 +304,7 @@ namespace GLPL {
                     selected = hoverableObjs.get()[0][index];
 
                     // Print changes in hoverable over
-                    for (const auto& obj : *hoverableObjs) {
-                        if (obj->isSelected()) {
-                            std::cout << "[" << obj->getID() << "], ";
-                        } else {
-                            std::cout << obj->getID() << ", ";
-                        }
-                    }
-                    std::cout << std::endl;
+                    Window::printSelection();
                 }
                 // Update mouse position
                 if (selected != nullptr) {
@@ -262,25 +313,6 @@ namespace GLPL {
 
             }
             toggleKeys[GLFW_KEY_SPACE] = false;
-        }
-    }
-
-    void Window::handleRightMouseHeld(bool buttonHeld) {
-        // Get mouse location
-        double xpos, ypos;
-        if (buttonHeld) {
-            glfwGetCursorPos(window, &xpos, &ypos);
-        } else {
-            xpos = 0.0;
-            ypos = 0.0;
-        }
-        // Convert from pixel space to -1 to 1
-        xpos = 2 * (xpos / getWidthPx()) - 1;
-        ypos = -(2 * (ypos / getHeightPx()) - 1);
-
-        // Check if mouse is over an object
-        for(auto &mousedObj : *mousedOverObjs) {
-            mousedObj->onRightDrag(buttonHeld, xpos, ypos);
         }
     }
 
@@ -297,9 +329,83 @@ namespace GLPL {
         xpos = 2 * (xpos / getWidthPx()) - 1;
         ypos = -(2 * (ypos / getHeightPx()) - 1);
 
-        // Check if mouse is over an object
-        for(auto &mousedObj : *mousedOverObjs) {
-            mousedObj->onLeftDrag(buttonHeld, xpos, ypos);
+        for(auto &draggingObj : *draggingObjs) {
+            draggingObj->onLeftDrag(buttonHeld, xpos, ypos);
+        }
+
+        if (!buttonHeld) {
+            // If released, drop dragging items
+            draggingObjs->clear();
+        }
+    }
+
+    void Window::handleLeftShiftMouseHeld(bool buttonHeld) {
+        // Get mouse location`
+        double xpos, ypos;
+        if (buttonHeld) {
+            glfwGetCursorPos(window, &xpos, &ypos);
+        } else {
+            xpos = 0.0;
+            ypos = 0.0;
+        }
+        // Convert from pixel space to -1 to 1
+        xpos = 2 * (xpos / getWidthPx()) - 1;
+        ypos = -(2 * (ypos / getHeightPx()) - 1);
+
+        for(auto &draggingObj : *draggingObjs) {
+            draggingObj->onLeftShiftDrag(buttonHeld, xpos, ypos);
+        }
+
+        if (!buttonHeld) {
+            // If released, drop dragging items
+            draggingObjs->clear();
+        }
+    }
+
+    void Window::handleRightMouseHeld(bool buttonHeld) {
+        // Get mouse location
+        double xpos, ypos;
+        if (buttonHeld) {
+            glfwGetCursorPos(window, &xpos, &ypos);
+        } else {
+            xpos = 0.0;
+            ypos = 0.0;
+        }
+        // Convert from pixel space to -1 to 1
+        xpos = 2 * (xpos / getWidthPx()) - 1;
+        ypos = -(2 * (ypos / getHeightPx()) - 1);
+
+        for(auto &draggingObj : *draggingObjs) {
+            draggingObj->onRightDrag(buttonHeld, xpos, ypos);
+        }
+
+        if (!buttonHeld) {
+            // If released, drop dragging items
+            draggingObjs->clear();
+        }
+
+    }
+
+    void Window::handleRightShiftMouseHeld(bool buttonHeld) {
+        // Get mouse location
+        double xpos, ypos;
+        if (buttonHeld) {
+            glfwGetCursorPos(window, &xpos, &ypos);
+        } else {
+            xpos = 0.0;
+            ypos = 0.0;
+        }
+        // Convert from pixel space to -1 to 1
+        xpos = 2 * (xpos / getWidthPx()) - 1;
+        ypos = -(2 * (ypos / getHeightPx()) - 1);
+
+        for(auto &draggingObj : *draggingObjs) {
+            draggingObj->onRightShiftDrag(buttonHeld, xpos, ypos);
+        }
+
+        if (!buttonHeld) {
+            // If released, drop dragging items
+            draggingObjs->clear();
         }
     }
 
@@ -314,16 +420,56 @@ namespace GLPL {
         }
     }
 
-    void Window::setKeysByIndex(int index, bool boolean) {
-        keys[index] = boolean;
+    void Window::setKeysByIndex(int index, bool boolean, int mode) {
+        switch (mode) {
+            case 0: {
+                keys[index] = boolean;
+                break;
+            }
+            case GLFW_MOD_SHIFT: {
+                shiftKeys[index] = boolean;
+                break;
+            }
+            default: {
+                std::cout << "Key modifier not implemented!" << std::endl;
+            }
+        }
+
     }
 
-    void Window::setToggleKeysByIndex(int index, bool boolean) {
-        toggleKeys[index] = boolean;
+
+    void Window::setToggleKeysByIndex(int index, bool boolean, int mode) {
+        switch (mode) {
+            case 0: {
+                toggleKeys[index] = boolean;
+                break;
+            }
+            case GLFW_MOD_SHIFT: {
+                shiftToggleKeys[index] = boolean;
+                break;
+            }
+            default: {
+                std::cout << "Key modifier not implemented!" << std::endl;
+            }
+        }
+
     }
 
-    bool Window::getToggleKeyStateByIndex(int index) {
-        return toggleKeys[index];
+
+    bool Window::getToggleKeyStateByIndex(int index, int mode) {
+        switch (mode) {
+            case 0: {
+                return toggleKeys[index];
+            }
+            case GLFW_MOD_SHIFT: {
+                return shiftToggleKeys[index];
+            }
+            default: {
+                std::cout << "Key modifier not implemented!" << std::endl;
+            }
+        }
+
+        return false;
     }
 
     GLFWwindow* Window::getWindow() {
@@ -395,6 +541,184 @@ namespace GLPL {
     void Window::addPlot(const std::shared_ptr<IDrawable>& plotPt) {
         // Store plot pointer
         children.push_back(plotPt);
+    }
+
+    bool Window::updateMouseOverStates(double xpos, double ypos) {
+        // Create vector to store
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newMousedOverObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+
+        // Determine children that mouse is over
+        for (auto &child : children) {
+            if (child->canMouseOver()) {
+                child->getMousedOverChildren(xpos, ypos, newMousedOverObjs);
+            }
+        }
+
+        // Update mouse over states
+        for(auto &oldMousedObj : *mousedOverObjs) {
+            oldMousedObj->setHovered(false);
+        }
+        for (auto &mousedObj : *newMousedOverObjs) {
+            mousedObj->setHovered(true);
+            mousedObj->setLastMousePos(xpos, ypos);
+        }
+
+        // Check if the moused over objects have changed
+        bool changed = false;
+        if (newMousedOverObjs->size() != mousedOverObjs->size()) {
+            changed = true;
+        } else {
+            for(unsigned int i=0; i < mousedOverObjs->size(); i ++) {
+                if (newMousedOverObjs.get()[0][i].get() != mousedOverObjs.get()[0][i].get()) {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        this->mousedOverObjs = newMousedOverObjs;
+
+        return changed;
+
+    }
+
+    void Window::updateHoverableStates(double xpos, double ypos) {
+        // Determine which objects are hoverable
+        std::shared_ptr<std::vector<std::shared_ptr<GLPL::IDrawable>>> newHoverableObjs = std::make_shared<std::vector<std::shared_ptr<GLPL::IDrawable>>>();
+        int newCursor = 0;
+        for(const auto& obj : *mousedOverObjs) {
+            if (obj->isHoverable()) {
+                newHoverableObjs->push_back(obj);
+            }
+            if (obj->isMouseOver(xpos, ypos, false) && obj->getHoverCursor() != 0) {
+                newCursor = obj->getHoverCursor();
+            }
+        }
+
+        // Check if cursor has changed
+        if (newCursor != lastCursorType) {
+            lastCursorType = newCursor;
+            glfwDestroyCursor(lastCursor);
+            lastCursor = glfwCreateStandardCursor(newCursor);
+            glfwSetCursor(window, lastCursor);
+        }
+
+        // Handle selection
+        if (!newHoverableObjs->empty()) {
+            if (selected == nullptr) {
+                // Select first object in list
+                newHoverableObjs.get()[0][0]->setSelected(true);
+                selected = newHoverableObjs.get()[0][0];
+            }
+        } else if (selected != nullptr) {
+            // Reset selected
+            selected->setSelected(false);
+            selected = nullptr;
+        }
+
+        // Update mouse position
+        if (selected != nullptr) {
+            selected->setLastMousePos(xpos, ypos);
+        }
+
+        this->hoverableObjs = newHoverableObjs;
+
+    }
+
+    void Window::updateDragActionStates() {
+        // Change to drag action if required
+        double newXClick, newYClick;
+        glfwGetCursorPos(window, &newXClick, &newYClick);
+        switch (currentAction) {
+            case LEFT_MOUSE_PRESSED: {
+                // Check if mouse has moved
+                if (newXClick != xPressed || newYClick != yPressed) {
+                    currentAction = LEFT_MOUSE_DRAG;
+
+                    // Add any new items that are moused over, to the dragging items
+                    Window::updateDraggingItems();
+
+                    // Update objects
+                    Window::handleLeftMouseHeld(true);
+                }
+
+                break;
+            }
+            case LEFT_MOUSE_SHIFT_PRESSED: {
+                // Check if mouse has moved
+                if (newXClick != xPressed || newYClick != yPressed) {
+                    currentAction = LEFT_MOUSE_SHIFT_DRAG;
+
+                    // Add any new items that are moused over, to the dragging items
+                    Window::updateDraggingItems();
+
+                    // Update objects
+                    Window::handleLeftShiftMouseHeld(true);
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_PRESSED: {
+                // Check if mouse has moved
+                if (newXClick != xPressed || newYClick != yPressed) {
+                    currentAction = RIGHT_MOUSE_DRAG;
+
+                    // Add any new items that are moused over, to the dragging items
+                    Window::updateDraggingItems();
+
+                    // Update objects
+                    Window::handleRightMouseHeld(true);
+                }
+
+                break;
+            }
+            case RIGHT_MOUSE_SHIFT_PRESSED: {
+                // Check if mouse has moved
+                if (newXClick != xPressed || newYClick != yPressed) {
+                    currentAction = RIGHT_MOUSE_SHIFT_DRAG;
+
+                    // Add any new items that are moused over, to the dragging items
+                    Window::updateDraggingItems();
+
+                    // Update objects
+                    Window::handleRightShiftMouseHeld(true);
+                }
+
+                break;
+            }
+            case NO_ACTION:
+            case LEFT_MOUSE_DRAG:
+            case LEFT_MOUSE_SHIFT_DRAG:
+            case RIGHT_MOUSE_DRAG:
+            case RIGHT_MOUSE_SHIFT_DRAG:
+            default: {
+                break;
+            }
+        }
+
+    }
+
+    void Window::updateDraggingItems() {
+        // Add any new items that are moused over, to the dragging items
+        for (auto &mousedObj : *mousedOverObjs) {
+            // Check if object is already being dragged
+            if (!(std::find(draggingObjs->begin(), draggingObjs->end(), mousedObj) != draggingObjs->end())) {
+                draggingObjs->push_back(mousedObj);
+            }
+        }
+    }
+
+    void Window::printSelection() {
+        if (printSelected) {
+            for (const auto &obj : *hoverableObjs) {
+                if (obj->isSelected()) {
+                    std::cout << "[" << obj->getID() << "], ";
+                } else {
+                    std::cout << obj->getID() << ", ";
+                }
+            }
+            std::cout << std::endl;
+        }
     }
 
 };

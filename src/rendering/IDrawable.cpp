@@ -55,7 +55,19 @@ float GLPL::IDrawable::getBottom() {
     return xyPos[1];
 }
 
-void GLPL::IDrawable::onClick() {
+void GLPL::IDrawable::onLeftClick() {
+
+}
+
+void GLPL::IDrawable::onLeftShiftClick() {
+
+}
+
+void GLPL::IDrawable::onRightClick() {
+
+}
+
+void GLPL::IDrawable::onRightShiftClick() {
 
 }
 
@@ -68,6 +80,14 @@ void GLPL::IDrawable::onRightDrag(bool dragging, double origXPos, double origYPo
 }
 
 void GLPL::IDrawable::onLeftDrag(bool dragging, double origXPos, double origYPos) {
+
+}
+
+void GLPL::IDrawable::onRightShiftDrag(bool dragging, double origXPos, double origYPos) {
+
+}
+
+void GLPL::IDrawable::onLeftShiftDrag(bool dragging, double origXPos, double origYPos) {
 
 }
 

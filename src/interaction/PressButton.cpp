@@ -29,7 +29,7 @@ namespace GLPL {
         PressButton::drawButtonOutline();
     }
 
-    void PressButton::onClick() {
+    void PressButton::onLeftClick() {
         toggleActive();
     }
 

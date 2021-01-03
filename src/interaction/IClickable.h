@@ -13,7 +13,7 @@ namespace GLPL {
         IClickable();
 
         // Functions
-        virtual void onClick() = 0;
+        virtual void onLeftClick() = 0;
         void setActive(bool activeState);
         bool isActive();
         void toggleActive();

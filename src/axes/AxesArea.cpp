@@ -121,6 +121,9 @@ namespace GLPL {
     }
 
     void AxesArea::onRightDrag(bool dragging, double origXPos, double origYPos) {
+        // Reset other held buttons
+        rightShiftMouseHeld = false;
+        // Set new held button
         rightMouseHeld = dragging;
         mouseHeldX = origXPos;
         mouseHeldY = origYPos;
@@ -132,20 +135,46 @@ namespace GLPL {
     }
 
     void AxesArea::onLeftDrag(bool dragging, double origXPos, double origYPos) {
+        // Reset other held buttons
+        leftShiftMouseHeld = false;
+        // Set new held button
+        leftMouseHeld = dragging;
+        mouseHeldX = origXPos;
+        mouseHeldY = origYPos;
+
         if (isHovered() && isMouseOver(mouseX, mouseY, false)) {
-            leftMouseHeld = dragging;
-            mouseHeldX = origXPos;
-            mouseHeldY = origYPos;
+            xMinDrag = xmin;
+            xMaxDrag = xmax;
+            yMinDrag = ymin;
+            yMaxDrag = ymax;
+        }
+
+    }
+
+    void AxesArea::onLeftShiftDrag(bool dragging, double origXPos, double origYPos) {
+        // Reset other held buttons
+        leftMouseHeld = false;
+        // Set new held button
+        leftShiftMouseHeld = dragging;
+        mouseHeldX = origXPos;
+        mouseHeldY = origYPos;
+
+        if (isHovered() && isMouseOver(mouseX, mouseY, false)) {
+            xMinDrag = xmin;
+            xMaxDrag = xmax;
+            yMinDrag = ymin;
+            yMaxDrag = ymax;
         }
 
         // On Release, set the current axes limits to that of the zoom box line
-        if (!dragging && isHovered() && isMouseOver(mouseX, mouseY, false)) {
+        if (!dragging) {
             float newXMin = std::min(zoomBoxX[0], zoomBoxX[1]);
             float newXMax = std::max(zoomBoxX[0], zoomBoxX[1]);
             float newYMin = std::min(zoomBoxY[0], zoomBoxY[2]);
             float newYMax = std::max(zoomBoxY[0], zoomBoxY[2]);
             setAxesLimits(newXMin, newXMax, newYMin, newYMax);
         }
+
     }
 
     void AxesArea::setLastMousePos(double lastMouseX, double lastMouseY) {
@@ -154,6 +183,11 @@ namespace GLPL {
         // Change zoom if right mouse is being dragged
         if (rightMouseHeld) {
             zoomAxesByDragging();
+        }
+
+        // Drag the axes if shift held with the left mouse being dragged
+        if (leftMouseHeld) {
+            moveAxesByDragging();
         }
     }
 
@@ -650,38 +684,35 @@ namespace GLPL {
     }
 
     void GLPL::AxesArea::updateZoomDragBox() {
-        if (leftMouseHeld) {
-            if (isHovered() && isMouseOver(mouseX, mouseY)) {
-                // Calculate mouse position in x
-                float dragXAx = convertMouseX2AxesX((float)mouseHeldX);
-                float dragYAx = convertMouseY2AxesY((float)mouseHeldY);
-                float mouseXAx = convertMouseX2AxesX((float)mouseX);
-                float mouseYAx = convertMouseY2AxesY((float)mouseY);
+        if (leftShiftMouseHeld) {
+            // Clip mouse to axes limits
+            float mouseXClipped = clip((float)mouseX, 2*getLeft()-1, 2*getRight()-1);
+            float mouseYClipped = clip((float)mouseY, 2*getBottom()-1, 2*getTop()-1);
+            // Calculate mouse position in x
+            float dragXAx = convertMouseX2AxesX((float)mouseHeldX);
+            float dragYAx = convertMouseY2AxesY((float)mouseHeldY);
+            float mouseXAx = convertMouseX2AxesX(mouseXClipped);
+            float mouseYAx = convertMouseY2AxesY(mouseYClipped);
 
-                // Update line
-                zoomBoxLine->clearData();
-                // Pt 1 - (dragX, dragY)
-                zoomBoxLine->dataPtX->push_back(dragXAx);
-                zoomBoxLine->dataPtY->push_back(dragYAx);
-                // Pt 2 - (mouseX, dragY)
-                zoomBoxLine->dataPtX->push_back(mouseXAx);
-                zoomBoxLine->dataPtY->push_back(dragYAx);
-                // Pt 3 - (dragX, dragY)
-                zoomBoxLine->dataPtX->push_back(mouseXAx);
-                zoomBoxLine->dataPtY->push_back(mouseYAx);
-                // Pt 4 - (dragX, mouseY)
-                zoomBoxLine->dataPtX->push_back(dragXAx);
-                zoomBoxLine->dataPtY->push_back(mouseYAx);
-                // Pt 1 - (dragX, dragY)
-                zoomBoxLine->dataPtX->push_back(dragXAx);
-                zoomBoxLine->dataPtY->push_back(dragYAx);
+            // Update line
+            zoomBoxLine->clearData();
+            // Pt 1 - (dragX, dragY)
+            zoomBoxLine->dataPtX->push_back(dragXAx);
+            zoomBoxLine->dataPtY->push_back(dragYAx);
+            // Pt 2 - (mouseX, dragY)
+            zoomBoxLine->dataPtX->push_back(mouseXAx);
+            zoomBoxLine->dataPtY->push_back(dragYAx);
+            // Pt 3 - (dragX, dragY)
+            zoomBoxLine->dataPtX->push_back(mouseXAx);
+            zoomBoxLine->dataPtY->push_back(mouseYAx);
+            // Pt 4 - (dragX, mouseY)
+            zoomBoxLine->dataPtX->push_back(dragXAx);
+            zoomBoxLine->dataPtY->push_back(mouseYAx);
+            // Pt 1 - (dragX, dragY)
+            zoomBoxLine->dataPtX->push_back(dragXAx);
+            zoomBoxLine->dataPtY->push_back(dragYAx);
 
-                zoomBoxLine->updateInternalData();
-            } else {
-                zoomBoxLine->clearData();
-                zoomBoxLine->dataPtX->push_back(0.0f);
-                zoomBoxLine->dataPtY->push_back(0.0f);
-            }
+            zoomBoxLine->updateInternalData();
         } else {
             zoomBoxLine->clearData();
             zoomBoxLine->dataPtX->push_back(0.0f);
@@ -792,6 +823,28 @@ namespace GLPL {
         newY = calcScrolledVals(yMinDrag, yMaxDrag, mouseYAx, yFrac, yDiff < 0);
 
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
+    }
+
+    void GLPL::AxesArea::moveAxesByDragging() {
+        // Move the axes proportional to the distance the mouse is dragged
+        float mouseXAx = convertMouseX2AxesX(mouseX);
+        float mouseYAx = convertMouseY2AxesY(mouseY);
+        float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
+        float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
+        float xDiff = mouseXAx - mouseHeldXAx;
+        float yDiff = mouseYAx - mouseHeldYAx;
+        float xRange = xMaxDrag - xMinDrag;
+        float yRange = yMaxDrag - yMinDrag;
+        float xRatio = xDiff / xRange;
+        float yRatio = yDiff / yRange;
+
+        float newXMin = xMinDrag + (xRatio * xRange);
+        float newXMax = xMaxDrag + (xRatio * xRange);
+        float newYMin = yMinDrag + (yRatio * yRange);
+        float newYMax = yMaxDrag + (yRatio * yRange);
+
+
+        AxesArea::setAxesLimits(newXMin, newXMax, newYMin, newYMax);
     }
 
     void GLPL::AxesArea::createInteractor() {

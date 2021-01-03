@@ -62,10 +62,15 @@ namespace GLPL {
         float getTop();
         float getRight();
         float getBottom();
-        virtual void onClick();
+        virtual void onLeftClick();
+        virtual void onLeftShiftClick();
+        virtual void onRightClick();
+        virtual void onRightShiftClick();
         virtual void onScroll(double xoffset, double yoffset);
         virtual void onRightDrag(bool dragging, double origXPos, double origYPos);
         virtual void onLeftDrag(bool dragging, double origXPos, double origYPos);
+        virtual void onRightShiftDrag(bool dragging, double origXPos, double origYPos);
+        virtual void onLeftShiftDrag(bool dragging, double origXPos, double origYPos);
         // Dimension Functions
         virtual void setPosition(float newX, float newY) = 0;
         virtual void setSize(float newWidth, float newHeight) = 0;

@@ -28,6 +28,7 @@ namespace GLPL {
         void onScroll(double xoffset, double yoffset) override;
         void onRightDrag(bool dragging, double origXPos, double origYPos) override;
         void onLeftDrag(bool dragging, double origXPos, double origYPos) override;
+        void onLeftShiftDrag(bool dragging, double origXPos, double origYPos) override;
         void setLastMousePos(double lastMouseX, double lastMouseY) override;
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
@@ -104,7 +105,9 @@ namespace GLPL {
         std::shared_ptr<Line2D2Vecs> zoomBoxLine;
         // Mouse
         bool rightMouseHeld = false;
+        bool rightShiftMouseHeld = false;
         bool leftMouseHeld = false;
+        bool leftShiftMouseHeld = false;
         double mouseHeldX = 0;
         double mouseHeldY = 0;
         float dragZoomFactor = 5.0;
@@ -125,6 +128,7 @@ namespace GLPL {
         std::pair<float, float> calcScrolledVals(float minVal, float maxVal, float currVal, float zoomFrac, bool dir);
         void zoomAxes(float zoomDir);
         void zoomAxesByDragging();
+        void moveAxesByDragging();
         void createInteractor();
         void createGrid();
         void createZoomBox();
