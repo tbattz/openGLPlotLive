@@ -63,6 +63,10 @@ void GLPL::IDrawable::onLeftShiftClick() {
 
 }
 
+void GLPL::IDrawable::onMiddleClick() {
+
+}
+
 void GLPL::IDrawable::onRightClick() {
 
 }
@@ -76,6 +80,10 @@ void GLPL::IDrawable::onScroll(double xoffset, double yoffset) {
 }
 
 void GLPL::IDrawable::onRightDrag(bool dragging, double origXPos, double origYPos) {
+
+}
+
+void GLPL::IDrawable::onMiddleDrag(bool dragging, double origXPos, double origYPos) {
 
 }
 

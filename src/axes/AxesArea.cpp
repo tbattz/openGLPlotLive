@@ -134,6 +134,30 @@ namespace GLPL {
         yMaxDrag = ymax;
     }
 
+    void AxesArea::onMiddleDrag(bool dragging, double origXPos, double origYPos) {
+        // Set new held button
+        middleMouseHeld = dragging;
+        mouseHeldX = origXPos;
+        mouseHeldY = origYPos;
+
+        if (isHovered() && isMouseOver(mouseX, mouseY, false)) {
+            xMinDrag = xmin;
+            xMaxDrag = xmax;
+            yMinDrag = ymin;
+            yMaxDrag = ymax;
+        }
+
+        // On Release, set the current axes limits to that of the zoom box line
+        if (!dragging) {
+            float newXMin = std::min(zoomBoxX[0], zoomBoxX[1]);
+            float newXMax = std::max(zoomBoxX[0], zoomBoxX[1]);
+            float newYMin = std::min(zoomBoxY[0], zoomBoxY[2]);
+            float newYMax = std::max(zoomBoxY[0], zoomBoxY[2]);
+            setAxesLimits(newXMin, newXMax, newYMin, newYMax);
+        }
+
+    }
+
     void AxesArea::onLeftDrag(bool dragging, double origXPos, double origYPos) {
         // Reset other held buttons
         leftShiftMouseHeld = false;
@@ -684,7 +708,7 @@ namespace GLPL {
     }
 
     void GLPL::AxesArea::updateZoomDragBox() {
-        if (leftShiftMouseHeld) {
+        if (leftShiftMouseHeld || middleMouseHeld) {
             // Clip mouse to axes limits
             float mouseXClipped = clip((float)mouseX, 2*getLeft()-1, 2*getRight()-1);
             float mouseYClipped = clip((float)mouseY, 2*getBottom()-1, 2*getTop()-1);

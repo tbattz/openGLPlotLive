@@ -115,7 +115,7 @@ namespace GLPL {
         for(unsigned int i=0; i<actualIndices.size(); i++) {
             float x = actualData[2*actualIndices[i]];
             float y = actualData[2*actualIndices[i] + 1];
-            std::cout << "x:y " << x << ":" << y << " xVec:yVec " << xVec[i] << ":" << yVec[i] << std::endl;
+            //std::cout << "x:y " << x << ":" << y << " xVec:yVec " << xVec[i] << ":" << yVec[i] << std::endl;
             EXPECT_EQ(x, xVec[i]);
             EXPECT_EQ(y, yVec[i]);
         }

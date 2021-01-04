@@ -27,6 +27,7 @@ namespace GLPL {
         void Draw();
         void onScroll(double xoffset, double yoffset) override;
         void onRightDrag(bool dragging, double origXPos, double origYPos) override;
+        void onMiddleDrag(bool dragging, double origXPos, double origYPos) override;
         void onLeftDrag(bool dragging, double origXPos, double origYPos) override;
         void onLeftShiftDrag(bool dragging, double origXPos, double origYPos) override;
         void setLastMousePos(double lastMouseX, double lastMouseY) override;
@@ -107,6 +108,7 @@ namespace GLPL {
         // Mouse
         bool rightMouseHeld = false;
         bool rightShiftMouseHeld = false;
+        bool middleMouseHeld = false;
         bool leftMouseHeld = false;
         bool leftShiftMouseHeld = false;
         double mouseHeldX = 0;

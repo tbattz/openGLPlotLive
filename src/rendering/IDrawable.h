@@ -64,10 +64,12 @@ namespace GLPL {
         float getBottom();
         virtual void onLeftClick();
         virtual void onLeftShiftClick();
+        virtual void onMiddleClick();
         virtual void onRightClick();
         virtual void onRightShiftClick();
         virtual void onScroll(double xoffset, double yoffset);
         virtual void onRightDrag(bool dragging, double origXPos, double origYPos);
+        virtual void onMiddleDrag(bool dragging, double origXPos, double origYPos);
         virtual void onLeftDrag(bool dragging, double origXPos, double origYPos);
         virtual void onRightShiftDrag(bool dragging, double origXPos, double origYPos);
         virtual void onLeftShiftDrag(bool dragging, double origXPos, double origYPos);

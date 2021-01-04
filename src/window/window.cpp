@@ -130,6 +130,8 @@ namespace GLPL {
                         currentAction = LEFT_MOUSE_PRESSED;
                     } else if (button == GLFW_MOUSE_BUTTON_LEFT && mods == GLFW_MOD_SHIFT) {
                         currentAction = LEFT_MOUSE_SHIFT_PRESSED;
+                    } else if (button == GLFW_MOUSE_BUTTON_MIDDLE && mods == 0) {
+                        currentAction = MIDDLE_MOUSE_PRESSED;
                     } else if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == 0) {
                         currentAction = RIGHT_MOUSE_PRESSED;
                     } else if (button == GLFW_MOUSE_BUTTON_RIGHT && mods == GLFW_MOD_SHIFT) {
@@ -159,6 +161,20 @@ namespace GLPL {
                         // Mouse has been clicked and released
                         for (auto &mousedObj : *mousedOverObjs) {
                             mousedObj->onLeftShiftClick();
+                        }
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case MIDDLE_MOUSE_PRESSED: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_MIDDLE && mods == 0) {
+                        // Mouse has been clicked and released
+                        for (auto &mousedObj : *mousedOverObjs) {
+                            mousedObj->onMiddleClick();
                         }
                     }
                     // Cancel current action
@@ -212,6 +228,18 @@ namespace GLPL {
                     if (button == GLFW_MOUSE_BUTTON_LEFT) {
                         // Mouse dragging has stopped
                         Window::handleLeftShiftMouseHeld(false);
+                    }
+                    // Cancel current action
+                    currentAction = NO_ACTION;
+                }
+
+                break;
+            }
+            case MIDDLE_MOUSE_DRAG: {
+                if (action == GLFW_RELEASE) {
+                    if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+                        // Mouse dragging has stopped
+                        Window::handleMiddleMouseHeld(false);
                     }
                     // Cancel current action
                     currentAction = NO_ACTION;
@@ -377,6 +405,30 @@ namespace GLPL {
 
         for(auto &draggingObj : *draggingObjs) {
             draggingObj->onRightDrag(buttonHeld, xpos, ypos);
+        }
+
+        if (!buttonHeld) {
+            // If released, drop dragging items
+            draggingObjs->clear();
+        }
+
+    }
+
+    void Window::handleMiddleMouseHeld(bool buttonHeld) {
+        // Get mouse location
+        double xpos, ypos;
+        if (buttonHeld) {
+            glfwGetCursorPos(window, &xpos, &ypos);
+        } else {
+            xpos = 0.0;
+            ypos = 0.0;
+        }
+        // Convert from pixel space to -1 to 1
+        xpos = 2 * (xpos / getWidthPx()) - 1;
+        ypos = -(2 * (ypos / getHeightPx()) - 1);
+
+        for(auto &draggingObj : *draggingObjs) {
+            draggingObj->onMiddleDrag(buttonHeld, xpos, ypos);
         }
 
         if (!buttonHeld) {
@@ -654,6 +706,20 @@ namespace GLPL {
 
                     // Update objects
                     Window::handleLeftShiftMouseHeld(true);
+                }
+
+                break;
+            }
+            case MIDDLE_MOUSE_PRESSED: {
+                // Check if mouse has moved
+                if (newXClick != xPressed || newYClick != yPressed) {
+                    currentAction = MIDDLE_MOUSE_DRAG;
+
+                    // Add any new items that are moused over, to the dragging items
+                    Window::updateDraggingItems();
+
+                    // Update objects
+                    Window::handleMiddleMouseHeld(true);
                 }
 
                 break;

@@ -39,6 +39,8 @@ namespace GLPL {
 		LEFT_MOUSE_DRAG,
 		LEFT_MOUSE_SHIFT_PRESSED,
 		LEFT_MOUSE_SHIFT_DRAG,
+		MIDDLE_MOUSE_PRESSED,
+		MIDDLE_MOUSE_DRAG,
 		RIGHT_MOUSE_PRESSED,
 		RIGHT_MOUSE_DRAG,
         RIGHT_MOUSE_SHIFT_PRESSED,
@@ -68,6 +70,7 @@ namespace GLPL {
         void handleMouseScroll(double xoffset, double yoffset);
         void updateSelection();
         void handleRightMouseHeld(bool buttonHeld);
+        void handleMiddleMouseHeld(bool buttonHeld);
         void handleLeftMouseHeld(bool buttonHeld);
 		void handleLeftShiftMouseHeld(bool buttonHeld);
         void handleRightShiftMouseHeld(bool buttonHeld);
