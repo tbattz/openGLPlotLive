@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.10)
 project(openGLPlotLive)
 
 # Create library
-add_library(${PROJECT_NAME} SHARED "")
+add_library(${PROJECT_NAME} "")
 
 # Glad
 target_sources(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/glad.c)
