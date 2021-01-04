@@ -628,7 +628,7 @@ namespace GLPL {
 
     void GLPL::AxesArea::updateInteractor() {
         if (buttonMap["Interactor"]->isActive()) {
-            if (isHovered() && isMouseOver(mouseX, mouseY)) {
+            if (isHovered() && isMouseOver(mouseX, mouseY, false)) {
                 // Calculate mouse position in x
                 float mouseXAx = convertMouseX2AxesX((float)mouseX);
                 float mouseYAx = convertMouseY2AxesY((float)mouseY);
