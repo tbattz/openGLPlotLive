@@ -30,7 +30,7 @@ namespace GLPL  {
         std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax);
 
         std::vector<float> getInternalData();
-        std::vector<int> getInternalIndices();
+        std::vector<unsigned int> getInternalIndices();
 
         std::vector<float>* dataPtX;
         std::vector<float>* dataPtY;
@@ -40,7 +40,7 @@ namespace GLPL  {
         int nPts = 0;
 
         std::vector<float> internalData;    // This is sorted by x values
-        std::vector<int> internalIndices;   // This keeps track of the indices in their original order, for plotting
+        std::vector<unsigned int> internalIndices;   // This keeps track of the indices in their original order, for plotting
 
     };
 

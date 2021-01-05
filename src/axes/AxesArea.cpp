@@ -709,14 +709,15 @@ namespace GLPL {
 
     void GLPL::AxesArea::updateZoomDragBox() {
         if (leftShiftMouseHeld || middleMouseHeld) {
-            // Clip mouse to axes limits
-            float mouseXClipped = clip((float)mouseX, 2*getLeft()-1, 2*getRight()-1);
-            float mouseYClipped = clip((float)mouseY, 2*getBottom()-1, 2*getTop()-1);
             // Calculate mouse position in x
             float dragXAx = convertMouseX2AxesX((float)mouseHeldX);
             float dragYAx = convertMouseY2AxesY((float)mouseHeldY);
-            float mouseXAx = convertMouseX2AxesX(mouseXClipped);
-            float mouseYAx = convertMouseY2AxesY(mouseYClipped);
+            float mouseXAx = convertMouseX2AxesX((float)mouseX);
+            float mouseYAx = convertMouseY2AxesY((float)mouseY);
+            // Clip mouse to axes limits
+            mouseXAx = clip(mouseXAx, xmin, xmax);
+            mouseYAx = clip(mouseYAx, ymin, ymax);
+
 
             // Update line
             zoomBoxLine->clearData();
@@ -726,7 +727,7 @@ namespace GLPL {
             // Pt 2 - (mouseX, dragY)
             zoomBoxLine->dataPtX->push_back(mouseXAx);
             zoomBoxLine->dataPtY->push_back(dragYAx);
-            // Pt 3 - (dragX, dragY)
+            // Pt 3 - (mouseX, mouseY)
             zoomBoxLine->dataPtX->push_back(mouseXAx);
             zoomBoxLine->dataPtY->push_back(mouseYAx);
             // Pt 4 - (dragX, mouseY)

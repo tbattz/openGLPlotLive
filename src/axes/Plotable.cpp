@@ -22,20 +22,27 @@ namespace GLPL {
         plotableId = newPlotableId;
     }
 
-    std::vector<int> Plotable::genIndicesSortedVector(std::vector<float>* unsortedVector) {
-        // Create vector of indices
-        std::vector<int> indices(unsortedVector->size());
-        std::iota(indices.begin(), indices.end(), 0);
+    std::pair<std::vector<unsigned int>, std::vector<unsigned int>> Plotable::genIndicesSortedVector(std::vector<float>* unsortedVector) {
+        // Create vector of indices to use for sorting other vectors
+        std::vector<unsigned int> indicesForSorting(unsortedVector->size());
+        std::iota(indicesForSorting.begin(), indicesForSorting.end(), 0);
         // Sort by values in unsorted vector
-        std::stable_sort(indices.begin(), indices.end(),
-                [&](int A, int B) -> bool {
+        std::stable_sort(indicesForSorting.begin(), indicesForSorting.end(),
+                [&](unsigned int A, unsigned int B) -> bool {
                     return (*unsortedVector)[A] < (*unsortedVector)[B];
         });
 
-        return indices;
+        // Create a new set of indices for the sorted data, that corresponds to the original order of the data
+        std::vector<unsigned int> finalIndices(indicesForSorting.size());
+        for(unsigned int i=0; i < indicesForSorting.size(); i++) {
+           unsigned int newInd = indicesForSorting[i];
+           finalIndices[newInd] = i;
+        }
+
+        return std::pair<std::vector<unsigned int>, std::vector<unsigned int>>(indicesForSorting, finalIndices);
     }
 
-    std::vector<float> Plotable::sortVectorByIndices(std::vector<float>* unsortedVector, std::vector<int> indices) {
+    std::vector<float> Plotable::sortVectorByIndices(std::vector<float>* unsortedVector, std::vector<unsigned int> indices) {
         // Sort vector by indices vector
         std::vector<float> sortedVector;
         sortedVector.reserve(unsortedVector->size());

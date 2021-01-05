@@ -54,11 +54,12 @@ namespace GLPL {
         std::shared_ptr<Line2D2Vecs> lineObj = std::make_shared<Line2D2Vecs>(&xVec, &yVec, newParentPointers);
 
         // Check that the internal data and indices are sorted correctly
-        std::vector<int> actualIndices = lineObj->getInternalIndices();
+        std::vector<unsigned int> actualIndices = lineObj->getInternalIndices();
         std::vector<float> actualData = lineObj->getInternalData();
         for(unsigned int i=0; i<actualIndices.size(); i++) {
-            float x = actualData[2*actualIndices[i]];
-            float y = actualData[2*actualIndices[i] + 1];
+            int currInd = actualIndices[i];
+            float x = actualData[2*currInd];
+            float y = actualData[2*currInd + 1];
             EXPECT_EQ(x, xVec[i]);
             EXPECT_EQ(y, yVec[i]);
         }
@@ -110,16 +111,15 @@ namespace GLPL {
         std::shared_ptr<Line2D2Vecs> lineObj = std::make_shared<Line2D2Vecs>(&xVec, &yVec, newParentPointers);
 
         // Check that the internal data and indices are sorted correctly
-        std::vector<int> actualIndices = lineObj->getInternalIndices();
+        std::vector<unsigned int> actualIndices = lineObj->getInternalIndices();
         std::vector<float> actualData = lineObj->getInternalData();
         for(unsigned int i=0; i<actualIndices.size(); i++) {
-            float x = actualData[2*actualIndices[i]];
-            float y = actualData[2*actualIndices[i] + 1];
-            //std::cout << "x:y " << x << ":" << y << " xVec:yVec " << xVec[i] << ":" << yVec[i] << std::endl;
+            int currInd = actualIndices[i];
+            float x = actualData[2*currInd];
+            float y = actualData[2*currInd + 1];
             EXPECT_EQ(x, xVec[i]);
             EXPECT_EQ(y, yVec[i]);
         }
-
 
     }
 

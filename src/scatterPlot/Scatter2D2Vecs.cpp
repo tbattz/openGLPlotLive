@@ -43,10 +43,11 @@ namespace GLPL {
         internalData.clear();
         internalData.resize(2*len);
         // Sort by x value
-        std::vector<int> sortedIndices = genIndicesSortedVector(dataPtX);
+        std::pair<std::vector<unsigned int>, std::vector<unsigned int>> outputIndices = genIndicesSortedVector(dataPtX);
+        std::vector<unsigned int> indicesForSorting = outputIndices.first;
         // Sort data by these indices
-        std::vector<float> sortedX = sortVectorByIndices(dataPtX, sortedIndices);
-        std::vector<float> sortedY = sortVectorByIndices(dataPtY, sortedIndices);
+        std::vector<float> sortedX = sortVectorByIndices(dataPtX, indicesForSorting);
+        std::vector<float> sortedY = sortVectorByIndices(dataPtY, indicesForSorting);
 
         // Update with new data
         for(int i=0; i<len; i++) {

@@ -37,10 +37,14 @@ namespace GLPL {
         // Resize vector to data
         internalData.resize(2*len);
         // Sort by x value
-        internalIndices = genIndicesSortedVector(dataPtX);
+        std::pair<std::vector<unsigned int>, std::vector<unsigned int>> outputIndices = genIndicesSortedVector(dataPtX);
+        std::vector<unsigned int> indicesForSorting = outputIndices.first;
+        std::vector<unsigned int> finalIndices = outputIndices.second;
+
         // Sort data by these indices
-        std::vector<float> sortedX = sortVectorByIndices(dataPtX, internalIndices);
-        std::vector<float> sortedY = sortVectorByIndices(dataPtY, internalIndices);
+        std::vector<float> sortedX = sortVectorByIndices(dataPtX, indicesForSorting);
+        std::vector<float> sortedY = sortVectorByIndices(dataPtY, indicesForSorting);
+        internalIndices = finalIndices;
 
         // Update with new data
         for(int i=0; i<len; i++) {
@@ -50,7 +54,6 @@ namespace GLPL {
 
         // Check if the number of points changed
         int newPts = (internalData).size()/2;
-        //if (newPts != nPts) {
         nPts = newPts;
         if (nPts > 0) {
             // Update buffer and attributes
@@ -176,7 +179,7 @@ namespace GLPL {
         return internalData;
     }
 
-    std::vector<int> Line2D2Vecs::getInternalIndices() {
+    std::vector<unsigned int> Line2D2Vecs::getInternalIndices() {
         return internalIndices;
     }
 
