@@ -759,14 +759,6 @@ namespace GLPL {
                 if (minMax[2] < newYmin) { newYmin = minMax[2]; };
                 if (minMax[3] > newYmax) { newYmax = minMax[3]; };
             }
-            // Match axes lines sizing
-            float xFontSize = axesLines.at("x")->getFontSize();
-            float yFontSize = axesLines.at("y")->getFontSize();
-            if (xFontSize < yFontSize) {
-                axesLines.at("y")->setMajorTickFontSize(xFontSize);
-            } else if (yFontSize < xFontSize) {
-                axesLines.at("x")->setMajorTickFontSize(yFontSize);
-            }
 
             // Set axes limits
             float absLim = 1e-10;
@@ -777,6 +769,16 @@ namespace GLPL {
                 AxesArea::setAxesLimits(newXmin, newXmax, newYmin, newYmax);
             }
 
+        }
+
+        // Match axes lines sizing
+        float xFontSize = axesLines.at("x")->getFontSize();
+        float yFontSize = axesLines.at("y")->getFontSize();
+        float minFontSize = std::min(xFontSize, yFontSize);
+        if (xFontSize < yFontSize) {
+            axesLines.at("y")->setMajorTickFontSize(minFontSize);
+        } else if (yFontSize < xFontSize) {
+            axesLines.at("x")->setMajorTickFontSize(minFontSize);
         }
     }
 

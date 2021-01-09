@@ -49,6 +49,8 @@ namespace GLPL {
         void setMajorTickFontSize(float fontSize);
         std::vector<float> getAxesTickPos();
 
+        std::string value2NeatStr(double inValue, unsigned int maxCharSuggestion, double expSwapover,
+                                  unsigned int minDecimal);
 
     private:
         // Functions
@@ -72,7 +74,6 @@ namespace GLPL {
         std::pair<float, float> generateTickLabelVerts(float xPos, float yPos);
         // Axes Tick Labels
         AttachLocation generateMajorTickOffsetAttachLocation();
-        std::string value2NeatStr(float inValue, unsigned int maxChar = 3, unsigned int maxDecimal = 2);
         bool isLabelsOverlapping();
         void generateMajorTickLabels();
         // Pixel DPI Scaling

@@ -3,10 +3,7 @@
 #include "../src/lines/Line2D2Vecs.h"
 #include "../src/window/window.h"
 
-// Open up private classes for testing
-#define private public
-#define protected public
-#define class struct
+
 
 namespace GLPL {
 

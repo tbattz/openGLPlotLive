@@ -2,6 +2,8 @@
 // Created by bcub3d-desktop on 4/7/20.
 //
 
+#include <cmath>
+#include <iomanip>
 #include "AxesLineTicks.h"
 
 
@@ -491,51 +493,60 @@ namespace GLPL {
         return attachLocation;
     }
 
-    std::string AxesLineTicks::value2NeatStr(float inValue, unsigned int maxChar, unsigned int maxDecimal) {
+    std::string AxesLineTicks::value2NeatStr(double inValue, unsigned int maxCharSuggestion, double expSwapover,
+                                             unsigned int minDecimal) {
         // Setup buffer
-        char textBuf[10];
+        unsigned int maxLen = 20;
+        char textBuf[maxLen];
         std::string text;
-        // Get length
-        unsigned int count = 1;
-        float divValue = inValue;
-        // TODO - Make this cleaner
-        if (abs(divValue) > 1e-15) {
-            while (abs(divValue) < 1) {
-                divValue = divValue * 10;
-                count += 1;
-            }
-            while (abs(divValue) > 10) {
-                divValue = divValue / 10;
-                count += 1;
-            }
-            // Check length is greater than max char
-            if (count < maxChar) {
-                unsigned int decCount = maxChar - count;
-                if (decCount > maxDecimal) {
-                    decCount = maxDecimal;
-                }
-                const char *formatStr = ("%." + std::to_string(decCount) + "f").c_str();
-                sprintf(textBuf, formatStr, inValue);
-                text = std::string(textBuf);
+
+        if ((fabs(inValue) < expSwapover && fabs(inValue) >= 1.0/pow(10,maxCharSuggestion - 2)) || fabs(inValue) < 1e-15) {
+            // Calculate the number of digits before the decimal point in standard format
+            int mainDigits;
+            if (fabs(inValue) > 1e-15 and fabs(inValue) >= 1) {
+                mainDigits = std::ceil(fabs(std::log10(inValue)) + 1);
             } else {
-                // Exponential format
-                int decCount = count - 3;
-                if (decCount < 0) {
-                    decCount = 0;
-                }
-                const char *formatStr = ("%." + std::to_string(decCount) + "f").c_str();
-                if (abs(inValue) < 1) {
-                    sprintf(textBuf, formatStr, inValue * (pow(10.0, count - 1)));
-                } else {
-                    sprintf(textBuf, formatStr, inValue / (pow(10.0, count - 1)));
-                }
-                text.append(std::string(textBuf));
-                if (inValue < 1) {
-                    text.append("-");
-                }
-                text.append("e");
-                text.append(std::to_string(count));
+                mainDigits = 1;
             }
+
+            int remainDigits = std::max((int)maxCharSuggestion - abs(mainDigits), (int)minDecimal);
+            if (fabs(inValue) < 1) {
+                remainDigits -= 1;
+            }
+
+            // Use standard format
+            const char *formatStr = ("%." + std::to_string(remainDigits) + "f").c_str();
+            sprintf(textBuf, formatStr, inValue);
+            text = std::string(textBuf);
+        } else {
+            // Calculate length with zero decimals but with decimal point
+            int sizeExp = ceil(log10(fabs(log10(fabs(inValue)))));
+            int lenNoDecimal = 3 + sizeExp;
+            if (inValue < 0) {
+                lenNoDecimal += 1;
+            }
+            if (fabs(inValue) < 1) {
+                lenNoDecimal += 1;
+            }
+            int numDecimals = (int)maxCharSuggestion - lenNoDecimal;
+            if (numDecimals < (int)minDecimal) {
+                numDecimals = (int)minDecimal;
+            }
+            const char *formatStr = ("%." + std::to_string(numDecimals) + "e").c_str();
+            snprintf(textBuf, maxLen, formatStr, inValue);
+
+            // Find exponent, skip non-digit chars
+            char *exponent = strchr(textBuf, 'e') + 2;
+
+            // If we have an exponent starting with 0, drop it
+            if(exponent != NULL && exponent[0] == '0')
+            {
+                exponent[0] = exponent[1];
+                exponent[1] = '\0';
+            }
+
+
+            text = std::string(textBuf);
         }
 
         return text;
@@ -607,7 +618,7 @@ namespace GLPL {
             // Create Parent Dimensions
             std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
             // Create Text String
-            std::string text = value2NeatStr(majorTickAxesPos[i], 4, 2);
+            std::string text = value2NeatStr(majorTickAxesPos[i], 4, 1000, 1);
             // Check that the label should not be the zero label
             if ((axesDirection != X_AXES_CENTRE and axesDirection != Y_AXES_CENTRE) or text != "0.00") {
                 // Create text string
