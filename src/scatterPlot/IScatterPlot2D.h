@@ -39,6 +39,7 @@ namespace GLPL {
         std::vector<float> markerOutlineVerts = {};
 
         // Functions
+        std::shared_ptr<Shader> selectShader();
         void generateAllMarkerVerts();
         void generateMarkerEquallySpaced(unsigned int nCirclePoints, float thetaRadStart, float xHalfWidth, float yHalfHeight);
         void generateMarkerSquareVerts(float xHalfWidth, float yHalfHeight);

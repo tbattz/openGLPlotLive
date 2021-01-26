@@ -256,6 +256,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line17b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line17);
     std::shared_ptr<GLPL::ILine2D> line11 = axes3Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9s = axes3Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
     axes3Pt->setXLabel("Log(x)");
     axes3Pt->setYLabel("y");
     axes3Pt->setTitle("Example Log Plot");

@@ -39,6 +39,9 @@ namespace GLPL {
         std::shared_ptr<Shader> getPlot2dLogyShader();
         std::shared_ptr<Shader> getPlot2dLogxLogyShader();
         std::shared_ptr<Shader> getScatter2dShader();
+        std::shared_ptr<Shader> getScatter2dLogxShader();
+        std::shared_ptr<Shader> getScatter2dLogyShader();
+        std::shared_ptr<Shader> getScatter2dLogxLogyShader();
         std::shared_ptr<Shader> getTextureShader();
         std::shared_ptr<Shader> getPlotPosNeg2DShader();
         std::shared_ptr<Shader> getPlotTransparent2dShader();
@@ -57,6 +60,9 @@ namespace GLPL {
         Shader plot2dShaderLogy = Shader("Shaders/plot2dLogy.vs","Shaders/plot2d.frag");
         Shader plot2dShaderLogxLogy = Shader("Shaders/plot2dLogxLogy.vs","Shaders/plot2d.frag");
         Shader scatter2dShader = Shader("Shaders/scatter2d.vs","Shaders/scatter2d.frag");
+        Shader scatter2dLogxShader = Shader("Shaders/scatter2dLogx.vs","Shaders/scatter2d.frag");
+        Shader scatter2dLogyShader = Shader("Shaders/scatter2dLogy.vs","Shaders/scatter2d.frag");
+        Shader scatter2dLogxLogyShader = Shader("Shaders/scatter2dLogxLogy.vs","Shaders/scatter2d.frag");
         Shader textureShader = Shader("Shaders/texture.vs", "Shaders/texture.frag");
         Shader plotPosNeg2DShader = Shader("Shaders/plotPosNeg2d.vs", "Shaders/plotPosNeg2d.frag");
         Shader plotTransparent2dShader = Shader("Shaders/plotTransparent2d.vs", "Shaders/plotTransparent2d.frag");
@@ -68,6 +74,9 @@ namespace GLPL {
         std::shared_ptr<Shader> plot2dLogyShaderPt;
         std::shared_ptr<Shader> plot2dLogxLogyShaderPt;
         std::shared_ptr<Shader> scatter2dShaderPt;
+        std::shared_ptr<Shader> scatter2dLogxShaderPt;
+        std::shared_ptr<Shader> scatter2dLogyShaderPt;
+        std::shared_ptr<Shader> scatter2dLogxLogyShaderPt;
         std::shared_ptr<Shader> textureShaderPt;
         std::shared_ptr<Shader> plotPosNeg2DShaderPt;
         std::shared_ptr<Shader> plotTransparent2dShaderPt;

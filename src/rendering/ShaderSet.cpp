@@ -17,6 +17,9 @@ namespace GLPL {
         plot2dLogyShaderPt = std::make_shared<Shader>(plot2dShaderLogy);
         plot2dLogxLogyShaderPt = std::make_shared<Shader>(plot2dShaderLogxLogy);
         scatter2dShaderPt = std::make_shared<Shader>(scatter2dShader);
+        scatter2dLogxShaderPt = std::make_shared<Shader>(scatter2dLogxShader);
+        scatter2dLogyShaderPt = std::make_shared<Shader>(scatter2dLogyShader);
+        scatter2dLogxLogyShaderPt = std::make_shared<Shader>(scatter2dLogxLogyShader);
         textureShaderPt = std::make_shared<Shader>(textureShader);
         plotPosNeg2DShaderPt = std::make_shared<Shader>(plotPosNeg2DShader);
         plotTransparent2dShaderPt = std::make_shared<Shader>(plotTransparent2dShader);
@@ -60,6 +63,18 @@ namespace GLPL {
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getScatter2dShader() {
         return scatter2dShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getScatter2dLogxShader() {
+        return scatter2dLogxShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getScatter2dLogyShader() {
+        return scatter2dLogyShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getScatter2dLogxLogyShader() {
+        return scatter2dLogxLogyShaderPt;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getTextureShader() {

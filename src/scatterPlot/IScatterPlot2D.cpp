@@ -95,7 +95,7 @@ namespace GLPL {
     void IScatterPlot2D::drawData(int nPts, bool selected) {
         // Draws the data currently stored in the scatter plot corresponding to the given VAO
         if (nPts > 0) {
-            std::shared_ptr<Shader> shader = shaderSetPt->getScatter2dShader();
+            std::shared_ptr<Shader> shader = selectShader();
             shader->Use();
             glm::vec4 inColor = glm::vec4(markerColour, opacityRatio);
 
@@ -117,6 +117,29 @@ namespace GLPL {
             glBindVertexArray(0);
 
         }
+    }
+
+    std::shared_ptr<Shader> IScatterPlot2D::selectShader() {
+        std::shared_ptr<Shader> shader;
+        if (logX) {
+            if (logY) {
+                // Both logX and logY
+                shader = shaderSetPt->getScatter2dLogxLogyShader();
+            } else {
+                // LogX only
+                shader = shaderSetPt->getScatter2dLogxShader();
+            }
+        } else {
+            if (logY) {
+                // LogY only
+                shader = shaderSetPt->getScatter2dLogyShader();
+            } else {
+                // Both Linear
+                shader = shaderSetPt->getScatter2dShader();
+            }
+        }
+
+        return shader;
     }
 
     void IScatterPlot2D::generateAllMarkerVerts() {
