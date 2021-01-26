@@ -444,7 +444,7 @@ namespace GLPL {
             float logXMax = std::log10(xMax);
 
             float pixelsPerUnit = (float)getWidthPx() / 2.0f;
-            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 2.5f; // -1 to 1
+            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 3.0f; // -1 to 1
             float xMidRelPos = (logXMax + logXMin) / (logXMin - logXMax); // -1 to 1
             std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLog(majorSectionWidthRel,
                                                                                                           xMidRelPos);
@@ -498,7 +498,7 @@ namespace GLPL {
             float logYMax = std::log10(yMax);
 
             float pixelsPerUnit = (float)getHeightPx() / 2.0f;
-            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 2.5f; // -1 to 1
+            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 3.0f; // -1 to 1
             float yMidRelPos = (logYMax + logYMin) / (logYMin - logYMax); // -1 to 1
             std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLog(majorSectionWidthRel,
                                                                                                           yMidRelPos);
