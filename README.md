@@ -1,5 +1,5 @@
 # openGLPlotLive
-A simple openGL 2D plotter for quickly updated data.
+openGLPlotter provides a means to plot large amounts of quickly updated data in an OpenGL context. This can be a window created specifically for the plotter, or to embed in another OpenGL window. Originally this was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. 
 
 # What can it do
 Plot simple data in realtime.
