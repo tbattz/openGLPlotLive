@@ -90,7 +90,7 @@ namespace GLPL {
 
     void Grid::Draw() {
         // Draw Major Ticks
-        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        std::shared_ptr<Shader> shader = selectShader();
         shader->Use();
         glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
                            glm::value_ptr(*axesViewportTransform));
@@ -100,8 +100,31 @@ namespace GLPL {
         glBindVertexArray(0);
     }
 
-    std::vector<float> Grid::getMinMax() {
-        return std::vector<float> {0.0,0.0,0.0,0.0};
+    std::shared_ptr<Shader> Grid::selectShader() {
+        std::shared_ptr<Shader> shader;
+        if (logX) {
+            if (logY) {
+                // Both logX and logY
+                shader = shaderSetPt->getPlot2dLogxLogyShader();
+            } else {
+                // LogX only
+                shader = shaderSetPt->getPlot2dLogxShader();
+            }
+        } else {
+            if (logY) {
+                // LogY only
+                shader = shaderSetPt->getPlot2dLogyShader();
+            } else {
+                // Both Linear
+                shader = shaderSetPt->getPlot2dShader();
+            }
+        }
+
+        return shader;
+    }
+
+    std::vector<float> Grid::getMinMax(bool onlyPositiveX, bool onlyPositiveY) {
+        return std::vector<float> {};
     }
 
     std::string Grid::getID() {
@@ -115,7 +138,6 @@ namespace GLPL {
     std::tuple<float, float> Grid::getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) {
         return std::make_tuple(0.0, 0.0);
     }
-
 
 }
 

@@ -153,6 +153,21 @@ int main(int argc, char **argv) {
     xVec13.reserve(2000);
     yVec13.reserve(2000);
 
+    // Graph 17 - Log Scale
+    std::vector<float> xVec17 = {};
+    std::vector<float> yVec17 = {};
+    xVec17.reserve(2000);
+    yVec17.reserve(2000);
+    for(unsigned int i=0; i<=100; i++) {
+        xVec17.push_back(10*(i+1)/1000.0);
+        yVec17.push_back(std::log10(10*(i+1)/1000.0));
+    }
+    for (unsigned int i=0; i<=1900; i++) {
+        // Update Graph 17
+        xVec17.push_back(5*(i+1));
+        yVec17.push_back(std::log10(5*(i+1)));
+    }
+
 
     /* ======================================================
      *                	    Create Plot
@@ -201,26 +216,6 @@ int main(int argc, char **argv) {
 
 	// Axes 1
     std::shared_ptr<GLPL::Axes> axesPt = myplot->getAxes(0);
-    std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
-    std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
-    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
-    axesPt->setAxesBoxOn(false);
-    axesPt->setButtonState("Grid", false);
-    axesPt->setXLabel("Time (s)");
-    axesPt->setYLabel("Displacement (m)");
-    axesPt->setTitle("Spring Damping Over Time");
-    axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
-    line9s->setMarkerColour(glm::vec3(1.0f, 0.5f, 0.5f));
-    line9s->setOpacityRatio(0.6);
-    line9s->setMarkerOutlineColour(glm::vec3(0.0f, 1.0f, 1.0f));
-    line9s->setOutlineOpacityRatio(0.8);
-    line9s->setMarkerType(GLPL::CIRCLE);
-    line9s->setMarkerSizePx(15);
-
-    // Axes 2
-    //std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
-    //std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
     std::shared_ptr<GLPL::ILine2D> line12 = axesPt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line12b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line12);
     //axesPt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED);
@@ -230,14 +225,50 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Line2D2Vecs> line15b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line15);
     std::shared_ptr<GLPL::ILine2D> line16 = axesPt->addLine(&xVec16, &yVec16, GLPL::SINGLE_LINE, LC_BLUE, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line16b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line16);
+    axesPt->setAxesBoxOn(false);
+    axesPt->setButtonState("Grid", false);
+    axesPt->setXLabel("Time (s)");
+    axesPt->setYLabel("Displacement (m)");
+    axesPt->setTitle("Spring Damping Over Time");
+    axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
+
+
+    // Axes 2
+    /*//std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    //std::shared_ptr<GLPL::ILine2D> line12 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
+    std::shared_ptr<GLPL::Axes> axes2Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    line9s->setMarkerColour(glm::vec3(1.0f, 0.5f, 0.5f));
+    line9s->setOpacityRatio(0.6);
+    line9s->setMarkerOutlineColour(glm::vec3(0.0f, 1.0f, 1.0f));
+    line9s->setOutlineOpacityRatio(0.8);
+    line9s->setMarkerType(GLPL::CIRCLE);
+    line9s->setMarkerSizePx(15);
     axes2Pt->setTitle("Simple Plots");
     axes2Pt->setXLabel("x");
-    axes2Pt->setYLabel("y");
+    axes2Pt->setYLabel("y");*/
+
+    // Axes 3
+    std::shared_ptr<GLPL::Axes> axes3Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    axes3Pt->setLogScale(true, 10.0f, GLPL::X_AXES);
+    std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
+    std::shared_ptr<GLPL::Line2D2Vecs> line17b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line17);
+    std::shared_ptr<GLPL::ILine2D> line11 = axes3Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    axes3Pt->setXLabel("Log(x)");
+    axes3Pt->setYLabel("y");
+    axes3Pt->setTitle("Example Log Plot");
+    axes3Pt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
+
+
+
 
     float yVal12 = 0;
     float yVal13 = 0;
     float yVal15 = 0;
     float yVal16 = 0;
+    float yVal17 = 0;
 
 
 	/* ======================================================

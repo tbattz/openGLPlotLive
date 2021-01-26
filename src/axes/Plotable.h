@@ -19,7 +19,7 @@ namespace GLPL {
         Plotable(std::shared_ptr<ParentDimensions> parentDimensions);
 
         // Functions
-        virtual std::vector<float> getMinMax() = 0;
+        virtual std::vector<float> getMinMax(bool onlyPositiveX = false, bool onlyPositiveY = false) = 0;
         void setAxesViewportTransform(std::shared_ptr<glm::mat4> newAxesViewportTransform);
         void setPlotableId(int newPlotableId);
 
@@ -29,9 +29,13 @@ namespace GLPL {
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
         virtual std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) = 0;
 
+        void setLogModes(bool newLogX, bool newLogY);
+
     protected:
         std::shared_ptr<glm::mat4> axesViewportTransform = std::make_shared<glm::mat4>(glm::mat4(1.0f));
         int plotableId = -1;
+        bool logX = false;
+        bool logY = false;
 
     };
 }

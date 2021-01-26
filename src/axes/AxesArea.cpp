@@ -235,6 +235,20 @@ namespace GLPL {
     }
 
     void AxesArea::setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax) {
+        // Check max limits
+        if (std::isinf(newXMin)) {
+            newXMin = -1e15;
+        }
+        if (std::isinf(newXMax)) {
+            newXMax = 1e15;
+        }
+        if (std::isinf(newYMin)) {
+            newYMin = -1e15;
+        }
+        if (std::isinf(newYMax)) {
+            newYMax = 1e15;
+        }
+
         // Set values
         xmin = newXMin;
         xmax = newXMax;
@@ -252,6 +266,29 @@ namespace GLPL {
         grid->setYLines(yAxesPos);
         // Update Axes Area
         AxesArea::updateAxesViewportTransform();
+    }
+
+    void AxesArea::setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes) {
+        switch(logAxes) {
+            case X_AXES: {
+                axesLines.at("x")->setLogScale(logOn, newLogBase);
+                break;
+            }
+            case Y_AXES: {
+                axesLines.at("y")->setLogScale(logOn, newLogBase);
+                break;
+            }
+            case BOTH: {
+                axesLines.at("x")->setLogScale(logOn, newLogBase);
+                axesLines.at("y")->setLogScale(logOn, newLogBase);
+                break;
+            }
+            default: {
+                std::cout << "Unknown LogAxes Enum!" << std::endl;
+            }
+        }
+
+        setPlotableLogModes();
     }
 
     std::vector<float> AxesArea::calculateScissor(glm::mat4 axesLimitsViewportTrans) {
@@ -305,6 +342,9 @@ namespace GLPL {
         linePt->setPlotableId(nextPlotableId);
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, linePt));
         nextPlotableId += 1;
+
+        // Update log bools
+        setPlotableLogModes();
 
         // Update limits for axes
         AxesArea::updateAxesLimits();
@@ -361,6 +401,9 @@ namespace GLPL {
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<IScatterPlot>>(nextPlotableId, scatterPt));
         nextPlotableId += 1;
 
+        // Update log bools
+        setPlotableLogModes();
+
         // Update limits for axes
         AxesArea::updateAxesLimits();
 
@@ -414,31 +457,54 @@ namespace GLPL {
     float AxesArea::convertMouseX2AxesX(float mouseXVal) {
         // Calculate mouse position in x axes
         // x interpolation
+        float mouseXAx = 0;
         float xminVal = 2*getLeft() - 1;
         float xmaxVal = 2*getRight() - 1;
         float sx1 = (parentTransform * glm::vec4(xminVal, 0.0f, 0.5f, 1.0f))[0];;
         float sx2 = (parentTransform * glm::vec4(xmaxVal, 0.0f, 0.5f, 1.0f))[0];
-        float ax1 = xmin;
-        float ax2 = xmax;
-        float mx = (ax2 - ax1) / (sx2 - sx1);
-        float cx = ax2 - (mx*sx2);
-        float mouseXAx = (mx*(float)mouseXVal) + cx;
-
+        if (!axesLines.at("x")->getLogState()) {
+            float ax1 = xmin;
+            float ax2 = xmax;
+            float mx = (ax2 - ax1) / (sx2 - sx1);
+            float cx = ax2 - (mx * sx2);
+            mouseXAx = (mx * (float) mouseXVal) + cx;
+        } else {
+            // Log Scale
+            // TODO - make work for any log base, not just 10
+            float ax1 = std::log10(xmin);
+            float ax2 = std::log10(xmax);
+            float mx = (ax2 - ax1) / (sx2 - sx1);
+            float cx = ax2 - (mx * sx2);
+            unsigned int logBase = axesLines.at("x")->getLogBase();
+            mouseXAx = std::pow(logBase, (mx * (float) mouseXVal) + cx);
+        }
         return mouseXAx;
     }
 
     float AxesArea::convertMouseY2AxesY(float mouseYVal) {
         // Calculate mouse position in y axes
         // y interpolation
+        float mouseYAx = 0;
         float yminVal = 2*getBottom() - 1;
         float ymaxVal = 2*getTop() - 1;
-        float sx1 = (parentTransform * glm::vec4(0.0f, yminVal, 0.5f, 1.0f))[1];;
+        float sx1 = (parentTransform * glm::vec4(0.0f, yminVal, 0.5f, 1.0f))[1];
         float sx2 = (parentTransform * glm::vec4(0.0f, ymaxVal, 0.5f, 1.0f))[1];
-        float ax1 = ymin;
-        float ax2 = ymax;
-        float mx = (ax2 - ax1) / (sx2 - sx1);
-        float cx = ax2 - (mx*sx2);
-        float mouseYAx = (mx*(float)mouseYVal) + cx;
+        if (!axesLines.at("y")->getLogState()) {
+            float ax1 = ymin;
+            float ax2 = ymax;
+            float mx = (ax2 - ax1) / (sx2 - sx1);
+            float cx = ax2 - (mx * sx2);
+            mouseYAx = (mx * (float) mouseYVal) + cx;
+        } else {
+            // Log Scale
+            // TODO - make work for any log base, not just 10
+            float ax1 = std::log10(ymin);
+            float ax2 = std::log10(ymax);
+            float mx = (ax2 - ax1) / (sx2 - sx1);
+            float cx = ax2 - (mx * sx2);
+            unsigned int logBase = axesLines.at("y")->getLogBase();
+            mouseYAx = std::pow(logBase, (mx * (float) mouseYVal) + cx);
+        }
 
         return mouseYAx;
     }
@@ -618,16 +684,40 @@ namespace GLPL {
 
     glm::mat4 AxesArea::scale2AxesLimits() {
         // Creates a transformation matrix to scale points to the axes limits
-        // Calculate center of current limits
-        float xShift = ((xmin+xmax)/2.0)/(xmax-xmin) * 2.0; // xavg/width * 2.0, *2 to take it to -1 to 1
-        float yShift = ((ymin+ymax)/2.0)/(ymax-ymin) * 2.0; // yavg/height * 2.0, *2 to take it to -1 to 1
+        // Check log states
+        bool logX = (axesLines.find("x") == axesLines.end()) ? false : axesLines.at("x")->getLogState();
+        bool logY = (axesLines.find("y") == axesLines.end()) ? false : axesLines.at("y")->getLogState();
 
-        // Translate by offset
+        // Calculate x transform
+        float xShift, scaleX;
+        if (logX) {
+            // Calculate center of current limits
+            xShift = ((std::log10(xmin) + std::log10(xmax)) / 2.0f) / (std::log10(xmax) - std::log10(xmin)) * 2.0f; // xavg/width * 2.0, *2 to take it to -1 to 1
+            // Scale to limits
+            scaleX = 2.0f/(std::log10(xmax)-std::log10(xmin)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+        } else {
+            // Calculate center of current limits
+            xShift = (float)((xmin + xmax) / 2.0) / (xmax - xmin) * 2.0f; // xavg/width * 2.0, *2 to take it to -1 to 1
+            // Scale to limits
+            scaleX = 2.0f/(xmax-xmin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+        }
+
+        // Calculate y transform
+        float yShift, scaleY;
+        if (logY) {
+            // Calculate center of current limits
+            yShift = ((std::log10(ymin)+std::log10(ymax))/2.0f)/(std::log10(ymax)-std::log10(ymin)) * 2.0f; // yavg/height * 2.0, *2 to take it to -1 to 1
+            // Scale to limits
+            scaleY = 2.0f/(std::log10(ymax)-std::log10(ymin)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+        } else {
+            // Calculate center of current limits
+            yShift = ((ymin+ymax)/2.0f)/(ymax-ymin) * 2.0f; // yavg/height * 2.0, *2 to take it to -1 to 1
+            // Scale to limits
+            scaleY = 2.0f/(ymax-ymin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+        }
+
+        // Translate by offset and scale
         glm::mat4 trans = glm::translate(glm::mat4(1), glm::vec3(-xShift, -yShift,0));
-
-        // Scale to limits
-        float scaleX = 2.0/(xmax-xmin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
-        float scaleY = 2.0/(ymax-ymin); // Inverted due to -1 to 1 mapping (less than abs(1) region)
         glm::mat4 scale = glm::scale(trans, glm::vec3(scaleX,scaleY,1));
 
         return scale;
@@ -752,12 +842,22 @@ namespace GLPL {
             float newXmax = 0.0;
             float newYmin = -0.0;
             float newYmax = 0.0;
+            if (axesLines.at("x")->getLogState()) {
+                newXmin = 1.0;
+                newXmax = 1.0;
+            }
+            if (axesLines.at("y")->getLogState()) {
+                newYmin = 1.0;
+                newYmax = 1.0;
+            }
             for (std::pair<unsigned int, std::shared_ptr<Plotable>> lineInfo : plotableMap) {
-                std::vector<float> minMax = lineInfo.second->getMinMax();
-                if (minMax[0] < newXmin) { newXmin = minMax[0]; };
-                if (minMax[1] > newXmax) { newXmax = minMax[1]; };
-                if (minMax[2] < newYmin) { newYmin = minMax[2]; };
-                if (minMax[3] > newYmax) { newYmax = minMax[3]; };
+                std::vector<float> minMax = lineInfo.second->getMinMax(true);
+                if (minMax.size() == 4) {
+                    if (minMax[0] < newXmin) { newXmin = minMax[0]; };
+                    if (minMax[1] > newXmax) { newXmax = minMax[1]; };
+                    if (minMax[2] < newYmin) { newYmin = minMax[2]; };
+                    if (minMax[3] > newYmax) { newYmax = minMax[3]; };
+                }
             }
 
             // Set axes limits
@@ -804,7 +904,7 @@ namespace GLPL {
         }
         // Cap max range
         float newMin, newMax;
-        if (abs(a) < 1e6) {
+        if (abs(a) < 1e15) {
             // Calculate new limits
             float c = a * newRange / (a + b);
             float d = newRange - c;
@@ -824,13 +924,41 @@ namespace GLPL {
         float mouseYAx = convertMouseY2AxesY(mouseY);
 
         std::pair<float, float> newX, newY;
-        if (zoomDir > 0) {
-            newX = calcScrolledVals(xmin, xmax, mouseXAx, zoomRatio, true);
-            newY = calcScrolledVals(ymin, ymax, mouseYAx, zoomRatio, true);
-        } else {
-            newX = calcScrolledVals(xmin, xmax, mouseXAx, zoomRatio, false);
-            newY = calcScrolledVals(ymin, ymax, mouseYAx, zoomRatio, false);
+        // Account for log values
+        float inXmin = xmin;
+        float inXmax = xmax;
+        float inYmin = ymin;
+        float inYmax = ymax;
+        if (axesLines.at("x")->getLogState()) {
+            inXmin = std::log10(xmin);
+            inXmax = std::log10(xmax);
+            mouseXAx = std::log10(mouseXAx);
         }
+        if (axesLines.at("y")->getLogState()) {
+            inYmin = std::log10(ymin);
+            inYmax = std::log10(ymax);
+            mouseYAx = std::log10(mouseYAx);
+        }
+
+        if (zoomDir > 0) {
+            newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, true);
+            newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, true);
+        } else {
+            newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, false);
+            newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, false);
+        }
+
+        if (axesLines.at("x")->getLogState()) {
+            unsigned int logBase = axesLines.at("x")->getLogBase();
+            newX.first = std::pow(logBase, newX.first);
+            newX.second = std::pow(logBase, newX.second);
+        }
+        if (axesLines.at("y")->getLogState()) {
+            unsigned int logBase = axesLines.at("y")->getLogBase();
+            newY.first = std::pow(logBase, newY.first);
+            newY.second = std::pow(logBase, newY.second);
+        }
+
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
 
@@ -935,5 +1063,15 @@ namespace GLPL {
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, zoomBoxLine));
         nextPlotableId += 1;
 
+    }
+
+    void AxesArea::setPlotableLogModes() {
+        // Set the current log modes for all the lines
+        bool logX = axesLines.at("x")->getLogState();
+        bool logY = axesLines.at("y")->getLogState();
+        for(auto & i : plotableMap) {
+            i.second->setLogModes(logX, logY);
+        }
+        grid->setLogModes(logX, logY);
     }
 }

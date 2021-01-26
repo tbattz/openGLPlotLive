@@ -35,6 +35,9 @@ namespace GLPL {
         float getYDpiScaling();
         std::shared_ptr<Shader> getTextShader();
         std::shared_ptr<Shader> getPlot2dShader();
+        std::shared_ptr<Shader> getPlot2dLogxShader();
+        std::shared_ptr<Shader> getPlot2dLogyShader();
+        std::shared_ptr<Shader> getPlot2dLogxLogyShader();
         std::shared_ptr<Shader> getScatter2dShader();
         std::shared_ptr<Shader> getTextureShader();
         std::shared_ptr<Shader> getPlotPosNeg2DShader();
@@ -50,6 +53,9 @@ namespace GLPL {
         // Shaders
         Shader textShader = Shader("Shaders/font.vs", "Shaders/font.frag");
         Shader plot2dShader = Shader("Shaders/plot2d.vs","Shaders/plot2d.frag");
+        Shader plot2dShaderLogx = Shader("Shaders/plot2dLogx.vs","Shaders/plot2d.frag");
+        Shader plot2dShaderLogy = Shader("Shaders/plot2dLogy.vs","Shaders/plot2d.frag");
+        Shader plot2dShaderLogxLogy = Shader("Shaders/plot2dLogxLogy.vs","Shaders/plot2d.frag");
         Shader scatter2dShader = Shader("Shaders/scatter2d.vs","Shaders/scatter2d.frag");
         Shader textureShader = Shader("Shaders/texture.vs", "Shaders/texture.frag");
         Shader plotPosNeg2DShader = Shader("Shaders/plotPosNeg2d.vs", "Shaders/plotPosNeg2d.frag");
@@ -58,6 +64,9 @@ namespace GLPL {
         // shared_ptr
         std::shared_ptr<Shader> textShaderPt;
         std::shared_ptr<Shader> plot2dShaderPt;
+        std::shared_ptr<Shader> plot2dLogxShaderPt;
+        std::shared_ptr<Shader> plot2dLogyShaderPt;
+        std::shared_ptr<Shader> plot2dLogxLogyShaderPt;
         std::shared_ptr<Shader> scatter2dShaderPt;
         std::shared_ptr<Shader> textureShaderPt;
         std::shared_ptr<Shader> plotPosNeg2DShaderPt;

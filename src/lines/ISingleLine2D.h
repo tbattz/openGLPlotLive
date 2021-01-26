@@ -40,6 +40,9 @@ namespace GLPL {
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
 
+        // Functions
+        std::shared_ptr<Shader> selectShader();
+
     };
 }
 

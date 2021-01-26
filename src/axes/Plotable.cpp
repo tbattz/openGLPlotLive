@@ -53,5 +53,10 @@ namespace GLPL {
         return sortedVector;
     }
 
+    void Plotable::setLogModes(bool newLogX, bool newLogY) {
+        logX = newLogX;
+        logY = newLogY;
+    }
+
 
 }

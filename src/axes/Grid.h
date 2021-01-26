@@ -22,7 +22,7 @@ namespace GLPL {
 
         // Functions
         void Draw() override;
-        std::vector<float> getMinMax();
+        std::vector<float> getMinMax(bool onlyPositiveX = false, bool onlyPositiveY = false);
         std::string getID() override;
         void setMinMax(float newXMin, float newXMax, float newYMin, float newYMax);
         void setXLines(std::vector<float> xVals);
@@ -36,6 +36,7 @@ namespace GLPL {
 
         void createAndSetupAxesLineBuffers();
         void updateAxesLineBuffers();
+        std::shared_ptr<Shader> selectShader();
 
         // Major Tick Buffers
         GLuint vertsVAO, vertsVBO;

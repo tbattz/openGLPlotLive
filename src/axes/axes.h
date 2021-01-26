@@ -32,6 +32,7 @@ namespace GLPL {
                                                      glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
+        void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
         // Labels
         void setTitle(std::string newTitle);
         void setXLabel(std::string newXLabel);

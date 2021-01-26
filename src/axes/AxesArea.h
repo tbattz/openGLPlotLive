@@ -13,9 +13,16 @@
 #include "../lines/Line2D2Vecs.h"
 #include "Grid.h"
 #include "../scatterPlot/IScatterPlot.h"
+#include <cmath>
 
 
 namespace GLPL {
+
+    enum LogAxes {
+        X_AXES,
+        Y_AXES,
+        BOTH
+    };
 
     class AxesArea : public IDrawable {
     public:
@@ -36,6 +43,7 @@ namespace GLPL {
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
         void addAxesLine(const std::string& axesName, AxesDirection axesDirection);
         void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
+        void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
         // Plotables
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
                 LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
@@ -135,6 +143,7 @@ namespace GLPL {
         void createInteractor();
         void createGrid();
         void createZoomBox();
+        void setPlotableLogModes();
 
     };
 

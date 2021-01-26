@@ -40,7 +40,7 @@ namespace GLPL {
         glm::vec3 getColour();
         int getHoverCursor() override;
 
-        virtual std::vector<float> getMinMax() = 0;
+        virtual std::vector<float> getMinMax(bool onlyPositiveX, bool onlyPositiveY) = 0;
         virtual void generateAllMarkerVerts() = 0;
 
     protected:

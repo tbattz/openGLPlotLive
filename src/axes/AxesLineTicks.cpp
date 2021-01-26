@@ -17,6 +17,9 @@ namespace GLPL {
         // Set Not Hoverable
         setHoverable(false);
 
+        // Fill Log Width Vector
+        AxesLineTicks::fillLogWidths();
+
         // Setup Buffers
         AxesLineTicks::createAndSetupAxesLineBuffers();
 
@@ -121,9 +124,9 @@ namespace GLPL {
     }
 
     std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
-    AxesLineTicks::generateEquallySpacingBetweenLimits(float sectionWidthRel,
-                                                       float sectionWidthAxesUnits,
-                                                       float midRelPos) {
+    AxesLineTicks::generateEqualSpacingBetweenLimitsLinear(float sectionWidthRel,
+                                            float sectionWidthAxesUnits,
+                                            float midRelPos) {
         // Negative values
         float currRelPos = midRelPos;
         float currAxesPos = 0.0f;
@@ -170,6 +173,113 @@ namespace GLPL {
             currAxesPos += sectionWidthAxesUnits;
             // Increment count
             count += 1;
+        }
+
+        return std::make_tuple(crossIndex, tickSpacingType, relPos, axesPos);
+    }
+
+    std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
+    AxesLineTicks::generateEqualSpacingBetweenLimitsLog(float majorSectionWidthRel, float midRelPos) {
+
+        float logXMin = std::log10(xMin);
+        float logXMax = std::log10(xMax);
+
+        // Convert log values to rel values
+        float m = 2.0f / (logXMax - logXMin);
+        float c = (logXMin + logXMax) / (logXMin - logXMax);
+
+        // Determine the distance between major levels
+        // If too large, then skip labelling n major levels
+        unsigned int n = 0;
+        float relPosDiff = 0;
+        while (relPosDiff < majorSectionWidthRel) {
+            n += 1;
+            float currBase = std::pow(logBase, n);
+            float relPos1 = (m * std::log10(1.0f) + c);
+            float relPos2 = (m * std::log10(currBase) + c);
+            relPosDiff = relPos2 - relPos1;
+        }
+
+        // Negative values
+        float currRelPos = midRelPos;
+        float currAxesPos = 1.0f;
+        std::vector<TickSpacingType> tickSpacingType;
+        std::vector<float> relPos;
+        std::vector<float> axesPos;
+        unsigned int i = -1;
+
+        while (currRelPos >= -1.0f && currRelPos <= 1.0f) {
+            float currBaseVal = currAxesPos;
+            i += 1;
+
+            // Set major line first
+            if (i % n == 0) {
+                tickSpacingType.push_back(MAJOR_SPACING);
+            } else {
+                tickSpacingType.push_back(MINOR_SPACING);
+            }
+            // Store relative position
+            relPos.push_back(currRelPos);
+            // Store axes position
+            axesPos.push_back(currAxesPos);
+            // Update position
+            currAxesPos = currAxesPos + currBaseVal;
+            currRelPos = (m * std::log10(currAxesPos)) + c;
+
+            for (unsigned int i=0; i < logBase - 2; i++) {
+                // Set major line first
+                tickSpacingType.push_back(MINOR_SPACING);
+                // Store relative position
+                relPos.push_back(currRelPos);
+                // Store axes position
+                axesPos.push_back(currAxesPos);
+                // Update position
+                currAxesPos = currAxesPos + currBaseVal;
+                currRelPos = (m * std::log10(currAxesPos)) + c;
+            }
+
+        }
+
+        // Store cross over point
+        unsigned int crossIndex = (unsigned int)(relPos.size() - 1);
+        // Positive Values
+        currRelPos = midRelPos;
+        currAxesPos = 1.0f;
+        float currBaseVal = currAxesPos;
+        i = 0;
+
+        while (currRelPos <= 1.0f && currRelPos >= -1.0f) {
+            i += 1;
+
+            // Set major line first
+            if (i % n == 0) {
+                tickSpacingType.push_back(MAJOR_SPACING);
+            } else {
+                tickSpacingType.push_back(MINOR_SPACING);
+            }
+            // Update position
+            currAxesPos = currBaseVal / (float)logBase;
+            currRelPos = (m*std::log10(currAxesPos)) + c;
+            // Store relative position
+            relPos.push_back(currRelPos);
+            // Store axes position
+            axesPos.push_back(currAxesPos);
+
+            currBaseVal /= logBase;
+
+            for (unsigned int i=0; i < logBase - 2; i++) {
+                // Update position
+                currAxesPos = currAxesPos + currBaseVal;
+                currRelPos = (m * std::log10(currAxesPos)) + c;
+                // Set major line first
+                tickSpacingType.push_back(MINOR_SPACING);
+                // Store relative position
+                relPos.push_back(currRelPos);
+                // Store axes position
+                axesPos.push_back(currAxesPos);
+
+            }
+
         }
 
         return std::make_tuple(crossIndex, tickSpacingType, relPos, axesPos);
@@ -314,16 +424,31 @@ namespace GLPL {
     }
 
     void AxesLineTicks::generateXTickVerts() {
-        float pixelsPerUnit = (float)getWidthPx() / 2.0f;
-        float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-        float minorSectionWidthAxesUnits = minorSectionWidthRel * (xMax - xMin) / 2.0f; // xMin to xMax
-        float xMidRelPos = (xMax + xMin) / (xMin - xMax); // -1 to 1
         // Generate Sequence
         unsigned int crossIndex;
         std::vector<TickSpacingType> tickSpacingType;
         std::vector<float> relPos;
         std::vector<float> axesPos;
-        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, xMidRelPos);
+        if (!logScale) {
+            float pixelsPerUnit = (float)getWidthPx() / 2.0f;
+            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+            float minorSectionWidthAxesUnits = minorSectionWidthRel * (xMax - xMin) / 2.0f; // xMin to xMax
+            float xMidRelPos = (xMax + xMin) / (xMin - xMax); // -1 to 1
+            std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLinear(minorSectionWidthRel,
+                                                                                                       minorSectionWidthAxesUnits,
+                                                                                                       xMidRelPos);
+        } else {
+            // Adjust max for positive values only
+            float logXMin = std::log10(xMin);
+            float logXMax = std::log10(xMax);
+
+            float pixelsPerUnit = (float)getWidthPx() / 2.0f;
+            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 2.5f; // -1 to 1
+            float xMidRelPos = (logXMax + logXMin) / (logXMin - logXMax); // -1 to 1
+            std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLog(majorSectionWidthRel,
+                                                                                                          xMidRelPos);
+        }
+
         // Generate vertices
         for(unsigned int i=0; i < relPos.size(); i++) {
             if (axesPos[i] >= (xMin - abs(0.01 * xMin)) && axesPos[i] <= (xMax + abs(0.01 * xMax))) {
@@ -351,16 +476,34 @@ namespace GLPL {
     }
 
     void AxesLineTicks::generateYTickVerts() {
-        float pixelsPerUnit = (float)getHeightPx() / 2.0f;
-        float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
-        float minorSectionWidthAxesUnits = minorSectionWidthRel * (yMax - yMin) / 2.0f; // yMin to yMax
-        float yMidRelPos = (yMax + yMin) / (yMin - yMax); // -1 to 1
         // Generate Sequence
         unsigned int crossIndex;
         std::vector<TickSpacingType> tickSpacingType;
         std::vector<float> relPos;
         std::vector<float> axesPos;
-        std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEquallySpacingBetweenLimits(minorSectionWidthRel, minorSectionWidthAxesUnits, yMidRelPos);
+
+        if (!logScale) {
+            float pixelsPerUnit = (float)getHeightPx() / 2.0f;
+            float minorSectionWidthRel = (float)minorTickSpacingPx / pixelsPerUnit; // -1 to 1
+
+            float minorSectionWidthAxesUnits = minorSectionWidthRel * (yMax - yMin) / 2.0f; // yMin to yMax
+            float yMidRelPos = (yMax + yMin) / (yMin - yMax); // -1 to 1
+            std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLinear(minorSectionWidthRel,
+                                                                                                       minorSectionWidthAxesUnits,
+                                                                                                       yMidRelPos);
+        } else {
+            // Adjust max for positive values only
+            float logYMin = std::log10(yMin);
+            float logYMax = std::log10(yMax);
+
+            float pixelsPerUnit = (float)getHeightPx() / 2.0f;
+            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 2.5f; // -1 to 1
+            float yMidRelPos = (logYMax + logYMin) / (logYMin - logYMax); // -1 to 1
+            std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLog(majorSectionWidthRel,
+                                                                                                          yMidRelPos);
+        }
+
+
         // Generate vertices
         for (unsigned int i = 0; i < relPos.size(); i++) {
             if (axesPos[i] >= (yMin - abs(0.01 * yMin)) && axesPos[i] <= (yMax + abs(0.01 * yMax))) {
@@ -558,6 +701,8 @@ namespace GLPL {
         float prevMax = 0;
         float currMin = 0;
         float currMax = 0;
+        float lowerOverlap = 1 - overlapFactor;
+        float upperOverlap = 1 + overlapFactor;
 
         if (!majorTickTextStrings.empty()) {
             for(unsigned int i=0; i < majorTickTextStrings.size() - 1; i++) {
@@ -567,19 +712,19 @@ namespace GLPL {
                         case X_AXES_TOP:
                         case X_AXES_BOTTOM:
                         case X_AXES_CENTRE: {
-                            prevMin = majorTickTextStrings[i]->getLeft();
-                            prevMax = majorTickTextStrings[i]->getRight();
-                            currMin = majorTickTextStrings[i + 1]->getLeft();
-                            currMax = majorTickTextStrings[i + 1]->getRight();
+                            prevMin = lowerOverlap * majorTickTextStrings[i]->getLeft();
+                            prevMax = upperOverlap * majorTickTextStrings[i]->getRight();
+                            currMin = lowerOverlap * majorTickTextStrings[i + 1]->getLeft();
+                            currMax = upperOverlap * majorTickTextStrings[i + 1]->getRight();
                             break;
                         }
                         case Y_AXES_LEFT:
                         case Y_AXES_RIGHT:
                         case Y_AXES_CENTRE: {
-                            prevMin = majorTickTextStrings[i]->getBottom();
-                            prevMax = majorTickTextStrings[i]->getTop();
-                            currMin = majorTickTextStrings[i + 1]->getBottom();
-                            currMax = majorTickTextStrings[i + 1]->getTop();
+                            prevMin = lowerOverlap * majorTickTextStrings[i]->getBottom();
+                            prevMax = upperOverlap * majorTickTextStrings[i]->getTop();
+                            currMin = lowerOverlap * majorTickTextStrings[i + 1]->getBottom();
+                            currMax = upperOverlap * majorTickTextStrings[i + 1]->getTop();
                             break;
                         }
                         default: {
@@ -608,8 +753,38 @@ namespace GLPL {
     }
 
     std::vector<float> AxesLineTicks::getAxesTickPos() {
-        return majorTickAxesPos;
+        if (!logScale || !extraLogLines) {
+            return majorTickAxesPos;
+        } else {
+            std::vector<float> allTickAxesPos(majorTickAxesPos);
+            allTickAxesPos.insert(allTickAxesPos.end(), minorTickAxesPos.begin(), minorTickAxesPos.end());
+
+            return allTickAxesPos;
+        }
     }
+
+    void AxesLineTicks::setLogScale(bool logOn, unsigned int newLogBase) {
+        logScale = logOn;
+        logBase = newLogBase;
+
+        // Set minor spacing amount to the log base
+        if (logScale) {
+            minorSpacingsPerMajor = logBase;
+        } else {
+            minorSpacingsPerMajor = 3;
+        }
+
+        // Regenerate axes lines
+        AxesLineTicks::generateAllVertices();
+    }
+
+    bool AxesLineTicks::getLogState() {
+        return logScale;
+    }
+
+    unsigned int AxesLineTicks::getLogBase() {
+        return logBase;
+    };
 
     void AxesLineTicks::generateMajorTickLabels() {
         // Generate labels
@@ -695,6 +870,40 @@ namespace GLPL {
             xMax = newXMax;
             yMin = newYMin;
             yMax = newYMax;
+            // Adjust if we have a log scale
+            if (logScale) {
+                switch (axesDirection) {
+                    case X_AXES_CENTRE:
+                    case X_AXES_BOTTOM:
+                    case X_AXES_TOP: {
+                        if (xMin < 1e-15) {
+                            xMin = 1e-15;
+                            std::cout << "X Log Scale, but xMin is negative! Setting to 1e-15" << std::endl;
+                        }
+                        if (xMax < 1e-15) {
+                            xMax = 1e-15;
+                            std::cout << "X Log Scale, but xMax is negative! Setting to 1e-15" << std::endl;
+                        }
+                        break;
+                    }
+                    case Y_AXES_CENTRE:
+                    case Y_AXES_LEFT:
+                    case Y_AXES_RIGHT: {
+                        if (yMin < 1e-15) {
+                            yMin = 1e-15;
+                            std::cout << "Y Log Scale, but yMin is negative! Setting to 1e-15" << std::endl;
+                        }
+                        if (yMax < 1e-15) {
+                            yMax = 1e-15;
+                            std::cout << "Y Log Scale, but yMax is negative! Setting to 1e-15" << std::endl;
+                        }
+                        break;
+                    }
+                    default: {
+                        std::cout << "Invalid Axes Direction!" << std::endl;
+                    }
+                }
+            }
             // Regenerate axes lines
             AxesLineTicks::generateAllVertices();
         }
@@ -833,6 +1042,24 @@ namespace GLPL {
         ConstantXYDrawable::setParentDimensions(parentDimensions);
         // Update vertices
         AxesLineTicks::generateAllVertices();
+    }
+
+    void AxesLineTicks::fillLogWidths() {
+        // Calculate proportional log widths
+        // Sum of widths = 1, no need to divide by the total width
+        std::vector<float> logVals;
+        // Calculate log values
+        for(unsigned int i=1; i < 11; i++) {
+            float logVal = std::log10(i);
+            logVals.push_back(logVal);
+        }
+        // Calculate log widths
+        for(unsigned int i=1; i < 11; i++) {
+            float logWidth = logVals[i] - logVals[i-1];
+            unsigned int xVal = i + 1;
+            logWidths[xVal] = logWidth;
+        }
+
     }
 
 }

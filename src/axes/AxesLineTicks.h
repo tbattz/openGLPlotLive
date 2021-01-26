@@ -52,6 +52,11 @@ namespace GLPL {
         std::string value2NeatStr(double inValue, unsigned int maxCharSuggestion, double expSwapover,
                                   unsigned int minDecimal);
 
+        void setLogScale(bool logOn, unsigned int newLogBase);
+        bool getLogState();
+        unsigned int getLogBase();
+
+
     private:
         // Functions
         void generateAllVertices();
@@ -59,9 +64,11 @@ namespace GLPL {
         void generateAxesLines();
         // Axes Ticks
         std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
-                                generateEquallySpacingBetweenLimits(float sectionWidthRel,
-                                                                    float sectionWidthAxesUnits,
-                                                                    float midRelPos);
+                                generateEqualSpacingBetweenLimitsLinear(float sectionWidthRel,
+                                                                        float sectionWidthAxesUnits,
+                                                                        float midRelPos);
+        std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
+                                generateEqualSpacingBetweenLimitsLog(float majorSectionWidthRel, float midRelPos);
         void generateXTopTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
         void generateXBottomTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
         void generateXCentreTickVerts(TickSpacingType tickSpacingType, float relPos, float axesPos);
@@ -87,6 +94,8 @@ namespace GLPL {
         void drawMinorTicks();
         void drawMajorTickLabels();
 
+        void fillLogWidths();
+
         // Axes Line Buffers
         AxesDirection axesDirection;
         GLuint axesLineVAO, axesLineVBO;
@@ -107,6 +116,7 @@ namespace GLPL {
         float currFontSize = 10.0f;
         float xOffsetFactor = 1.2f;
         float yOffsetFactor = 1.2f;
+        float overlapFactor = 0.01;
         std::vector<std::shared_ptr<TextString>> majorTickTextStrings; // Holds the text labels for major axes ticks
 
         // Settings
@@ -119,6 +129,12 @@ namespace GLPL {
         unsigned int minorTickLengthPx = 10;    // Length of minor ticks
         unsigned int majorTickLengthPx = 20;    // Length of major ticks
         unsigned int minorSpacingsPerMajor = 3; // Number of minor spacings between two major spacings
+
+        // Log Scale
+        bool logScale = false;
+        bool extraLogLines = true;
+        unsigned int logBase = 10;
+        std::map<unsigned int, float> logWidths;
 
     };
 

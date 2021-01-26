@@ -24,7 +24,7 @@ namespace GLPL {
         void setOpacityRatio(float newOpacityRatio);
         int getHoverCursor() override;
 
-        virtual std::vector<float> getMinMax() = 0;
+        virtual std::vector<float> getMinMax(bool onlyPositiveX, bool onlyPositiveY) = 0;
 
     protected:
         // Data

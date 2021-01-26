@@ -111,6 +111,10 @@ namespace GLPL {
         axesArea->setAxesBoxOn(axesBoxOnBool);
     }
 
+    void Axes::setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes) {
+        axesArea->setLogScale(logOn, newLogBase, logAxes);
+    }
+
     void Axes::setTitle(std::string newTitle) {
         axesArea->setText("axes-title", std::move(newTitle));
     }

@@ -118,7 +118,7 @@ namespace GLPL {
         return "ShadedLine2D2CircularVecs:" + std::to_string(x) + ":" + std::to_string(y);
     }
 
-    std::vector<float> ShadedLine2D2CircularVecs::getMinMax() {
+    std::vector<float> ShadedLine2D2CircularVecs::getMinMax(bool onlyPositiveX, bool onlyPositiveY) {
         // Gets the minimum and maximum values of both x and y for the data
         float maxFloat = std::numeric_limits<float>::max();
         float xmin = maxFloat;
@@ -128,16 +128,16 @@ namespace GLPL {
         for (unsigned int i = 0; i<internalData.size()/2.0; i++) {
             float xval = (internalData)[2*i];
             float yval = (internalData)[2*i+1];
-            if (xval > xmax) {
+            if (xval > xmax && (!onlyPositiveX || xval > 0)) {
                 xmax = xval;
             }
-            if (xval < xmin) {
+            if (xval < xmin && (!onlyPositiveX || xval > 0)) {
                 xmin = xval;
             }
-            if (yval > ymax) {
+            if (yval > ymax && (!onlyPositiveY || yval > 0)) {
                 ymax = yval;
             }
-            if (yval < ymin) {
+            if (yval < ymin && (!onlyPositiveY || yval > 0)) {
                 ymin = yval;
             }
         }

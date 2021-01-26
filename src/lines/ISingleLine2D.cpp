@@ -63,7 +63,7 @@ namespace GLPL {
     void ISingleLine2D::drawData(int nPts, bool selected) {
         // Draws the data currently stored in the line corresponding to the given VAO
         if (nPts > 0) {
-            std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+            std::shared_ptr<Shader> shader = selectShader();
             shader->Use();
             glm::vec4 inColor;
             if (!selected) {
@@ -83,7 +83,28 @@ namespace GLPL {
         }
     }
 
+    std::shared_ptr<Shader> ISingleLine2D::selectShader() {
+        std::shared_ptr<Shader> shader;
+        if (logX) {
+            if (logY) {
+                // Both logX and logY
+                shader = shaderSetPt->getPlot2dLogxLogyShader();
+            } else {
+                // LogX only
+                shader = shaderSetPt->getPlot2dLogxShader();
+            }
+        } else {
+            if (logY) {
+                // LogY only
+                shader = shaderSetPt->getPlot2dLogyShader();
+            } else {
+                // Both Linear
+                shader = shaderSetPt->getPlot2dShader();
+            }
+        }
 
+        return shader;
+    }
 
 
 }

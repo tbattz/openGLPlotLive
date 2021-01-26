@@ -40,7 +40,7 @@ namespace GLPL {
         // Draws the data currently stored in the shaded line corresponding to the given VAO
         // The VAO is bound to the EBO from earlier
         // Select Shader
-        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        std::shared_ptr<Shader> shader = selectShader();
         shader->Use();
 
         glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
@@ -63,6 +63,29 @@ namespace GLPL {
 
     int GLPL::IShadedLine2D::getHoverCursor() {
         return 0;
+    }
+
+    std::shared_ptr<Shader> IShadedLine2D::selectShader() {
+        std::shared_ptr<Shader> shader;
+        if (logX) {
+            if (logY) {
+                // Both logX and logY
+                shader = shaderSetPt->getPlot2dLogxLogyShader();
+            } else {
+                // LogX only
+                shader = shaderSetPt->getPlot2dLogxShader();
+            }
+        } else {
+            if (logY) {
+                // LogY only
+                shader = shaderSetPt->getPlot2dLogyShader();
+            } else {
+                // Both Linear
+                shader = shaderSetPt->getPlot2dShader();
+            }
+        }
+
+        return shader;
     }
 
 

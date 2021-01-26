@@ -51,30 +51,63 @@ namespace GLPL {
     }
 
     INSTANTIATE_TEST_CASE_P(
-            AxesLineTicksTextTests,
-            AxesLineTickMultipleParamTests,
-            ::testing::Values(
-                    std::make_tuple(1.00, "1.000", 4, 1000, 1),
-                    std::make_tuple(10.00, "10.00", 4, 1000, 1),
-                    std::make_tuple(100.0, "100.0", 4, 1000, 1),
-                    std::make_tuple(220.5454, "220.5", 4, 1000, 1),
-                    std::make_tuple(0.1, "0.10", 4, 1000, 1),
-                    std::make_tuple(0.01, "0.01", 4, 1000, 1),
-                    std::make_tuple(0.001, "1.0e-3", 4, 1000, 1),
-                    std::make_tuple(1000.0, "1.0e+3", 4, 1000, 1),
-                    std::make_tuple(0.0001, "1.0e-4", 4, 1000, 1),
-                    std::make_tuple(1e11, "1.0e+11", 4, 1000, 1),
-                    std::make_tuple(-1.00, "-1.0", 4, 1000, 1),
-                    std::make_tuple(-10.00, "-10.0", 4, 1000, 1),
-                    std::make_tuple(-100.0, "-100.0", 4, 1000, 1),
-                    std::make_tuple(-0.1, "-0.10", 4, 1000, 1),
-                    std::make_tuple(-0.01, "-0.01", 4, 1000, 1),
-                    std::make_tuple(-0.001, "-1.0e-3", 4, 1000, 1),
-                    std::make_tuple(-1000.0, "-1.0e+3", 4, 1000, 1),
-                    std::make_tuple(-0.0001, "-1.0e-4", 4, 1000, 1),
-                    std::make_tuple(-1e11, "-1.0e+11", 4, 1000, 1),
-                    std::make_tuple(-2.17e-3, "-2.2e-3", 4, 1000, 1)
-                    )
-            );
+        AxesLineTicksTextTests,
+        AxesLineTickMultipleParamTests,
+        ::testing::Values(
+                std::make_tuple(1.00, "1.000", 4, 1000, 1),
+                std::make_tuple(10.00, "10.00", 4, 1000, 1),
+                std::make_tuple(100.0, "100.0", 4, 1000, 1),
+                std::make_tuple(220.5454, "220.5", 4, 1000, 1),
+                std::make_tuple(0.1, "0.10", 4, 1000, 1),
+                std::make_tuple(0.01, "0.01", 4, 1000, 1),
+                std::make_tuple(0.001, "1.0e-3", 4, 1000, 1),
+                std::make_tuple(1000.0, "1.0e+3", 4, 1000, 1),
+                std::make_tuple(0.0001, "1.0e-4", 4, 1000, 1),
+                std::make_tuple(1e11, "1.0e+11", 4, 1000, 1),
+                std::make_tuple(-1.00, "-1.0", 4, 1000, 1),
+                std::make_tuple(-10.00, "-10.0", 4, 1000, 1),
+                std::make_tuple(-100.0, "-100.0", 4, 1000, 1),
+                std::make_tuple(-0.1, "-0.10", 4, 1000, 1),
+                std::make_tuple(-0.01, "-0.01", 4, 1000, 1),
+                std::make_tuple(-0.001, "-1.0e-3", 4, 1000, 1),
+                std::make_tuple(-1000.0, "-1.0e+3", 4, 1000, 1),
+                std::make_tuple(-0.0001, "-1.0e-4", 4, 1000, 1),
+                std::make_tuple(-1e11, "-1.0e+11", 4, 1000, 1),
+                std::make_tuple(-2.17e-3, "-2.2e-3", 4, 1000, 1)
+                )
+        );
+
+    TEST(AxesLineTicksTests, LogTicksFromMaxMin) {
+        // Window Size
+        int windowWidth = 1600;
+        int windowHeight = 800;
+
+        // Init GLFW
+        std::shared_ptr<IWindow> window = std::shared_ptr<IWindow>(
+                new GLPL::Window(windowWidth, windowHeight, false, false));
+        std::shared_ptr<Window> window2 = std::dynamic_pointer_cast<Window>(window);
+
+        // Get shader set
+        std::shared_ptr<ShaderSet> shaderSetPt = window2->getShaderSet();
+
+        // Create Empty Parent Dimensions
+        ParentDimensions parentDimensions = ParentDimensions{glm::mat4(0.0f), 1, 1, 1, 1, shaderSetPt};
+        std::shared_ptr<ParentDimensions> newParentPointers = std::make_shared<ParentDimensions>(parentDimensions);
+
+        // Create Axes Line Ticks
+        AxesDirection axesDirection = X_AXES_CENTRE;
+        std::shared_ptr<AxesLineTicks> newAxes = std::make_shared<AxesLineTicks>(axesDirection, newParentPointers);
+
+        // Set Log
+        newAxes->setLogScale(true, 10.0f);
+
+        // Set min/max
+        newAxes->setMinMax(0.001, 100, -5, 5);
+
+        // Check axes position
+        std::vector<float> axesPos = newAxes->getAxesTickPos();
+
+
+    }
 
 }

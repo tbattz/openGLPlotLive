@@ -20,7 +20,7 @@ namespace GLPL {
         /* Functions */
         void updateInternalData();
         void Draw(Shader shader, glm::mat4 axesLimitViewportTrans);
-        std::vector<float> getMinMax();
+        std::vector<float> getMinMax(bool onlyPositiveX = false, bool onlyPositiveY = false);
 
     private:
         /* Buffers */

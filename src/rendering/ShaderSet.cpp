@@ -13,6 +13,9 @@ namespace GLPL {
         // Make shared_ptrs
         textShaderPt = std::make_shared<Shader>(textShader);
         plot2dShaderPt = std::make_shared<Shader>(plot2dShader);
+        plot2dLogxShaderPt = std::make_shared<Shader>(plot2dShaderLogx);
+        plot2dLogyShaderPt = std::make_shared<Shader>(plot2dShaderLogy);
+        plot2dLogxLogyShaderPt = std::make_shared<Shader>(plot2dShaderLogxLogy);
         scatter2dShaderPt = std::make_shared<Shader>(scatter2dShader);
         textureShaderPt = std::make_shared<Shader>(textureShader);
         plotPosNeg2DShaderPt = std::make_shared<Shader>(plotPosNeg2DShader);
@@ -41,6 +44,18 @@ namespace GLPL {
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getPlot2dShader() {
         return plot2dShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getPlot2dLogxShader() {
+        return plot2dLogxShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getPlot2dLogyShader() {
+        return plot2dLogyShaderPt;
+    }
+
+    std::shared_ptr<Shader> GLPL::ShaderSet::getPlot2dLogxLogyShader() {
+        return plot2dLogxLogyShaderPt;
     }
 
     std::shared_ptr<Shader> GLPL::ShaderSet::getScatter2dShader() {
