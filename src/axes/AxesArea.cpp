@@ -948,6 +948,7 @@ namespace GLPL {
             newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, false);
         }
 
+        // Undo log if required
         if (axesLines.at("x")->getLogState()) {
             unsigned int logBase = axesLines.at("x")->getLogBase();
             newX.first = std::pow(logBase, newX.first);
@@ -973,9 +974,37 @@ namespace GLPL {
         float mouseXAx = convertMouseX2AxesX(mouseX);
         float mouseYAx = convertMouseY2AxesY(mouseY);
 
+        // Account for log values if required
+        float inXmin = xMinDrag;
+        float inXmax = xMaxDrag;
+        float inYmin = yMinDrag;
+        float inYmax = yMaxDrag;
+        if (axesLines.at("x")->getLogState()) {
+            inXmin = std::log10(xMinDrag);
+            inXmax = std::log10(xMaxDrag);
+            mouseXAx = std::log10(mouseXAx);
+        }
+        if (axesLines.at("y")->getLogState()) {
+            inYmin = std::log10(yMinDrag);
+            inYmax = std::log10(yMaxDrag);
+            mouseYAx = std::log10(mouseYAx);
+        }
+
         std::pair<float, float> newX, newY;
-        newX = calcScrolledVals(xMinDrag, xMaxDrag, mouseXAx, xFrac, xDiff < 0);
-        newY = calcScrolledVals(yMinDrag, yMaxDrag, mouseYAx, yFrac, yDiff < 0);
+        newX = calcScrolledVals(inXmin, inXmax, mouseXAx, xFrac, xDiff < 0);
+        newY = calcScrolledVals(inYmin, inYmax, mouseYAx, yFrac, yDiff < 0);
+
+        // Undo log if required
+        if (axesLines.at("x")->getLogState()) {
+            unsigned int logBase = axesLines.at("x")->getLogBase();
+            newX.first = std::pow(logBase, newX.first);
+            newX.second = std::pow(logBase, newX.second);
+        }
+        if (axesLines.at("y")->getLogState()) {
+            unsigned int logBase = axesLines.at("y")->getLogBase();
+            newY.first = std::pow(logBase, newY.first);
+            newY.second = std::pow(logBase, newY.second);
+        }
 
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
