@@ -134,7 +134,7 @@ namespace GLPL {
         std::vector<float> relPos;
         std::vector<float> axesPos;
         unsigned int count = 0;
-        while (currRelPos >= -1.0f && currRelPos <= 1.0f) {
+        while (currRelPos >= -1.0f) {
             // Store tick type
             if (count % (minorSpacingsPerMajor + 1) == 0) {
                 tickSpacingType.push_back(MAJOR_SPACING);
@@ -157,7 +157,7 @@ namespace GLPL {
         currRelPos = midRelPos;
         currAxesPos = 0.0f;
         count = 0;
-        while (currRelPos <= 1.0f && currRelPos >= -1.0f) {
+        while (currRelPos <= 1.0f) {
             // Store tick type
             if (count % (minorSpacingsPerMajor + 1) == 0) {
                 tickSpacingType.push_back(MAJOR_SPACING);
@@ -200,7 +200,7 @@ namespace GLPL {
             relPosDiff = relPos2 - relPos1;
         }
 
-        // Negative values
+        // Values greater than 1
         float currRelPos = midRelPos;
         float currAxesPos = 1.0f;
         std::vector<TickSpacingType> tickSpacingType;
@@ -208,7 +208,7 @@ namespace GLPL {
         std::vector<float> axesPos;
         unsigned int i = -1;
 
-        while (currRelPos >= -1.0f && currRelPos <= 1.0f) {
+        while (currRelPos <= 1.0f) {
             float currBaseVal = currAxesPos;
             i += 1;
 
@@ -248,7 +248,8 @@ namespace GLPL {
         float currBaseVal = currAxesPos;
         i = 0;
 
-        while (currRelPos <= 1.0f && currRelPos >= -1.0f) {
+        // Values less than 1
+        while (currRelPos >= -1.0f) {
             i += 1;
 
             // Set major line first
