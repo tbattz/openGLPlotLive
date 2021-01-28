@@ -918,145 +918,222 @@ namespace GLPL {
         return std::pair<float, float>(newMin, newMax);
     }
 
-    void GLPL::AxesArea::zoomAxes(float zoomDir) {
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomLinearX(float zoomDir) {
         // Zoom centered around the current mouse position
         float mouseXAx = convertMouseX2AxesX(mouseX);
+        std::pair<float, float> newX = calcScrolledVals(xmin, xmax, mouseXAx, zoomRatio, zoomDir > 0);
+
+        return newX;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomLinearY(float zoomDir) {
+        // Zoom centered around the current mouse position
+        float mouseYAx = convertMouseY2AxesY(mouseY);
+        std::pair<float, float> newY = calcScrolledVals(ymin, ymax, mouseYAx, zoomRatio, zoomDir > 0);
+
+        return newY;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomLogX(float zoomDir) {
+        // Zoom centered around the current mouse position
+        float mouseXAx = convertMouseX2AxesX(mouseX);
+
+        // Account for log values
+        float inXmin = std::log10(xmin);
+        float inXmax = std::log10(xmax);
+        mouseXAx = std::log10(mouseXAx);
+
+        std::pair<float, float> newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, zoomDir > 0);
+
+        // Undo log
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        newX.first = std::pow(logBase, newX.first);
+        newX.second = std::pow(logBase, newX.second);
+
+        return newX;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomLogY(float zoomDir) {
+        // Zoom centered around the current mouse position
         float mouseYAx = convertMouseY2AxesY(mouseY);
 
-        std::pair<float, float> newX, newY;
         // Account for log values
-        float inXmin = xmin;
-        float inXmax = xmax;
-        float inYmin = ymin;
-        float inYmax = ymax;
-        if (axesLines.at("x")->getLogState()) {
-            inXmin = std::log10(xmin);
-            inXmax = std::log10(xmax);
-            mouseXAx = std::log10(mouseXAx);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            inYmin = std::log10(ymin);
-            inYmax = std::log10(ymax);
-            mouseYAx = std::log10(mouseYAx);
-        }
+        float inYmin = std::log10(ymin);
+        float inYmax = std::log10(ymax);
+        mouseYAx = std::log10(mouseYAx);
 
-        if (zoomDir > 0) {
-            newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, true);
-            newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, true);
-        } else {
-            newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, false);
-            newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, false);
-        }
+        std::pair<float, float> newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, zoomDir > 0);
 
-        // Undo log if required
-        if (axesLines.at("x")->getLogState()) {
-            unsigned int logBase = axesLines.at("x")->getLogBase();
-            newX.first = std::pow(logBase, newX.first);
-            newX.second = std::pow(logBase, newX.second);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            unsigned int logBase = axesLines.at("y")->getLogBase();
-            newY.first = std::pow(logBase, newY.first);
-            newY.second = std::pow(logBase, newY.second);
-        }
+        // Undo log
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        newY.first = std::pow(logBase, newY.first);
+        newY.second = std::pow(logBase, newY.second);
+
+        return newY;
+    }
+
+    void GLPL::AxesArea::zoomAxes(float zoomDir) {
+        // Zoom centered around the current mouse position
+        std::pair<float, float> newX, newY;
+        newX = axesLines.at("x")->getLogState() ? calcAxesZoomLogX(zoomDir) : calcAxesZoomLinearX(zoomDir);
+        newY = axesLines.at("y")->getLogState() ? calcAxesZoomLogY(zoomDir) : calcAxesZoomLinearY(zoomDir);
 
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomDragLinearX() {
+        // Zoom centered around the current mouse position by dragging the mouse
+        // The change in zoom is proportional to the drag distance in x and y
+        float xDiff = mouseX - mouseHeldX;
+        float xFrac = abs(dragZoomFactor * xDiff / 2.0f);
+        float mouseXAx = convertMouseX2AxesX(mouseX);
+
+        std::pair<float, float> newX = calcScrolledVals(xMinDrag, xMaxDrag, mouseXAx, xFrac, xDiff < 0);
+
+        return newX;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomDragLinearY() {
+        // Zoom centered around the current mouse position by dragging the mouse
+        // The change in zoom is proportional to the drag distance in x and y
+        float yDiff = mouseY - mouseHeldY;
+        float yFrac = abs(dragZoomFactor * yDiff / 2.0f);
+        float mouseYAx = convertMouseY2AxesY(mouseY);
+
+        std::pair<float, float> newY = calcScrolledVals(yMinDrag, yMaxDrag, mouseYAx, yFrac, yDiff < 0);
+
+        return newY;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomDragLogX() {
+        // Zoom centered around the current mouse position by dragging the mouse
+        // The change in zoom is proportional to the drag distance in x and y
+        float xDiff = mouseX - mouseHeldX;
+        float xFrac = abs(dragZoomFactor * xDiff / 2.0f);
+
+        // Account for log values
+        float inXmin = std::log10(xMinDrag);
+        float inXmax = std::log10(xMaxDrag);
+        float mouseXAx = std::log10(convertMouseX2AxesX(mouseX));
+
+        std::pair<float, float> newX = calcScrolledVals(inXmin, inXmax, mouseXAx, xFrac, xDiff < 0);
+
+        // Undo log
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        newX.first = std::pow(logBase, newX.first);
+        newX.second = std::pow(logBase, newX.second);
+
+        return newX;
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesZoomDragLogY() {
+        // Zoom centered around the current mouse position by dragging the mouse
+        // The change in zoom is proportional to the drag distance in x and y
+        float yDiff = mouseY - mouseHeldY;
+        float yFrac = abs(dragZoomFactor * yDiff / 2.0f);
+
+        // Account for log values
+        float inYmin = std::log10(yMinDrag);
+        float inYmax = std::log10(yMaxDrag);
+        float mouseYAx = std::log10(convertMouseY2AxesY(mouseY));
+
+        std::pair<float, float> newY = calcScrolledVals(inYmin, inYmax, mouseYAx, yFrac, yDiff < 0);
+
+        // Undo log
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        newY.first = std::pow(logBase, newY.first);
+        newY.second = std::pow(logBase, newY.second);
+
+        return newY;
     }
 
     void GLPL::AxesArea::zoomAxesByDragging() {
         // Zoom centered around the current mouse position by dragging the mouse
         // The change in zoom is proportional to the drag distance in x and y
-        float xDiff = mouseX - mouseHeldX;
-        float yDiff = mouseY - mouseHeldY;
-        float xFrac = abs(dragZoomFactor * xDiff / 2.0f);
-        float yFrac = abs(dragZoomFactor * yDiff / 2.0f);
-
-        float mouseXAx = convertMouseX2AxesX(mouseX);
-        float mouseYAx = convertMouseY2AxesY(mouseY);
-
-        // Account for log values if required
-        float inXmin = xMinDrag;
-        float inXmax = xMaxDrag;
-        float inYmin = yMinDrag;
-        float inYmax = yMaxDrag;
-        if (axesLines.at("x")->getLogState()) {
-            inXmin = std::log10(xMinDrag);
-            inXmax = std::log10(xMaxDrag);
-            mouseXAx = std::log10(mouseXAx);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            inYmin = std::log10(yMinDrag);
-            inYmax = std::log10(yMaxDrag);
-            mouseYAx = std::log10(mouseYAx);
-        }
-
-        std::pair<float, float> newX, newY;
-        newX = calcScrolledVals(inXmin, inXmax, mouseXAx, xFrac, xDiff < 0);
-        newY = calcScrolledVals(inYmin, inYmax, mouseYAx, yFrac, yDiff < 0);
-
-        // Undo log if required
-        if (axesLines.at("x")->getLogState()) {
-            unsigned int logBase = axesLines.at("x")->getLogBase();
-            newX.first = std::pow(logBase, newX.first);
-            newX.second = std::pow(logBase, newX.second);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            unsigned int logBase = axesLines.at("y")->getLogBase();
-            newY.first = std::pow(logBase, newY.first);
-            newY.second = std::pow(logBase, newY.second);
-        }
+        std::pair<float, float> newX = axesLines.at("x")->getLogState() ? calcAxesZoomDragLogX() : calcAxesZoomDragLinearX();
+        std::pair<float, float> newY = axesLines.at("y")->getLogState() ? calcAxesZoomDragLogY() : calcAxesZoomDragLinearY();
 
         AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
 
-    void GLPL::AxesArea::moveAxesByDragging() {
+    std::pair<float, float> GLPL::AxesArea::calcAxesDragLinearX() {
         // Move the axes proportional to the distance the mouse is dragged
         float mouseXAx = convertMouseX2AxesX(mouseX);
-        float mouseYAx = convertMouseY2AxesY(mouseY);
         float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
-        float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
         float xDiff = mouseXAx - mouseHeldXAx;
-        float yDiff = mouseYAx - mouseHeldYAx;
-
-        // Account for log values if required
-        float inXmin = xMinDrag;
-        float inXmax = xMaxDrag;
-        float inYmin = yMinDrag;
-        float inYmax = yMaxDrag;
-        if (axesLines.at("x")->getLogState()) {
-            inXmin = std::log10(xMinDrag);
-            inXmax = std::log10(xMaxDrag);
-            xDiff = std::log10(mouseXAx) - std::log10(mouseHeldXAx);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            inYmin = std::log10(yMinDrag);
-            inYmax = std::log10(yMaxDrag);
-            yDiff = std::log10(mouseYAx) - std::log10(mouseHeldYAx);
-        }
-
-        float xRange = inXmax - inXmin;
-        float yRange = inYmax - inYmin;
+        float xRange = xMaxDrag - xMinDrag;
         float xRatio = xDiff / xRange;
+        float newXMin = xMinDrag + (xRatio * xRange);
+        float newXMax = xMaxDrag + (xRatio * xRange);
+
+        return {newXMin, newXMax};
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesDragLinearY() {
+        // Move the axes proportional to the distance the mouse is dragged
+        float mouseYAx = convertMouseY2AxesY(mouseY);
+        float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
+        float yDiff = mouseYAx - mouseHeldYAx;
+        float yRange = yMaxDrag - yMinDrag;
         float yRatio = yDiff / yRange;
 
+        float newYMin = yMinDrag + (yRatio * yRange);
+        float newYMax = yMaxDrag + (yRatio * yRange);
+
+        return {newYMin, newYMax};
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesDragLogX() {
+        // Move the axes proportional to the distance the mouse is dragged
+        float mouseXAx = convertMouseX2AxesX(mouseX);
+        float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
+
+        // Account for log values
+        float inXmin = std::log10(xMinDrag);
+        float inXmax = std::log10(xMaxDrag);
+        float xDiff = std::log10(mouseXAx) - std::log10(mouseHeldXAx);
+
+        float xRange = inXmax - inXmin;
+        float xRatio = xDiff / xRange;
         float newXMin = inXmin + (xRatio * xRange);
         float newXMax = inXmax + (xRatio * xRange);
+
+        // Undo log
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        newXMin = std::pow(logBase, newXMin);
+        newXMax = std::pow(logBase, newXMax);
+
+        return {newXMin, newXMax};
+    }
+
+    std::pair<float, float> GLPL::AxesArea::calcAxesDragLogY() {
+        // Move the axes proportional to the distance the mouse is dragged
+        float mouseYAx = convertMouseY2AxesY(mouseY);
+        float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
+
+        // Account for log values
+        float inYmin = std::log10(yMinDrag);
+        float inYmax = std::log10(yMaxDrag);
+        float yDiff = std::log10(mouseYAx) - std::log10(mouseHeldYAx);
+
+        float yRange = inYmax - inYmin;
+        float yRatio = yDiff / yRange;
         float newYMin = inYmin + (yRatio * yRange);
         float newYMax = inYmax + (yRatio * yRange);
 
-        // Undo log if required
-        if (axesLines.at("x")->getLogState()) {
-            unsigned int logBase = axesLines.at("x")->getLogBase();
-            newXMin = std::pow(logBase, newXMin);
-            newXMax = std::pow(logBase, newXMax);
-        }
-        if (axesLines.at("y")->getLogState()) {
-            unsigned int logBase = axesLines.at("y")->getLogBase();
-            newYMin = std::pow(logBase, newYMin);
-            newYMax = std::pow(logBase, newYMax);
-        }
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        newYMin = std::pow(logBase, newYMin);
+        newYMax = std::pow(logBase, newYMax);
 
-        AxesArea::setAxesLimits(newXMin, newXMax, newYMin, newYMax);
+        return {newYMin, newYMax};
+    }
+
+    void GLPL::AxesArea::moveAxesByDragging() {
+        // Move the axes proportional to the distance the mouse is dragged
+        std::pair<float, float> newX = axesLines.at("x")->getLogState() ? calcAxesDragLogX() : calcAxesDragLinearX();
+        std::pair<float, float> newY = axesLines.at("y")->getLogState() ? calcAxesDragLogY() : calcAxesDragLinearY();
+
+        AxesArea::setAxesLimits(newX.first, newX.second, newY.first, newY.second);
     }
 
     void GLPL::AxesArea::createInteractor() {
