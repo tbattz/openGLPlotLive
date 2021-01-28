@@ -1017,16 +1017,44 @@ namespace GLPL {
         float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
         float xDiff = mouseXAx - mouseHeldXAx;
         float yDiff = mouseYAx - mouseHeldYAx;
-        float xRange = xMaxDrag - xMinDrag;
-        float yRange = yMaxDrag - yMinDrag;
+
+        // Account for log values if required
+        float inXmin = xMinDrag;
+        float inXmax = xMaxDrag;
+        float inYmin = yMinDrag;
+        float inYmax = yMaxDrag;
+        if (axesLines.at("x")->getLogState()) {
+            inXmin = std::log10(xMinDrag);
+            inXmax = std::log10(xMaxDrag);
+            xDiff = std::log10(mouseXAx) - std::log10(mouseHeldXAx);
+        }
+        if (axesLines.at("y")->getLogState()) {
+            inYmin = std::log10(yMinDrag);
+            inYmax = std::log10(yMaxDrag);
+            yDiff = std::log10(mouseYAx) - std::log10(mouseHeldYAx);
+        }
+
+        float xRange = inXmax - inXmin;
+        float yRange = inYmax - inYmin;
         float xRatio = xDiff / xRange;
         float yRatio = yDiff / yRange;
 
-        float newXMin = xMinDrag + (xRatio * xRange);
-        float newXMax = xMaxDrag + (xRatio * xRange);
-        float newYMin = yMinDrag + (yRatio * yRange);
-        float newYMax = yMaxDrag + (yRatio * yRange);
+        float newXMin = inXmin + (xRatio * xRange);
+        float newXMax = inXmax + (xRatio * xRange);
+        float newYMin = inYmin + (yRatio * yRange);
+        float newYMax = inYmax + (yRatio * yRange);
 
+        // Undo log if required
+        if (axesLines.at("x")->getLogState()) {
+            unsigned int logBase = axesLines.at("x")->getLogBase();
+            newXMin = std::pow(logBase, newXMin);
+            newXMax = std::pow(logBase, newXMax);
+        }
+        if (axesLines.at("y")->getLogState()) {
+            unsigned int logBase = axesLines.at("y")->getLogBase();
+            newYMin = std::pow(logBase, newYMin);
+            newYMax = std::pow(logBase, newYMax);
+        }
 
         AxesArea::setAxesLimits(newXMin, newXMax, newYMin, newYMax);
     }
