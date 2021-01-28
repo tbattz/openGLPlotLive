@@ -470,12 +470,12 @@ namespace GLPL {
             mouseXAx = (mx * (float) mouseXVal) + cx;
         } else {
             // Log Scale
-            // TODO - make work for any log base, not just 10
-            float ax1 = std::log10(xmin);
-            float ax2 = std::log10(xmax);
+            unsigned int logBase = axesLines.at("x")->getLogBase();
+            float ax1 = logWithBase(xmin, logBase);
+            float ax2 = logWithBase(xmax, logBase);
             float mx = (ax2 - ax1) / (sx2 - sx1);
             float cx = ax2 - (mx * sx2);
-            unsigned int logBase = axesLines.at("x")->getLogBase();
+
             mouseXAx = std::pow(logBase, (mx * (float) mouseXVal) + cx);
         }
         return mouseXAx;
@@ -497,12 +497,11 @@ namespace GLPL {
             mouseYAx = (mx * (float) mouseYVal) + cx;
         } else {
             // Log Scale
-            // TODO - make work for any log base, not just 10
-            float ax1 = std::log10(ymin);
-            float ax2 = std::log10(ymax);
+            unsigned int logBase = axesLines.at("y")->getLogBase();
+            float ax1 = logWithBase(ymin, logBase);
+            float ax2 = logWithBase(ymax, logBase);
             float mx = (ax2 - ax1) / (sx2 - sx1);
             float cx = ax2 - (mx * sx2);
-            unsigned int logBase = axesLines.at("y")->getLogBase();
             mouseYAx = std::pow(logBase, (mx * (float) mouseYVal) + cx);
         }
 
@@ -691,10 +690,12 @@ namespace GLPL {
         // Calculate x transform
         float xShift, scaleX;
         if (logX) {
+            // Get log base
+            unsigned int logBase = axesLines.at("x")->getLogBase();
             // Calculate center of current limits
-            xShift = ((std::log10(xmin) + std::log10(xmax)) / 2.0f) / (std::log10(xmax) - std::log10(xmin)) * 2.0f; // xavg/width * 2.0, *2 to take it to -1 to 1
+            xShift = ((logWithBase(xmin, logBase) + logWithBase(xmax, logBase)) / 2.0f) / (logWithBase(xmax, logBase) - logWithBase(xmin, logBase)) * 2.0f; // xavg/width * 2.0, *2 to take it to -1 to 1
             // Scale to limits
-            scaleX = 2.0f/(std::log10(xmax)-std::log10(xmin)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+            scaleX = 2.0f/(logWithBase(xmax, logBase) - logWithBase(xmin, logBase)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
         } else {
             // Calculate center of current limits
             xShift = (float)((xmin + xmax) / 2.0) / (xmax - xmin) * 2.0f; // xavg/width * 2.0, *2 to take it to -1 to 1
@@ -705,10 +706,12 @@ namespace GLPL {
         // Calculate y transform
         float yShift, scaleY;
         if (logY) {
+            // Get log base
+            unsigned int logBase = axesLines.at("y")->getLogBase();
             // Calculate center of current limits
-            yShift = ((std::log10(ymin)+std::log10(ymax))/2.0f)/(std::log10(ymax)-std::log10(ymin)) * 2.0f; // yavg/height * 2.0, *2 to take it to -1 to 1
+            yShift = ((logWithBase(ymin, logBase) + logWithBase(ymax, logBase))/2.0f)/(logWithBase(ymax, logBase) - logWithBase(ymin, logBase)) * 2.0f; // yavg/height * 2.0, *2 to take it to -1 to 1
             // Scale to limits
-            scaleY = 2.0f/(std::log10(ymax)-std::log10(ymin)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
+            scaleY = 2.0f/(logWithBase(ymax, logBase) - logWithBase(ymin, logBase)); // Inverted due to -1 to 1 mapping (less than abs(1) region)
         } else {
             // Calculate center of current limits
             yShift = ((ymin+ymax)/2.0f)/(ymax-ymin) * 2.0f; // yavg/height * 2.0, *2 to take it to -1 to 1
@@ -939,14 +942,14 @@ namespace GLPL {
         float mouseXAx = convertMouseX2AxesX(mouseX);
 
         // Account for log values
-        float inXmin = std::log10(xmin);
-        float inXmax = std::log10(xmax);
-        mouseXAx = std::log10(mouseXAx);
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        float inXmin = logWithBase(xmin, logBase);
+        float inXmax = logWithBase(xmax, logBase);
+        mouseXAx = logWithBase(mouseXAx, logBase);
 
         std::pair<float, float> newX = calcScrolledVals(inXmin, inXmax, mouseXAx, zoomRatio, zoomDir > 0);
 
         // Undo log
-        unsigned int logBase = axesLines.at("x")->getLogBase();
         newX.first = std::pow(logBase, newX.first);
         newX.second = std::pow(logBase, newX.second);
 
@@ -958,14 +961,14 @@ namespace GLPL {
         float mouseYAx = convertMouseY2AxesY(mouseY);
 
         // Account for log values
-        float inYmin = std::log10(ymin);
-        float inYmax = std::log10(ymax);
-        mouseYAx = std::log10(mouseYAx);
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        float inYmin = logWithBase(ymin, logBase);
+        float inYmax = logWithBase(ymax, logBase);
+        mouseYAx = logWithBase(mouseYAx, logBase);
 
         std::pair<float, float> newY = calcScrolledVals(inYmin, inYmax, mouseYAx, zoomRatio, zoomDir > 0);
 
         // Undo log
-        unsigned int logBase = axesLines.at("y")->getLogBase();
         newY.first = std::pow(logBase, newY.first);
         newY.second = std::pow(logBase, newY.second);
 
@@ -1012,14 +1015,14 @@ namespace GLPL {
         float xFrac = abs(dragZoomFactor * xDiff / 2.0f);
 
         // Account for log values
-        float inXmin = std::log10(xMinDrag);
-        float inXmax = std::log10(xMaxDrag);
-        float mouseXAx = std::log10(convertMouseX2AxesX(mouseX));
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        float inXmin = logWithBase(xMinDrag, logBase);
+        float inXmax = logWithBase(xMaxDrag, logBase);
+        float mouseXAx = logWithBase(convertMouseX2AxesX(mouseX), logBase);
 
         std::pair<float, float> newX = calcScrolledVals(inXmin, inXmax, mouseXAx, xFrac, xDiff < 0);
 
         // Undo log
-        unsigned int logBase = axesLines.at("x")->getLogBase();
         newX.first = std::pow(logBase, newX.first);
         newX.second = std::pow(logBase, newX.second);
 
@@ -1033,14 +1036,14 @@ namespace GLPL {
         float yFrac = abs(dragZoomFactor * yDiff / 2.0f);
 
         // Account for log values
-        float inYmin = std::log10(yMinDrag);
-        float inYmax = std::log10(yMaxDrag);
-        float mouseYAx = std::log10(convertMouseY2AxesY(mouseY));
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        float inYmin = logWithBase(yMinDrag, logBase);
+        float inYmax = logWithBase(yMaxDrag, logBase);
+        float mouseYAx = logWithBase(convertMouseY2AxesY(mouseY), logBase);
 
         std::pair<float, float> newY = calcScrolledVals(inYmin, inYmax, mouseYAx, yFrac, yDiff < 0);
 
         // Undo log
-        unsigned int logBase = axesLines.at("y")->getLogBase();
         newY.first = std::pow(logBase, newY.first);
         newY.second = std::pow(logBase, newY.second);
 
@@ -1089,9 +1092,10 @@ namespace GLPL {
         float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
 
         // Account for log values
-        float inXmin = std::log10(xMinDrag);
-        float inXmax = std::log10(xMaxDrag);
-        float xDiff = std::log10(mouseXAx) - std::log10(mouseHeldXAx);
+        unsigned int logBase = axesLines.at("x")->getLogBase();
+        float inXmin = logWithBase(xMinDrag, logBase);
+        float inXmax = logWithBase(xMaxDrag, logBase);
+        float xDiff = logWithBase(mouseXAx, logBase) - logWithBase(mouseHeldXAx, logBase);
 
         float xRange = inXmax - inXmin;
         float xRatio = xDiff / xRange;
@@ -1099,7 +1103,6 @@ namespace GLPL {
         float newXMax = inXmax + (xRatio * xRange);
 
         // Undo log
-        unsigned int logBase = axesLines.at("x")->getLogBase();
         newXMin = std::pow(logBase, newXMin);
         newXMax = std::pow(logBase, newXMax);
 
@@ -1112,16 +1115,16 @@ namespace GLPL {
         float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
 
         // Account for log values
-        float inYmin = std::log10(yMinDrag);
-        float inYmax = std::log10(yMaxDrag);
-        float yDiff = std::log10(mouseYAx) - std::log10(mouseHeldYAx);
+        unsigned int logBase = axesLines.at("y")->getLogBase();
+        float inYmin = logWithBase(yMinDrag, logBase);
+        float inYmax = logWithBase(yMaxDrag, logBase);
+        float yDiff = logWithBase(mouseYAx, logBase) - logWithBase(mouseHeldYAx, logBase);
 
         float yRange = inYmax - inYmin;
         float yRatio = yDiff / yRange;
         float newYMin = inYmin + (yRatio * yRange);
         float newYMax = inYmax + (yRatio * yRange);
 
-        unsigned int logBase = axesLines.at("y")->getLogBase();
         newYMin = std::pow(logBase, newYMin);
         newYMax = std::pow(logBase, newYMax);
 
@@ -1203,8 +1206,12 @@ namespace GLPL {
         // Set the current log modes for all the lines
         bool logX = axesLines.at("x")->getLogState();
         bool logY = axesLines.at("y")->getLogState();
+        unsigned int logXBase = axesLines.at("x")->getLogBase();
+        unsigned int logYBase = axesLines.at("y")->getLogBase();
         for(auto & i : plotableMap) {
             i.second->setLogModes(logX, logY);
+            i.second->setLogXBase(logXBase);
+            i.second->setLogYBase(logYBase);
         }
         grid->setLogModes(logX, logY);
     }

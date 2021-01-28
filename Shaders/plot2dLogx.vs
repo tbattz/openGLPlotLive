@@ -2,8 +2,9 @@
 layout (location = 0) in vec2 coord2d;
 
 uniform mat4 transformViewport;
+uniform uint logXBase;
 
 void main(void) {
-    float logx = log(coord2d.x) / log(10.0);
+    float logx = log(coord2d.x) / log(logXBase);
 	gl_Position = transformViewport * vec4(logx, coord2d.y, 0.5, 1);
 }

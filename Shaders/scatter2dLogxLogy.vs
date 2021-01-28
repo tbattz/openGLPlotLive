@@ -5,10 +5,12 @@ layout (location = 1) in vec2 aOffset;
 out vec3 fColor;
 
 uniform mat4 transformViewport;
+uniform uint logXBase;
+uniform uint logYBase;
 
 void main() {
-    float logxOffset = log(aOffset.x) / log(10.0);
-    float logyOffset = log(aOffset.y) / log(10.0);
+    float logxOffset = log(aOffset.x) / log(logXBase);
+    float logyOffset = log(aOffset.y) / log(logYBase);
     gl_Position = vec4(aPos, 0.0, 0.0) + (transformViewport * vec4(logxOffset, logyOffset, 0.5, 1.0));
 }
 

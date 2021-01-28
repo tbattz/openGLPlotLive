@@ -73,6 +73,8 @@ namespace GLPL {
                 glLineWidth(10 * lineWidth);
                 inColor = glm::vec4(colour, 0.3);
             }
+            glUniform1ui(glGetUniformLocation(shader->Program, "logXBase"), logXBase);
+            glUniform1ui(glGetUniformLocation(shader->Program, "logYBase"), logYBase);
             glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
                                glm::value_ptr(*axesViewportTransform));
             glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));

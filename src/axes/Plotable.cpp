@@ -58,5 +58,13 @@ namespace GLPL {
         logY = newLogY;
     }
 
+    void Plotable::setLogXBase(unsigned int newLogXBase) {
+        logXBase = newLogXBase;
+    }
+
+    void Plotable::setLogYBase(unsigned int newLogYBase) {
+        logYBase = newLogYBase;
+    }
+
 
 }

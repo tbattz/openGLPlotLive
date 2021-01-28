@@ -30,12 +30,16 @@ namespace GLPL {
         virtual std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) = 0;
 
         void setLogModes(bool newLogX, bool newLogY);
+        void setLogXBase(unsigned int newLogXBase);
+        void setLogYBase(unsigned int newLogYBase);
 
     protected:
         std::shared_ptr<glm::mat4> axesViewportTransform = std::make_shared<glm::mat4>(glm::mat4(1.0f));
         int plotableId = -1;
         bool logX = false;
         bool logY = false;
+        unsigned int logXBase = 10;
+        unsigned int logYBase = 10;
 
     };
 }

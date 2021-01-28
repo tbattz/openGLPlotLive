@@ -33,4 +33,12 @@ namespace GLPL {
         return std::max(minVal, std::min(inVal, maxVal));
     }
 
+    float logWithBase(float value2Log, float logBase) {
+        return std::log(value2Log) / std::log(logBase);
+    }
+
+    float logWithBase(float value2Log, unsigned int logBase) {
+        return std::log(value2Log) /  (float)std::log(logBase);
+    }
+
 }

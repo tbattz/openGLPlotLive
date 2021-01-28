@@ -43,6 +43,8 @@ namespace GLPL {
         std::shared_ptr<Shader> shader = selectShader();
         shader->Use();
 
+        glUniform1ui(glGetUniformLocation(shader->Program, "logXBase"), logXBase);
+        glUniform1ui(glGetUniformLocation(shader->Program, "logYBase"), logYBase);
         glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
                            glm::value_ptr(*axesViewportTransform));
         glm::vec4 inColor;

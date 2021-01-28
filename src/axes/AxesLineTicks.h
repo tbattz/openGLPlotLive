@@ -133,7 +133,7 @@ namespace GLPL {
         // Log Scale
         bool logScale = false;
         bool extraLogLines = true;
-        unsigned int logBase = 10;
+        unsigned int  logBase = 10;
         std::map<unsigned int, float> logWidths;
 
     };

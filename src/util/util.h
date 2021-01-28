@@ -18,6 +18,8 @@ namespace GLPL {
 
     int binarySearch(std::vector<float> data, unsigned int leftInd, unsigned int rightInd, float inVal, unsigned int dataLen=2);
     float clip(float inVal, float minVal, float maxVal);
+    float logWithBase(float value2Log, float logBase);
+    float logWithBase(float value2Log, unsigned int logBase);
 
 }
 

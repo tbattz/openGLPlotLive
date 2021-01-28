@@ -181,8 +181,8 @@ namespace GLPL {
     std::tuple<unsigned int, std::vector<TickSpacingType>, std::vector<float>, std::vector<float>>
     AxesLineTicks::generateEqualSpacingBetweenLimitsLog(float majorSectionWidthRel, float midRelPos) {
 
-        float logXMin = std::log10(xMin);
-        float logXMax = std::log10(xMax);
+        float logXMin = logWithBase(xMin, logBase);
+        float logXMax = logWithBase(xMax, logBase);
 
         // Convert log values to rel values
         float m = 2.0f / (logXMax - logXMin);
@@ -195,8 +195,8 @@ namespace GLPL {
         while (relPosDiff < majorSectionWidthRel) {
             n += 1;
             float currBase = std::pow(logBase, n);
-            float relPos1 = (m * std::log10(1.0f) + c);
-            float relPos2 = (m * std::log10(currBase) + c);
+            float relPos1 = (m * logWithBase(1.0f, logBase) + c);
+            float relPos2 = (m * logWithBase(currBase, logBase) + c);
             relPosDiff = relPos2 - relPos1;
         }
 
@@ -224,7 +224,7 @@ namespace GLPL {
             axesPos.push_back(currAxesPos);
             // Update position
             currAxesPos = currAxesPos + currBaseVal;
-            currRelPos = (m * std::log10(currAxesPos)) + c;
+            currRelPos = (m * logWithBase(currAxesPos, logBase)) + c;
 
             for (unsigned int i=0; i < logBase - 2; i++) {
                 // Set major line first
@@ -235,7 +235,7 @@ namespace GLPL {
                 axesPos.push_back(currAxesPos);
                 // Update position
                 currAxesPos = currAxesPos + currBaseVal;
-                currRelPos = (m * std::log10(currAxesPos)) + c;
+                currRelPos = (m * logWithBase(currAxesPos, logBase)) + c;
             }
 
         }
@@ -260,7 +260,7 @@ namespace GLPL {
             }
             // Update position
             currAxesPos = currBaseVal / (float)logBase;
-            currRelPos = (m*std::log10(currAxesPos)) + c;
+            currRelPos = (m*logWithBase(currAxesPos, logBase)) + c;
             // Store relative position
             relPos.push_back(currRelPos);
             // Store axes position
@@ -271,7 +271,7 @@ namespace GLPL {
             for (unsigned int i=0; i < logBase - 2; i++) {
                 // Update position
                 currAxesPos = currAxesPos + currBaseVal;
-                currRelPos = (m * std::log10(currAxesPos)) + c;
+                currRelPos = (m * logWithBase(currAxesPos, logBase)) + c;
                 // Set major line first
                 tickSpacingType.push_back(MINOR_SPACING);
                 // Store relative position
@@ -440,8 +440,8 @@ namespace GLPL {
                                                                                                        xMidRelPos);
         } else {
             // Adjust max for positive values only
-            float logXMin = std::log10(xMin);
-            float logXMax = std::log10(xMax);
+            float logXMin = logWithBase(xMin, logBase);
+            float logXMax = logWithBase(xMax, logBase);
 
             float pixelsPerUnit = (float)getWidthPx() / 2.0f;
             float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 3.0f; // -1 to 1
@@ -494,11 +494,11 @@ namespace GLPL {
                                                                                                        yMidRelPos);
         } else {
             // Adjust max for positive values only
-            float logYMin = std::log10(yMin);
-            float logYMax = std::log10(yMax);
+            float logYMin = logWithBase(yMin, logBase);
+            float logYMax = logWithBase(yMax, logBase);
 
             float pixelsPerUnit = (float)getHeightPx() / 2.0f;
-            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit / 3.0f; // -1 to 1
+            float majorSectionWidthRel = (float)minorTickSpacingPx * (float)minorSpacingsPerMajor / pixelsPerUnit; // -1 to 1
             float yMidRelPos = (logYMax + logYMin) / (logYMin - logYMax); // -1 to 1
             std::tie(crossIndex, tickSpacingType, relPos, axesPos) = generateEqualSpacingBetweenLimitsLog(majorSectionWidthRel,
                                                                                                           yMidRelPos);
@@ -648,7 +648,7 @@ namespace GLPL {
             // Calculate the number of digits before the decimal point in standard format
             int mainDigits;
             if (fabs(inValue) > 1e-15 and fabs(inValue) >= 1) {
-                mainDigits = std::ceil(fabs(std::log10(inValue)) + 1);
+                mainDigits = std::ceil(fabs(logWithBase(inValue, logBase)) + 1);
             } else {
                 mainDigits = 1;
             }
@@ -664,7 +664,7 @@ namespace GLPL {
             text = std::string(textBuf);
         } else {
             // Calculate length with zero decimals but with decimal point
-            int sizeExp = ceil(log10(fabs(log10(fabs(inValue)))));
+            int sizeExp = ceil(logWithBase(fabs(logWithBase(fabs(inValue), logBase)), logBase));
             int lenNoDecimal = 3 + sizeExp;
             if (inValue < 0) {
                 lenNoDecimal += 1;
@@ -770,7 +770,7 @@ namespace GLPL {
 
         // Set minor spacing amount to the log base
         if (logScale) {
-            minorSpacingsPerMajor = logBase;
+            minorSpacingsPerMajor = std::max(logBase,(unsigned int)4);
         } else {
             minorSpacingsPerMajor = 3;
         }
@@ -1051,7 +1051,7 @@ namespace GLPL {
         std::vector<float> logVals;
         // Calculate log values
         for(unsigned int i=1; i < 11; i++) {
-            float logVal = std::log10(i);
+            float logVal = logWithBase(i, logBase);
             logVals.push_back(logVal);
         }
         // Calculate log widths
