@@ -2,7 +2,7 @@
 layout (location = 0) in vec2 coord2d;
 
 uniform mat4 transformViewport;
-uniform uint logYBase;
+uniform float logYBase;
 
 void main(void) {
     float logy = log(coord2d.y) / log(logYBase);

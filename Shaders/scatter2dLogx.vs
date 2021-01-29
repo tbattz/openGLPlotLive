@@ -5,7 +5,7 @@ layout (location = 1) in vec2 aOffset;
 out vec3 fColor;
 
 uniform mat4 transformViewport;
-uniform uint logXBase;
+uniform float logXBase;
 
 void main() {
     float logxOffset = log(aOffset.x) / log(logXBase);

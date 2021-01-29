@@ -100,8 +100,8 @@ namespace GLPL {
             glm::vec4 inColor = glm::vec4(markerColour, opacityRatio);
 
             // Marker Polygons
-            glUniform1ui(glGetUniformLocation(shader->Program, "logXBase"), logXBase);
-            glUniform1ui(glGetUniformLocation(shader->Program, "logYBase"), logYBase);
+            glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float)logXBase);
+            glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float)logYBase);
             glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
                                glm::value_ptr(*axesViewportTransform));
             glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
@@ -111,8 +111,8 @@ namespace GLPL {
 
             // Marker Outlines
             glm::vec4 inOutlineColor = glm::vec4(markerOutlineColour, outlineOpacityRatio);
-            glUniform1ui(glGetUniformLocation(shader->Program, "logXBase"), logXBase);
-            glUniform1ui(glGetUniformLocation(shader->Program, "logYBase"), logYBase);
+            glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float)logXBase);
+            glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float)logYBase);
             glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
                                glm::value_ptr(*axesViewportTransform));
             glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inOutlineColor));

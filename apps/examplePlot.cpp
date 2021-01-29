@@ -160,12 +160,12 @@ int main(int argc, char **argv) {
     yVec17.reserve(2000);
     for(unsigned int i=0; i<=100; i++) {
         xVec17.push_back(10*(i+1)/1000.0);
-        yVec17.push_back(std::log2(10*(i+1)/1000.0));
+        yVec17.push_back(std::log10(10*(i+1)/1000.0));
     }
     for (unsigned int i=0; i<=1900; i++) {
         // Update Graph 17
         xVec17.push_back(5*(i+1));
-        yVec17.push_back(std::log2(5*(i+1)));
+        yVec17.push_back(std::log10(5*(i+1)));
     }
 
 
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
 
     // Axes 3
     std::shared_ptr<GLPL::Axes> axes3Pt = myplot->addAxes(0.5f, 0.0f, 0.5f, 1.0f);
-    axes3Pt->setLogScale(true, 2, GLPL::X_AXES);
+    axes3Pt->setLogScale(true, 10, GLPL::X_AXES);
     std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line17b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line17);
     std::shared_ptr<GLPL::ILine2D> line11 = axes3Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
