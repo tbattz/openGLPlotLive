@@ -11,9 +11,12 @@
 // Project Includes
 #include "../axes/axes.h"
 #include "../rendering/ConstantXYDrawable.h"
+#include "../axes/axes2D.h"
+#include "../axes/axes3D.h"
 
 
 namespace GLPL {
+
     class Plot : public ConstantXYDrawable {
         // Plot contains sets of axes, labels and titles
     public:
@@ -23,7 +26,9 @@ namespace GLPL {
         ~Plot();
 
         // Functions
-        std::shared_ptr<GLPL::Axes> addAxes(float x, float y, float width, float height);
+        std::shared_ptr<GLPL::Axes2D> add2DAxes(float x, float y, float width, float height);
+        std::shared_ptr<GLPL::Axes3D> add3DAxes(float x, float y, float width, float height);
+        std::shared_ptr<GLPL::Axes> addAxes(float x, float y, float width, float height, AxesType axesType);
         std::shared_ptr<Axes> getAxes(unsigned int axesId);
         void removeAxes(unsigned int axesId);
         void Draw();

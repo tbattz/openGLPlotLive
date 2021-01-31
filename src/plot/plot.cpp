@@ -4,6 +4,8 @@
 
 // Project Includes
 #include "plot.h"
+#include "../axes/axes2D.h"
+#include "../axes/axes3D.h"
 
 
 namespace GLPL {
@@ -15,7 +17,7 @@ namespace GLPL {
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Add default axes
-        Plot::addAxes(0.0f, 0.0f, 0.5f, 1.0f);
+        Plot::addAxes(0.0f, 0.0f, 0.5f, 1.0f, AXES_2D);
 
     }
 
@@ -23,12 +25,34 @@ namespace GLPL {
 
     }
 
-    std::shared_ptr<GLPL::Axes> Plot::addAxes(float x, float y, float width, float height) {
-        // Create axes
+    std::shared_ptr<GLPL::Axes2D> Plot::add2DAxes(float x, float y, float width, float height) {
+        return std::dynamic_pointer_cast<Axes2D>(Plot::addAxes(x, y, width, height, AXES_2D));
+    }
+
+    std::shared_ptr<GLPL::Axes3D> Plot::add3DAxes(float x, float y, float width, float height) {
+        return std::dynamic_pointer_cast<Axes3D>(Plot::addAxes(x, y, width, height, AXES_3D));
+    }
+
+    std::shared_ptr<GLPL::Axes> Plot::addAxes(float x, float y, float width, float height, AxesType axesType) {
+        // Create parent dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
-        // Register child
-        std::shared_ptr<IDrawable> axes = std::make_shared<Axes>(x, y, width, height, newParentPointers);
+        // Create axes
+        std::shared_ptr<IDrawable> axes = nullptr;
+        switch(axesType) {
+            case AXES_2D: {
+                axes = std::make_shared<Axes2D>(x, y, width, height, newParentPointers);
+                break;
+            }
+            case AXES_3D: {
+                axes = std::make_shared<Axes3D>(x, y, width, height, newParentPointers);
+                break;
+            }
+            default: {
+                std::cout << "Unknown AxesType! - " << axesType << std::endl;
+            }
+        }
         std::shared_ptr<Axes> axesPt = std::dynamic_pointer_cast<Axes>(axes);
+        // Register child
         Plot::registerChild(axes);
         // Store axes
         axesMap.insert(std::pair<unsigned int, std::shared_ptr<Axes>>(axesCount, axesPt));
