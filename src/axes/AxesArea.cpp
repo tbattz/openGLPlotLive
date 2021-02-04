@@ -34,11 +34,11 @@ namespace GLPL {
         AxesArea::updateAxesViewportTransform();
 
         // Add Title
-        AxesArea::addText("Axes Title", "axes-title", 0.5, 1.12, 14, CENTRE_BOTTOM);
+        AxesArea::addText("Axes Title", "axes-title", 0.5, 1.11, 14, CENTRE_BOTTOM);
 
         // Add Axes Label
         AxesArea::addText("x label", "x-label", 0.5, -0.05, 12, CENTRE_TOP);
-        AxesArea::addText("y label", "y-label", -0.125, 0.5, 12, CENTRE_RIGHT);
+        AxesArea::addText("y label", "y-label", -0.14, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle the interactor");

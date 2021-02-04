@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
      *                	    Create Plot
        ====================================================== */
 	// Create Plot
-	std::shared_ptr<GLPL::Plot> myplot = std::make_shared<GLPL::Plot>(0.0, 0.0, 1.0, 1.0, window2->getParentDimensions());
+	std::shared_ptr<GLPL::Plot> myplot = std::make_shared<GLPL::Plot>(0.0, 0.0, 1.0, 1.0, window2->getParentDimensions(), 2, 2);
 	std::shared_ptr<GLPL::IDrawable> myPlotPt = std::dynamic_pointer_cast<GLPL::IDrawable>(myplot);
 	window2->addPlot(myPlotPt);
 	/*GLPL::Plot myplot(0.0, 0.25, 0.75, 0.75, window);
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
     axes2Pt->setYLabel("y");*/
 
     // Axes 3
-    std::shared_ptr<GLPL::Axes2D> axes3Pt = myplot->add2DAxes(0.5f, 0.0f, 0.5f, 1.0f);
+    std::shared_ptr<GLPL::Axes2D> axes3Pt = myplot->add2DAxes();
     axes3Pt->setLogScale(true, 10, GLPL::X_AXES);
     std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
     std::shared_ptr<GLPL::Line2D2Vecs> line17b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line17);

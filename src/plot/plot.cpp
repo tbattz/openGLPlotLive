@@ -10,19 +10,72 @@
 
 namespace GLPL {
 
-    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions) :
+    Plot::Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions,
+               unsigned int numHorizontal, unsigned int numVertical) :
             ConstantXYDrawable(x, y, width, height, CONSTANT_SCALE, CONSTANT_SCALE, std::move(parentDimensions)) {
 
         // Set Bounding Box Color
         boundingBoxColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Add default axes
-        Plot::addAxes(0.0f, 0.0f, 0.5f, 1.0f, AXES_2D);
+        Plot::addAxes(AXES_2D);
+
+        // Set Plot layout
+        Plot::setPlotLayout(numHorizontal, numVertical);
 
     }
 
     Plot::~Plot() {
 
+    }
+
+
+    void Plot::setPlotLayout(unsigned int newNumHorizontal, unsigned int newNumVertical) {
+        numHorizontal = newNumHorizontal;
+        numVertical = newNumVertical;
+
+        Plot::updatePlotLayout();
+    }
+
+    void Plot::updatePlotLayout() {
+        // Adjust Plot locations
+        unsigned int row = -1;
+        unsigned int col = -1;
+        float currPosHor = 0.0f;
+        float currPosVert = 0.0f;
+        float plotWidth = 1.0f / (float)numHorizontal;;
+        float plotHeight = 1.0f / (float)numVertical;;
+        for (unsigned int i=0; i < axesCount; i++) {
+            if (i % numHorizontal == 0) {
+                // Start of a new row, starts at 0
+                row += 1;
+                col = 0;
+            }
+            currPosHor = (float)col * plotWidth;
+            currPosVert = 1.0f - ((float)(row + 1) * plotHeight);
+            getAxes(i)->setPosition(currPosHor, currPosVert);
+            getAxes(i)->setSize(plotWidth, plotHeight);
+
+            col += 1;
+        }
+    }
+
+    std::shared_ptr<GLPL::Axes2D> Plot::add2DAxes() {
+        return std::dynamic_pointer_cast<Axes2D>(Plot::addAxes(AXES_2D));
+    }
+
+    std::shared_ptr<GLPL::Axes3D> Plot::add3DAxes() {
+        return std::dynamic_pointer_cast<Axes3D>(Plot::addAxes(AXES_3D));
+    }
+
+    std::shared_ptr<GLPL::Axes> Plot::addAxes(AxesType axesType) {
+        // Create axes anywhere
+        std::shared_ptr<Axes> axesPt = addAxes(0.0f, 0.0f, 1.0f, 1.0f, axesType);
+
+        // Update Axes Layout
+        Plot::updatePlotLayout();
+
+        return axesPt;
     }
 
     std::shared_ptr<GLPL::Axes2D> Plot::add2DAxes(float x, float y, float width, float height) {

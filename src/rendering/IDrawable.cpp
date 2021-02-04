@@ -19,6 +19,14 @@ std::array<float, 2> GLPL::IDrawable::getPosition() {
     return std::array<float, 2> {x, y};
 }
 
+float GLPL::IDrawable::getX() {
+    return x;
+}
+
+float GLPL::IDrawable::getY() {
+    return y;
+}
+
 float GLPL::IDrawable::getWidth() {
     return width;
 }

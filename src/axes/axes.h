@@ -34,6 +34,7 @@ namespace GLPL {
 
         void Draw();
         std::string getID();
+        std::vector<float> getAxesInfo();
 
     protected:
         // Functions

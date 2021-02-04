@@ -54,6 +54,8 @@ namespace GLPL {
 
         // Functions
         std::array<float, 2> getPosition();
+        float getX();
+        float getY();
         float getWidth();
         float getHeight();
         int getWidthPx();
