@@ -1,4 +1,6 @@
-#version 330 core
+#version 310 es
+
+precision highp float;
 
 uniform vec4 colPos;
 uniform vec4 colNeg;

@@ -33,8 +33,10 @@ namespace GLPL {
     void Window::initGLFW() {
         // Init GLFW
         glfwInit();
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
         glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE); // Set core profile
 
         // Make background transparent
@@ -54,7 +56,7 @@ namespace GLPL {
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Screen Properties
-        window = glfwCreateWindow(getWidthPx(),getHeightPx(),"openGLPlotLive",nullptr,nullptr);
+        window = glfwCreateWindow(getWidthPx(),getHeightPx(),"openGLPlotLive",glfwGetPrimaryMonitor(),nullptr);
         glfwMakeContextCurrent(window);
 
         // Initialise GLAD

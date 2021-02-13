@@ -1,4 +1,4 @@
-#version 330 core
+#version 310 es
 layout (location = 0) in vec2 coord2d;
 
 uniform mat4 transformViewport;
