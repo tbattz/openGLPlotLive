@@ -1,7 +1,7 @@
 ## Based on https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/
 
-find_package(Doxygen REQUIRED)
-find_package(Sphinx REQUIRED)
+find_package(Doxygen)
+find_package(Sphinx)
 
 # Find the headers
 get_target_property(OPENGLPLOTLIVE_PUBLIC_HEADER_DIR openGLPlotLive INTERFACE_INCLUDE_DIRECTORIES)

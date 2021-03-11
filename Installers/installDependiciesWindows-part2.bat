@@ -15,7 +15,6 @@ if exist "%UserProfile%\Downloads\glfw\" (
 ) else (
 	echo Downloading GLFW.
 	git clone https://github.com/glfw/glfw.git
-	cd glm && git checkout 0.9.7 && cd ..
 )
 :: Copy Required includes and Libraries
 cd glfw
@@ -45,14 +44,26 @@ xcopy /E/I/y glm\glm %ORIGINAL%\include\glm
 
 :: Download FreeType
 call:echoblue " =============================== FreeType ================================"
-if exist "%UserProfile%\Downloads\freetype-2.3.5-1-setup.exe" (
-	echo freetype-2.3.5-1-setup.exe already downloaded.
+if exist "%UserProfile%\Downloads\ft271.zip" (
+	echo ft271.zip already downloaded.
 ) else (
 	echo Downloading FreeType.
-	%UserProfile%\Downloads\wget.exe --no-check-certificate https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-setup.exe
-	start /w %UserProfile%\Downloads\freetype-2.3.5-1-setup.exe
+	%UserProfile%\Downloads\wget.exe --no-check-certificate https://sourceforge.net/projects/freetype/files/freetype2/2.7.1/ft271.zip
+    call:ECHOGREEN "Please unzip %UserProfile%\Downloads\ft271.zip before pressing enter."
+    set /p answer=Press enter to continue
 )
-
+cd ft271
+cd freetype-2.7.1
+echo %CD%
+autogen.sh
+make -j4
+make -j4
+timeout 5
+xcopy /E/I/y %UserProfile%\Downloads\ft271\freetype-2.7.1\objs\freetype.a %ORIGINAL%\Lib\
+cd ..
+cd ..
+xcopy /E/I/y "%UserProfile%\Downloads\ft271\freetype-2.7.1\include\ft2build.h" %ORIGINAL%\include\
+xcopy /E/I/y "%UserProfile%\Downloads\ft271\freetype-2.7.1\include\*" %ORIGINAL%\include\
 
 :: Return to original directory
 cd %ORIGINAL%
