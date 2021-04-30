@@ -1,4 +1,4 @@
-:: Only run after installDependiciesWindows.bat has completed successfully
+:: Only run after installDependenciesWindows.bat has completed successfully
 :: Must run in a new command prompt, to get the updated PATHS
 echo off
 CALL:echored "IMPORTANT: REMOVE CYGWIN FROM PATH BEFORE INSTALLING."
