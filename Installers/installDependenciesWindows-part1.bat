@@ -91,7 +91,7 @@ rundll32 sysdm.cpl,EditEnvironmentVariables
 
 :: Return to original directory
 cd %ORIGINAL%\Installers
-CALL:echored "IMPORTANT: Now open a NEW command prompt and run installDependiciesWindowsPart2.bat."
+CALL:echored "IMPORTANT: Now open a NEW command prompt and run installDependenciesWindowsPart2.bat."
 
 :: Functions
 :ECHORED

@@ -99,12 +99,12 @@ A few scripts have been created to automate the installation process. In the eve
 ### Linux (Ubuntu)
 On Ubuntu these dependencies can be installed by running
 ```
-sudo chmod +x installDependicies.sh
-./installDependiciesUbuntu.txt
+sudo chmod +x installDependencies.sh
+./installDependenciesUbuntu.txt
 ```
 ## Manual Install
 ### Linux (Ubuntu)
-* Building dependicies
+* Building Dependencies
 	* cmake
 	```
 	sudo apt-get install cmake

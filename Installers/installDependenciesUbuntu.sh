@@ -1,6 +1,6 @@
 #!/bin/bash
-# Make script executable with sudo chmod +x installDependicies.sh
-# Run script without sudo.     ./installDependicies.
+# Make script executable with sudo chmod +x installDependencies.sh
+# Run script without sudo.     ./installDependencies.
 
 # Get number of cores
 NPROC=$(nproc)
