@@ -39,13 +39,13 @@ if not exist "%ProgramFiles%\mingw-w64\" (
 call:echoblue " =================================== CMake ===================================="
 if not exist "%ProgramFiles%\CMake\bin\" (
 	echo CMake not installed.
-	if exist "%UserProfile%\Downloads\cmake-3.7.1-win64-x64.msi" (
-		echo cmake-3.7.1-win64-x64.msi already downloaded.
+	if exist "%UserProfile%\Downloads\cmake-3.20.1-windows-x86_64.msi" (
+		echo cmake-3.20.1-windows-x86_64 already downloaded.
 	) else (
 		echo Downloading CMake.
-		"%UserProfile%\Downloads\wget.exe" --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1-win64-x64.msi
+		"%UserProfile%\Downloads\wget.exe" --no-check-certificate https://cmake.org/files/v3.20/cmake-3.20.1-windows-x86_64.msi
 	)
-	start /w %UserProfile%\Downloads\cmake-3.7.1-win64-x64.msi
+	start /w %UserProfile%\Downloads\cmake-3.20.1-windows-x86_64.msi
 ) else (
 	echo CMake already installed.
 )
@@ -55,7 +55,7 @@ call:echoblue " ==================================== Git =======================
 if not exist "%ProgramFiles%\Git\cmd\" (
 	echo Git not installed.
 	if exist "%UserProfile%\Downloads\git-2.11.0-64-bit.exe" (
-		echo cmake-3.7.1-win64-x64.msi already downloaded.
+		echo git-2.11.0-64-bit.exe already downloaded.
 	) else (
 		echo Downloading Git.
 		"%UserProfile%\Downloads\wget.exe" --no-check-certificate https://github.com/git-for-windows/git/releases/download/v2.11.0.windows.1/Git-2.11.0-64-bit.exe
@@ -67,13 +67,13 @@ if not exist "%ProgramFiles%\Git\cmd\" (
 
 :: Download GnuMake for Windows
 call:echoblue " =================================== GnuMake ===================================="
-if not exist "%ProgramFiles(x86)%\GnuWin32\bin\" (
+if not exist "%ProgramFiles(x86)%\GnuWin32\bin\make.exe" (
 	echo GnuMake not installed.
 	if exist "%UserProfile%\Downloads\make-3.81.exe" (
 		echo make-3.81.exe already downloaded.
 	) else (
 		echo Downloading GnuMake.
-		"%UserProfile%\Downloads\wget.exe" --no-check-certificate http://gnuwin32.sourceforge.net/downlinks/make.php
+		"%UserProfile%\Downloads\wget.exe" --no-check-certificate -O make-3.81.exe http://gnuwin32.sourceforge.net/downlinks/make.php
 	)
 	start /w %UserProfile%\Downloads\make-3.81.exe
 ) else (
@@ -83,7 +83,7 @@ if not exist "%ProgramFiles(x86)%\GnuWin32\bin\" (
 :: Add to path
 call:ECHOGREEN "Add the following to your environmental variables."
 echo %ProgramFiles(x86)%\GnuWin32\bin
-echo %ProgramFiles%\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev0\mingw64\bin
+call:echored "%ProgramFiles%\mingw-w64\x86_64-<ENTER_VERSION_NUMBER_HERE>\mingw64\bin"
 echo %ProgramFiles%\CMake\bin
 echo %ProgramFiles%\Git\cmd
 call:ECHOGREEN "End of Vars."
