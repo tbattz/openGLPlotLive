@@ -94,7 +94,7 @@ add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E 
 
 # Dependencies
 ##  Automated Install
-A few scripts have been created to automate the installation process. In the event these fail, you may have to compile the dependencies manually. Support for Windows systems have been removed as of 1/2/2017. If may still be possible to complie on Windows, check the Windows-old-store branch for a bit of help for installation of some of the required packages.
+A few scripts have been created to automate the installation process. In the event these fail, you may have to compile the dependencies manually.
 
 ### Linux (Ubuntu)
 On Ubuntu these dependencies can be installed by running
