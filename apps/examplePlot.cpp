@@ -230,7 +230,7 @@ int main(int argc, char **argv) {
         line12b->updateInternalData();
 
         // Update graph 13
-        line13b->dataPtX->push_back(i);
+        line13b-> dataPtX->push_back(i);
         yVal13 = cos((i) / (2*25*M_PI)) * exp(-(i)/(25*8*0.5*M_PI));
         line13b->dataPtY->push_back(yVal13);
         line13b->updateInternalData();
