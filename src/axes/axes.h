@@ -28,6 +28,7 @@ namespace GLPL {
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
+        void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
 
         // PressButton
         void setButtonState(const std::string& buttonName, bool activeState);
@@ -43,7 +44,6 @@ namespace GLPL {
         // Data
         // Axes Area
         std::shared_ptr<AxesArea> axesArea;
-
     };
 }
 
