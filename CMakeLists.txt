@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.10)
 # Setup project
 project(openGLPlotLive-proj)
 
+# Resolves issue with unable to debug with CLion, reverts back to g++9
+add_compile_options(-gdwarf-4)
+
 # Set OpenGL Policy
 set(OpenGL_GL_PREFERENCE "GLVND")
 

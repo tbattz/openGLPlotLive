@@ -1,5 +1,8 @@
 project(examplePlot)
 
+# Resolves issue with unable to debug with CLion, reverts back to g++9
+add_compile_options(-gdwarf-4)
+
 # Create the exectuable
 add_executable(${PROJECT_NAME} examplePlot.cpp)
 
