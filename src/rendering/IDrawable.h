@@ -94,6 +94,7 @@ namespace GLPL {
         virtual std::string getID() = 0;
         // Mouse Interaction
         bool canMouseOver();
+        void setCanMouseOver(bool canMouseOver);
         bool isHoverable();
         void setHoverable(bool isHoverable);
         bool isHovered();

@@ -23,11 +23,11 @@ namespace GLPL {
 
         // Create tooltip
         std::shared_ptr<ParentDimensions> buttonParentDimensions = createParentDimensions();
-        tooltipPt = std::make_shared<Tooltip>("", 0.0f, -0.1f, 10.0f, buttonParentDimensions);
+        tooltipPt = std::make_shared<Tooltip>(tooltipText, 0.5f, -0.2f, 10.0f, buttonParentDimensions);
         tooltipPt->setAttachLocation(CENTRE_TOP);
-        tooltipPt->setTextString(std::move(tooltipText));
         tooltipPt->setFontSize(8.0);
         tooltipPt->setTextColor(glm::vec3(0.0f, 0.0f, 0.0f));
+        PressButton::registerChild(tooltipPt);
     }
 
     void PressButton::Draw() {

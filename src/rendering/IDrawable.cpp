@@ -141,7 +141,9 @@ void GLPL::IDrawable::drawMouseOverBox() {
 
     // Draw mouse over box of children
     for(auto & i : children) {
-        i->drawMouseOverBox();
+        if (i->canMouseOver()) {
+            i->drawMouseOverBox();
+        }
     }
 }
 
@@ -183,6 +185,10 @@ float GLPL::IDrawable::convertVerticalPx2ObjRel(float vertSizePx) {
 
 bool GLPL::IDrawable::canMouseOver() {
     return mouseOverable;
+}
+
+void GLPL::IDrawable::setCanMouseOver(bool canMouseOver) {
+    mouseOverable = canMouseOver;
 }
 
 bool GLPL::IDrawable::isHoverable() {

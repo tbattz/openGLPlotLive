@@ -14,6 +14,10 @@ namespace GLPL {
 
         // Setup background buffers
         Tooltip::setupBackgroundBuffers();
+
+        // Setup not hoverable or mouse overable
+        setCanMouseOver(false);
+        setHoverable(false);
     }
 
     void Tooltip::Draw() {
