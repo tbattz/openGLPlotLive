@@ -139,5 +139,9 @@ namespace GLPL {
         return std::make_tuple(0.0, 0.0);
     }
 
+    void Grid::drawLegendEntry(std::shared_ptr<ParentDimensions>) {
+
+    }
+
 }
 

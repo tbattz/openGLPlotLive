@@ -27,7 +27,7 @@ namespace GLPL {
     void Axes3D::addText(const char* textString, float x, float y, float fontSize, AttachLocation attachLocation) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
-        // Register Child
+        // Create Text String
         std::shared_ptr<IDrawable> textStringObj = std::make_shared<TextString>(textString, x, y, fontSize, newParentPointers);
         std::shared_ptr<TextString> textStringPt = std::dynamic_pointer_cast<TextString>(textStringObj);
         // Set pin position
@@ -61,13 +61,13 @@ namespace GLPL {
     }
 
     std::shared_ptr<ILine2D> Axes3D::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,
-                                           float opacityRatio) {
-        return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
+                                           float opacityRatio, std::string label) {
+        return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio, std::move(label));
     }
 
     std::shared_ptr<IScatterPlot> Axes3D::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                       glm::vec3 colour, float opacityRatio, MarkerType markerType) {
-        return axesArea->addScatterPlot(dataPtX, dataPtY, colour, opacityRatio, markerType);
+                                                       glm::vec3 colour, float opacityRatio, MarkerType markerType, std::string label) {
+        return axesArea->addScatterPlot(dataPtX, dataPtY, colour, opacityRatio, markerType, std::move(label));
     }
 
     void Axes3D::setTitle(std::string newTitle) {

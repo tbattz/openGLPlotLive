@@ -12,6 +12,7 @@
 #include "../interaction/PressButton.h"
 #include "../lines/Line2D2Vecs.h"
 #include "Grid.h"
+#include "Legend.h"
 #include "../scatterPlot/IScatterPlot.h"
 #include <cmath>
 
@@ -46,9 +47,9 @@ namespace GLPL {
         void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
         // Plotables
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0);
+                LineType lineType=SINGLE_LINE, glm::vec3 colour=LC_WHITE, float opacityRatio=1.0, std::string label = "");
         std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
+                glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=MARKER_CIRCLE, std::string label = "");
         std::shared_ptr<Plotable> getPlotable(int plotableId);
         void removePlotable(int plotableId);
         // Text
@@ -68,7 +69,11 @@ namespace GLPL {
         float convertMouseX2RelativeX();
         float convertMouseY2RelativeY();
         int getHoverCursor();
-        // Other
+        // Legend
+        void showLegend(bool legendVisibility);
+        void setLegendAttachLocation(AttachLocation newAttachLocation);
+        std::shared_ptr<std::unordered_map<int, std::shared_ptr<Plotable>>> getPlotableMap();
+        // Other;
         void updateAxesViewportTransform();
         void setPosition(float newX, float newY);
         void setSize(float newWidth, float newHeight);
@@ -107,6 +112,9 @@ namespace GLPL {
         std::shared_ptr<TextString> interactorText;
         // Grid
         std::shared_ptr<Grid> grid;
+        // Legend
+        bool legendVisible = false;
+        std::shared_ptr<Legend> legend;
         // Zoom Interaction
         float zoomRatio = 0.2;  // 10% on each scroll
         // Drag Zoom Box
@@ -155,6 +163,7 @@ namespace GLPL {
         void createInteractor();
         void createGrid();
         void createZoomBox();
+        void createLegend();
         void setPlotableLogModes();
 
     };

@@ -152,31 +152,31 @@ namespace GLPL {
         float yHalfHeight = convertVerticalPx2ObjRel(markerSizePx);
 
         switch(markerType) {
-            case SQUARE: {
+            case MARKER_SQUARE: {
                 IScatterPlot2D::generateMarkerSquareVerts(xHalfWidth, yHalfHeight);
                 break;
             }
-            case CIRCLE: {
+            case MARKER_CIRCLE: {
                 IScatterPlot2D::generateMarkerCircleVerts(xHalfWidth, yHalfHeight);
                 break;
             }
-            case DIAMOND: {
+            case MARKER_DIAMOND: {
                 IScatterPlot2D::generateMarkerEquallySpaced(4, M_PI/2.0, xHalfWidth, yHalfHeight);
                 break;
             }
-            case TRIANGLE_DOWN: {
+            case MARKER_TRIANGLE_DOWN: {
                 IScatterPlot2D::generateMarkerEquallySpaced(3, -M_PI/2.0, xHalfWidth, yHalfHeight);
                 break;
             }
-            case TRIANGLE_UP: {
+            case MARKER_TRIANGLE_UP: {
                 IScatterPlot2D::generateMarkerEquallySpaced(3, M_PI/2.0, xHalfWidth, yHalfHeight);
                 break;
             }
-            case TRIANGLE_LEFT: {
+            case MARKER_TRIANGLE_LEFT: {
                 IScatterPlot2D::generateMarkerEquallySpaced(3, M_PI, xHalfWidth, yHalfHeight);
                 break;
             }
-            case TRIANGLE_RIGHT: {
+            case MARKER_TRIANGLE_RIGHT: {
                 IScatterPlot2D::generateMarkerEquallySpaced(3, 0.0, xHalfWidth, yHalfHeight);
                 break;
             }

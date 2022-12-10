@@ -66,5 +66,13 @@ namespace GLPL {
         logYBase = newLogYBase;
     }
 
+    void Plotable::setLabel(std::string newLabel) {
+        label = std::move(newLabel);
+    }
+
+    std::string Plotable::getLabel() {
+        return label;
+    }
+
 
 }

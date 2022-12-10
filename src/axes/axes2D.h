@@ -24,10 +24,10 @@ namespace GLPL {
         void removeTextString(unsigned int textStringId);
         // Line
         std::shared_ptr<ILine2D> addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType = SINGLE_LINE,
-                                         glm::vec3 colour = LC_WHITE, float opacityRatio=1.0);
+                                         glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, std::string label = "");
         // Scatter Plots
         std::shared_ptr<IScatterPlot> addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=CIRCLE);
+                                                     glm::vec3 colour = LC_WHITE, float opacityRatio=1.0, MarkerType markerType=MARKER_CIRCLE, std::string label = "");
 
         // Labels
         void setTitle(std::string newTitle);

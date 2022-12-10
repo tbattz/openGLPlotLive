@@ -178,5 +178,9 @@ namespace GLPL {
         return std::make_tuple(0,0);
     }
 
+    void Scatter2D2Vecs::drawLegendEntry(std::shared_ptr<ParentDimensions>) {
+
+    }
+
 
 }

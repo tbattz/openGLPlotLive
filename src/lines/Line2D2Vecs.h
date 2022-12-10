@@ -29,6 +29,8 @@ namespace GLPL  {
         std::tuple<float, float> getClosestPoint(float xVal);
         std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax);
 
+        void drawLegendEntry(std::shared_ptr<ParentDimensions>);
+
         std::vector<float> getInternalData();
         std::vector<unsigned int> getInternalIndices();
 
@@ -41,6 +43,8 @@ namespace GLPL  {
 
         std::vector<float> internalData;    // This is sorted by x values
         std::vector<unsigned int> internalIndices;   // This keeps track of the indices in their original order, for plotting
+
+        std::vector<float> legendLineData = {-1.0f, 0.0f, 1.0f, 0.0f};
 
     };
 

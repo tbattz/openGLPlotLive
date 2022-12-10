@@ -61,13 +61,13 @@ namespace GLPL {
     }
 
     std::shared_ptr<ILine2D> Axes2D::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY, LineType lineType, glm::vec3 colour,
-                                           float opacityRatio) {
-        return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio);
+                                           float opacityRatio, std::string label) {
+        return axesArea->addLine(dataPtX, dataPtY, lineType, colour, opacityRatio, std::move(label));
     }
 
     std::shared_ptr<IScatterPlot> Axes2D::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                       glm::vec3 colour, float opacityRatio, MarkerType markerType) {
-        return axesArea->addScatterPlot(dataPtX, dataPtY, colour, opacityRatio, markerType);
+                                                       glm::vec3 colour, float opacityRatio, MarkerType markerType, std::string label) {
+        return axesArea->addScatterPlot(dataPtX, dataPtY, colour, opacityRatio, markerType, std::move(label));
     }
 
     void Axes2D::setTitle(std::string newTitle) {

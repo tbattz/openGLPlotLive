@@ -29,12 +29,18 @@ namespace GLPL {
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
         virtual std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) = 0;
 
+        virtual void drawLegendEntry(std::shared_ptr<ParentDimensions>) = 0;
+
         void setLogModes(bool newLogX, bool newLogY);
         void setLogXBase(unsigned int newLogXBase);
         void setLogYBase(unsigned int newLogYBase);
 
+        void setLabel(std::string newLabel);
+        std::string getLabel();
+
     protected:
         std::shared_ptr<glm::mat4> axesViewportTransform = std::make_shared<glm::mat4>(glm::mat4(1.0f));
+        std::string label = "";
         int plotableId = -1;
         bool logX = false;
         bool logY = false;

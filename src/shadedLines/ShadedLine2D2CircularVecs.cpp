@@ -201,4 +201,8 @@ namespace GLPL {
         return std::make_tuple(0,0);
     }
 
+    void ShadedLine2D2CircularVecs::drawLegendEntry(std::shared_ptr<ParentDimensions>) {
+
+    }
+
 }

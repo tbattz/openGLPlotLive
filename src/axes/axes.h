@@ -29,6 +29,8 @@ namespace GLPL {
         void setAxesBoxOn(bool axesBoxOnBool);
         void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
         void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
+        void showLegend(bool legendVisibility);
+        void setLegendAttachLocation(AttachLocation newAttachLocation);
 
         // PressButton
         void setButtonState(const std::string& buttonName, bool activeState);

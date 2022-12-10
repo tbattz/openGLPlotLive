@@ -38,7 +38,7 @@ namespace GLPL {
 
         // Add Axes Label
         AxesArea::addText("x label", "x-label", 0.5, -0.05, 12, CENTRE_TOP);
-        AxesArea::addText("y label", "y-label", -0.14, 0.5, 12, CENTRE_RIGHT);
+        AxesArea::addText("y label", "y-label", -0.11, 0.5, 12, CENTRE_RIGHT);
 
         // Add Buttons
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle the interactor");
@@ -55,6 +55,9 @@ namespace GLPL {
 
         // Create Zoom Box
         AxesArea::createZoomBox();
+
+        // Create legend
+        AxesArea::createLegend();
 
     }
 
@@ -112,6 +115,11 @@ namespace GLPL {
         // Draw Axes box
         if (buttonMap["AxesBox"]->isActive()) {
             AxesArea::drawAxesBox();
+        }
+
+        // Draw legend
+        if (legendVisible) {
+            legend->Draw();
         }
 
     }
@@ -307,7 +315,7 @@ namespace GLPL {
     }
 
     std::shared_ptr<ILine2D> AxesArea::addLine(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-            LineType lineType, glm::vec3 colour, float opacityRatio) {
+            LineType lineType, glm::vec3 colour, float opacityRatio, std::string label) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Create Line
@@ -333,6 +341,7 @@ namespace GLPL {
         // Set Attributes
         linePt->setLineColour(colour);
         linePt->setOpacityRatio(opacityRatio);
+        linePt->setLabel(std::move(label));
 
         // Register Children
         AxesArea::registerChild(lineObj);
@@ -342,6 +351,11 @@ namespace GLPL {
         linePt->setPlotableId(nextPlotableId);
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, linePt));
         nextPlotableId += 1;
+
+        // Add to legend
+        if (!linePt->getLabel().empty()) {
+            legend->addPlotableToLegend(linePt->getLabel(), linePt);
+        }
 
         // Update log bools
         setPlotableLogModes();
@@ -375,7 +389,7 @@ namespace GLPL {
     }
 
     std::shared_ptr<IScatterPlot> AxesArea::addScatterPlot(std::vector<float> *dataPtX, std::vector<float> *dataPtY,
-                                                           glm::vec3 colour, float opacityRatio, MarkerType markerType) {
+                                                           glm::vec3 colour, float opacityRatio, MarkerType markerType, std::string label) {
         // Create Parent Dimensions
         std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
         // Create Scatter Plot
@@ -391,6 +405,7 @@ namespace GLPL {
         scatterPt->setOpacityRatio(opacityRatio);
         scatterPt->setOutlineOpacityRatio(1.25f*opacityRatio);
         scatterPt->setMarkerType(markerType);
+        scatterPt->setLabel(std::move(label));
 
         // Register Children
         AxesArea::registerChild(scatterObj);
@@ -400,6 +415,11 @@ namespace GLPL {
         scatterPt->setPlotableId(nextPlotableId);
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<IScatterPlot>>(nextPlotableId, scatterPt));
         nextPlotableId += 1;
+
+        // Add to legend
+        if (!scatterPt->getLabel().empty()) {
+            legend->addPlotableToLegend(scatterPt->getLabel(), scatterPt);
+        }
 
         // Update log bools
         setPlotableLogModes();
@@ -544,6 +564,18 @@ namespace GLPL {
         } else {
             return 0;
         }
+    }
+
+    void AxesArea::showLegend(bool legendVisibility = true) {
+        legendVisible = legendVisibility;
+    }
+
+    void AxesArea::setLegendAttachLocation(AttachLocation newAttachLocation) {
+        legend->setAttachLocation(newAttachLocation);
+    }
+
+    std::shared_ptr<std::unordered_map<int, std::shared_ptr<Plotable>>> AxesArea::getPlotableMap() {
+        return std::make_shared<std::unordered_map<int, std::shared_ptr<Plotable>>>(plotableMap);
     }
 
     void AxesArea::removeTextString(std::string textStringId) {
@@ -1199,6 +1231,18 @@ namespace GLPL {
         zoomBoxLine->setPlotableId(nextPlotableId);
         plotableMap.insert(std::pair<unsigned int, std::shared_ptr<ILine2D>>(nextPlotableId, zoomBoxLine));
         nextPlotableId += 1;
+
+    }
+
+    void AxesArea::createLegend() {
+        // Create Parent Dimensions
+        std::shared_ptr<ParentDimensions> newParentPointers = IDrawable::createParentDimensions();
+        // Create legend
+        legend = std::make_shared<Legend>(0.98, 0.05, newParentPointers);
+        legend->setAttachLocation(BOTTOM_RIGHT);
+        legend->setHoverable(false);
+        // Register Children
+        AxesArea::registerChild(legend);
 
     }
 

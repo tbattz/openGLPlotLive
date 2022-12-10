@@ -17,13 +17,13 @@
 namespace GLPL {
 
     enum MarkerType {
-        SQUARE,
-        CIRCLE,
-        DIAMOND,
-        TRIANGLE_DOWN,
-        TRIANGLE_UP,
-        TRIANGLE_LEFT,
-        TRIANGLE_RIGHT
+        MARKER_SQUARE,
+        MARKER_CIRCLE,
+        MARKER_DIAMOND,
+        MARKER_TRIANGLE_DOWN,
+        MARKER_TRIANGLE_UP,
+        MARKER_TRIANGLE_LEFT,
+        MARKER_TRIANGLE_RIGHT
     };
 
     class IScatterPlot : public Plotable {
@@ -50,7 +50,7 @@ namespace GLPL {
         float opacityRatio = 0.7;
         float outlineOpacityRatio = 1.0;
         float markerSizePx = 15; // Width/Height of the marker in pixels
-        MarkerType markerType = SQUARE;
+        MarkerType markerType = MARKER_SQUARE;
 
     };
 

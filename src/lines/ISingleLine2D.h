@@ -34,11 +34,15 @@ namespace GLPL {
                                     const void *vertDataAddress, const void *indicesDataAddress,
                                     int strideBytes, int glType=GL_FLOAT);
 
+        void createAndSetupLegendBuffers(int dataSizeBytes, const void *dataAddress,
+                                         int strideBytes, int glType=GL_FLOAT);
+
         void drawData(int nPts, bool selected);
 
     protected:
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
+        GLuint legendLineVAO, legendLineVBO;
 
         // Functions
         std::shared_ptr<Shader> selectShader();

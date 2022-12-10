@@ -148,25 +148,26 @@ int main(int argc, char **argv) {
     axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
 
 
-    // Axes 2 - Simple Scatter, Line and Polygon Plot
+    // Axes 2 - Simple Scatter, Line and Rectangle Plot
     // Create axes
     std::shared_ptr<GLPL::Axes2D> axes2Pt = myplot->add2DAxes();
     // Add Lines
-    std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line9 = axes2Pt->addLine(&xVec9, &yVec9, GLPL::SINGLE_LINE, LC_RED, 0.5, "Sine Wave");
+    std::shared_ptr<GLPL::ILine2D> line11 = axes2Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5, "Shaded Triangle");
     // Get pointer to add data to internal store
-    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9s = axes2Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5, GLPL::MARKER_CIRCLE, "Markers");
     // Set line configuration
     line9s->setMarkerColour(glm::vec3(1.0f, 0.5f, 0.5f));
     line9s->setOpacityRatio(0.6);
     line9s->setMarkerOutlineColour(glm::vec3(0.0f, 1.0f, 1.0f));
     line9s->setOutlineOpacityRatio(0.8);
-    line9s->setMarkerType(GLPL::CIRCLE);
+    line9s->setMarkerType(GLPL::MARKER_CIRCLE);
     line9s->setMarkerSizePx(15);
     // Set axes configuration
     axes2Pt->setTitle("Simple Plots");
     axes2Pt->setXLabel("x");
     axes2Pt->setYLabel("y");
+    axes2Pt->showLegend(true);
 
 
     // Axes 3 - Log Plot

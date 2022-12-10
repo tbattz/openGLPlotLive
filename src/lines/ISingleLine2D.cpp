@@ -60,6 +60,27 @@ namespace GLPL {
     }
 
 
+    void ISingleLine2D::createAndSetupLegendBuffers(int dataSizeBytes, const void *dataAddress,
+                                                    int strideBytes, int glType) {
+        // Create buffer
+        glGenVertexArrays(1, &legendLineVAO);
+        glGenBuffers(1, &legendLineVBO);
+
+        /* Setup Buffers */
+        // VAO
+        glBindVertexArray(legendLineVAO);
+        // VBO
+        glBindBuffer(GL_ARRAY_BUFFER, legendLineVBO);
+        glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_STATIC_DRAW);
+
+        /* Position Attributes */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, glType, GL_FALSE, strideBytes, (GLvoid *) 0);
+
+        glBindVertexArray(0); // Unbind VAO
+    }
+
+
     void ISingleLine2D::drawData(int nPts, bool selected) {
         // Draws the data currently stored in the line corresponding to the given VAO
         if (nPts > 0) {
