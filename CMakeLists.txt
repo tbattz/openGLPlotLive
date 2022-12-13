@@ -10,8 +10,8 @@ add_compile_options(-gdwarf-4)
 # Set OpenGL Policy
 set(OpenGL_GL_PREFERENCE "GLVND")
 
-# Add c11++ flag to compiler
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing")
+# Add c++14 flag to compiler
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 
 # Add Cmake Module Path

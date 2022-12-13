@@ -1,7 +1,4 @@
-if (UNIX)
-    set(SPHINX_EXECUTABLE /usr/local/bin/sphinx-build)
-
-elseif(LINUX)
+if(LINUX OR UNIX)
     # Try and find sphinx-build
     find_program(SPHINX_EXECUTABLE
             NAMES sphinx-build

@@ -443,23 +443,23 @@ std::array<float, 2> GLPL::IDrawable::generateXYPositionFromPin() {
             break;
         }
         case CENTRE_TOP: {
-            xyPos = {x - (width/2.0), y - height};
+            xyPos = {x - (width/2.0f), y - height};
             break;
         }
         case CENTRE_BOTTOM: {
-            xyPos = {x - (width/2.0), y};
+            xyPos = {x - (width/2.0f), y};
             break;
         }
         case CENTRE_LEFT: {
-            xyPos = {x, y - (height/2.0)};
+            xyPos = {x, y - (height/2.0f)};
             break;
         }
         case CENTRE_RIGHT: {
-            xyPos = {x - width, y - (height/2.0)};
+            xyPos = {x - width, y - (height/2.0f)};
             break;
         }
         case CENTRE: {
-            xyPos = {x - (width/2.0), y - (height/2.0)};
+            xyPos = {x - (width/2.0f), y - (height/2.0f)};
             break;
         }
         default: {

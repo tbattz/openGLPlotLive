@@ -47,9 +47,9 @@ sudo cp -r ~/Downloads/glm/glm /usr/local/include
 
 echo -e "\e[44m ======================= FreeType - Font Rendering Library ========================= \e[49m"
 if [ ! -f ~/Downloads/freetype.tar.bz2 ]; then
-	wget -O ~/Downloads/freetype.tar.bz2 "http://download.savannah.gnu.org/releases/freetype/freetype-2.4.0.tar.bz2"
+	wget -O ~/Downloads/freetype.tar.bz2 "http://download.savannah.gnu.org/releases/freetype/freetype-2.7.1.tar.bz2"
 fi
 tar xvjf ~/Downloads/freetype.tar.bz2
-cd ~/Downloads/freetype-2.4.0
+cd ~/Downloads/freetype-2.7.1
 # Copy include files
 sudo cp -r include/* /usr/local/include
