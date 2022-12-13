@@ -92,6 +92,82 @@ namespace GLPL {
 
     }
 
+
+    void IScatterPlot2D::createAndSetupLegendBuffers(int dataSizeBytes, const void *dataAddress,
+                                                     int markerVertSizeBytes, const void *markerVertsAddress,
+                                                     int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress) {
+        IScatterPlot2D::createAndSetupLegendBuffersMarkerPolygons(dataSizeBytes, dataAddress, markerVertSizeBytes, markerVertsAddress);
+        IScatterPlot2D::createAndSetupLegendBuffersMarkerOutline(dataSizeBytes, dataAddress, markerOutlineIndicesDataSizeBytes, markerOutlineIndicesDataAddress);
+    }
+
+
+    void IScatterPlot2D::createAndSetupLegendBuffersMarkerPolygons(int dataSizeBytes, const void *dataAddress,
+                                                             int markerVertsSizeBytes, const void *markerVertsAddress) {
+        // Marker Instance
+        // Create Buffers
+        glGenBuffers(1, &legendMarkerVBO);
+        glGenVertexArrays(1, &legendScatterVAO);
+        glGenBuffers(1, &legendScatterVBO);
+        glBindVertexArray(legendScatterVAO);
+
+        // Setup Buffers
+        glBindBuffer(GL_ARRAY_BUFFER, legendMarkerVBO);
+        glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Data Pts
+        // Setup Buffers
+        glBindBuffer(GL_ARRAY_BUFFER, legendScatterVBO);
+        // Copy data into buffer
+        glBufferData(GL_ARRAY_BUFFER, markerVertsSizeBytes, markerVertsAddress, GL_STATIC_DRAW);
+
+        // Position Attributes
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+        // Set Instance Data
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, legendMarkerVBO);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(1, 1); // Tell OpenGL this is an instance vertex attribute
+
+        glBindVertexArray(0);
+    }
+
+    void IScatterPlot2D::createAndSetupLegendBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
+                                                            int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress) {
+        // Marker Instance
+        // Create Buffers
+        glGenBuffers(1, &legendMarkerOutlineVBO);
+        glGenVertexArrays(1, &legendScatterOutlineVAO);
+        glGenBuffers(1, &legendScatterOutlineVBO);
+        glBindVertexArray(legendScatterOutlineVAO);
+
+        // Setup Buffers
+        glBindBuffer(GL_ARRAY_BUFFER, legendMarkerOutlineVBO);
+        glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Data Pts
+        // Setup Buffers
+        glBindBuffer(GL_ARRAY_BUFFER, legendScatterOutlineVBO);
+        // Copy data into buffer
+        glBufferData(GL_ARRAY_BUFFER, markerOutlineIndicesDataSizeBytes, markerOutlineIndicesDataAddress, GL_DYNAMIC_DRAW);
+
+        // Position Attributes
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+        // Set Instance Data
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, legendMarkerOutlineVBO);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(1, 1); // Tell OpenGL this is an instance vertex attribute
+
+        glBindVertexArray(0);
+
+    }
+
     void IScatterPlot2D::drawData(int nPts, bool selected) {
         // Draws the data currently stored in the scatter plot corresponding to the given VAO
         if (nPts > 0) {
@@ -198,6 +274,20 @@ namespace GLPL {
         glBufferData(GL_ARRAY_BUFFER, markerOutlineVertsSizeBytes, &markerOutlineVerts[0], GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+        // Update buffer
+        glBindBuffer(GL_ARRAY_BUFFER, legendScatterVBO);
+        int legendMarkerVertsSizeBytes = (int)markerVerts.size() * sizeof(markerVerts[0]);
+        glBufferData(GL_ARRAY_BUFFER, legendMarkerVertsSizeBytes, &markerVerts[0], GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Update buffer
+        glBindBuffer(GL_ARRAY_BUFFER, legendScatterOutlineVBO);
+        int legendMarkerOutlineVertsSizeBytes = (int)markerOutlineVerts.size() * sizeof(markerOutlineVerts[0]);
+        glBufferData(GL_ARRAY_BUFFER, legendMarkerOutlineVertsSizeBytes, &markerOutlineVerts[0], GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
     }
 
     void IScatterPlot2D::generateMarkerEquallySpaced(unsigned int nCirclePoints, float thetaRadStart, float xHalfWidth, float yHalfHeight) {
@@ -250,4 +340,42 @@ namespace GLPL {
     }
 
 
+    void IScatterPlot2D::drawLegendMarker(glm::mat4 rectOverallTransform, bool selected) {
+        std::shared_ptr<Shader> shader = shaderSetPt->getScatter2dShader();
+        shader->Use();
+        glm::vec4 inColor = glm::vec4(markerColour, opacityRatio);
+
+        // Marker Polygons
+        glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float)logXBase);
+        glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float)logYBase);
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
+                           glm::value_ptr(rectOverallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
+        glBindVertexArray(legendScatterVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, (int)markerVerts.size()/2.0, 1);
+        glBindVertexArray(0);
+
+        // Marker Outlines
+        glm::vec4 inOutlineColor = glm::vec4(markerOutlineColour, outlineOpacityRatio);
+        glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float)logXBase);
+        glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float)logYBase);
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
+                           glm::value_ptr(rectOverallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inOutlineColor));
+        glBindVertexArray(legendScatterOutlineVAO);
+        glDrawArraysInstanced(GL_LINE_LOOP, 0, (int)markerOutlineVerts.size()/2.0, 1);
+        glBindVertexArray(0);
+    }
+
+
+    void IScatterPlot2D::drawLegendEntry(glm::mat4 rectOverallTransform) {
+        // Draw plot
+        if (isSelected()) {
+            drawLegendMarker(rectOverallTransform, selected);
+        }
+        drawLegendMarker(rectOverallTransform, false);
+    }
+
+
 }
+

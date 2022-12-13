@@ -39,13 +39,19 @@ namespace GLPL {
 
         void drawData(int nPts, bool selected);
 
+        void drawLegendEntry(glm::mat4 rectOverallTransform);
+
     protected:
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
         GLuint legendLineVAO, legendLineVBO;
 
+        std::vector<float> legendLineData = {-1.0f, 0.0f, 1.0f, 0.0f};
+
         // Functions
         std::shared_ptr<Shader> selectShader();
+
+        void drawLegendLine(glm::mat4 rectOverallTransform, bool selected);
 
     };
 }

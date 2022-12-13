@@ -200,12 +200,12 @@ namespace GLPL {
             // Scale from (0 to 1) to (-1 to 1)
             std::array<std::array<GLfloat, 4>, 6> vertices{};
             vertices = {{
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     0.0, 0.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     0.0, 0.0},
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel + hRel)-1.0,     1.0, 0.0}
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel + hRel)-1.0f,     0.0f, 0.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            1.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel + hRel)-1.0f,     0.0f, 0.0f},
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            1.0f, 1.0f},
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel + hRel)-1.0f,     1.0f, 0.0f}
                         }};
 
             // Store vertices
@@ -252,12 +252,12 @@ namespace GLPL {
             // Scale from (0 to 1) to (-1 to 1)
             std::array<std::array<GLfloat, 4>, 6> vertices{};
             vertices = {{
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel - hRel)-1.0,     0.0, 0.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel - hRel)-1.0,     0.0, 0.0},
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel)-1.0,            1.0, 1.0},
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel - hRel)-1.0,     1.0, 0.0}
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel - hRel)-1.0f,     0.0f, 0.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            1.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel - hRel)-1.0f,     0.0f, 0.0f},
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            1.0f, 1.0f},
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel - hRel)-1.0f,     1.0f, 0.0f}
                         }};
 
             // Store vertices
@@ -303,12 +303,12 @@ namespace GLPL {
             // Scale from (0 to 1) to (-1 to 1)
             std::array<std::array<GLfloat, 4>, 6> vertices{};
             vertices = {{
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel)-1.0,            0.0, 0.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     1.0, 0.0},
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel + hRel)-1.0,     1.0, 0.0},
-                                {2.0*(xPosRel + wRel)-1.0,    2.0*(yPosRel + hRel)-1.0,     1.0, 1.0}
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel)-1.0f,            0.0f, 0.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel + hRel)-1.0f,     1.0f, 0.0f},
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel + hRel)-1.0f,     1.0f, 0.0f},
+                                {2.0f*(xPosRel + wRel)-1.0f,    2.0f*(yPosRel + hRel)-1.0f,     1.0f, 1.0f}
                         }};
 
             // Store vertices
@@ -354,12 +354,12 @@ namespace GLPL {
             // Scale from (0 to 1) to (-1 to 1)
             std::array<std::array<GLfloat, 4>, 6> vertices{};
             vertices = {{
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel)-1.0,            0.0, 0.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel - hRel)-1.0,     1.0, 0.0},
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel)-1.0,            0.0, 1.0},
-                                {2.0*(xPosRel)-1.0,           2.0*(yPosRel - hRel)-1.0,     1.0, 0.0},
-                                {2.0*(xPosRel - wRel)-1.0,    2.0*(yPosRel - hRel)-1.0,     1.0, 1.0}
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel)-1.0f,            0.0f, 0.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel - hRel)-1.0f,     1.0f, 0.0f},
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel)-1.0f,            0.0f, 1.0f},
+                                {2.0f*(xPosRel)-1.0f,           2.0f*(yPosRel - hRel)-1.0f,     1.0f, 0.0f},
+                                {2.0f*(xPosRel - wRel)-1.0f,    2.0f*(yPosRel - hRel)-1.0f,     1.0f, 1.0f}
                         }};
 
             // Store vertices

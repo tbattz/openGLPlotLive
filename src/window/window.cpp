@@ -577,7 +577,7 @@ namespace GLPL {
 
     std::shared_ptr<ParentDimensions> Window::getParentDimensions() {
         // Create parent pointers
-        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, 0.0, 0.0, getWidthPx(), getHeightPx(), shaderSetPt});
+        std::shared_ptr<ParentDimensions> parentDimensions = std::make_shared<ParentDimensions>(ParentDimensions{transform, 0, 0, getWidthPx(), getHeightPx(), shaderSetPt});
 
         return parentDimensions;
     }

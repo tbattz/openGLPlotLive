@@ -41,14 +41,6 @@ namespace GLPL {
             i->Draw();
         }
 
-        // Draw line/markers
-        for(auto & plotablePair : legendItemMap) {
-            std::shared_ptr<Rectangle> currRect = std::get<2>(plotablePair.second);
-            std::shared_ptr<Plotable> plotable = std::get<0>(plotablePair.second);
-            std::shared_ptr<ParentDimensions> parentDimensions = currRect->createParentDimensions();
-            plotable->drawLegendEntry(parentDimensions);
-        }
-
     }
 
     void Legend::createRow() {
@@ -60,6 +52,7 @@ namespace GLPL {
             float currHeight = heightOffset;
             float maxWidth = 0.0f;
 
+            // Calculate legend spacing
             for (std::pair<unsigned int, std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<Rectangle>>> textEntry : legendItemMap) {
                 std::shared_ptr<TextString> textStringPt = std::get<1>(textEntry.second);
                 if (!textStringPt->getTextString().empty()) {
@@ -116,8 +109,7 @@ namespace GLPL {
         Legend::registerChild(textStringObj);
 
         // Create rectangle to store marker outline
-        //std::shared_ptr<ParentDimensions> newParentPointers2 = rect->createParentDimensions();
-        std::shared_ptr<Rectangle> newRect = std::make_shared<Rectangle>(-1.0f, -1.0f, 1.0f, 1.0f, newParentPointers);
+        std::shared_ptr<LegendMarkerRectangle> newRect = std::make_shared<LegendMarkerRectangle>(-1.0f, -1.0f, 1.0f, 1.0f, newParentPointers, plotable);
         newRect->setBackgroundColor(glm::vec4(0.0f));
         newRect->setOutlineColor(glm::vec4(0.0f));
         newRect->setAttachLocation(BOTTOM_LEFT);
@@ -125,8 +117,8 @@ namespace GLPL {
         Legend::registerChild(newRect);
 
         // Create tuple
-        std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<Rectangle>> legendItem = std::make_tuple(plotable, textStringPt, newRect);
-        std::pair<unsigned int, std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<Rectangle>>> legendEntry = std::make_pair(legendItemCount, legendItem);
+        std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<LegendMarkerRectangle>> legendItem = std::make_tuple(plotable, textStringPt, newRect);
+        std::pair<unsigned int, std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<LegendMarkerRectangle>>> legendEntry = std::make_pair(legendItemCount, legendItem);
         legendItemMap.insert(legendEntry);
         legendItemCount += 1;
 

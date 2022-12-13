@@ -24,6 +24,11 @@ namespace GLPL {
         int indicesDataSizeBytes = internalIndices.size()*sizeof(internalIndices[0]);
         createAndSetupBuffers(vertDataSizeBytes, indicesDataSizeBytes,
                 &internalData[0], &internalIndices[0], 2*sizeof(internalData[0]));
+
+        int legendVertDataSizeBytes = legendData.size()*sizeof(legendData[0]);
+        int legendIindicesDataSizeBytes = legendIndices.size()*sizeof(legendIndices[0]);
+        createAndSetupLegendBuffers(legendVertDataSizeBytes, legendIindicesDataSizeBytes,
+                              &legendData[0], &legendIndices[0], 2*sizeof(legendData[0]));
     }
 
     ShadedLine2D2CircularVecs::~ShadedLine2D2CircularVecs() {
@@ -199,10 +204,6 @@ namespace GLPL {
         }
 
         return std::make_tuple(0,0);
-    }
-
-    void ShadedLine2D2CircularVecs::drawLegendEntry(std::shared_ptr<ParentDimensions>) {
-
     }
 
 }

@@ -31,15 +31,31 @@ namespace GLPL {
         void createAndSetupBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
                                    const void *vertDataAddress, const void *indicesDataAddress,
                                    int strideBytes, int glType=GL_FLOAT);
+        void createAndSetupLegendBuffers(int vertDataSizeBytes, int indicesDataSizeBytes,
+                                   const void *vertDataAddress, const void *indicesDataAddress,
+                                   int strideBytes, int glType=GL_FLOAT);
         void drawData(int numIndices, bool selected);
         int getHoverCursor();
+
+        void drawLegendEntry(glm::mat4 rectOverallTransform);
 
     protected:
         // Line Buffers
         GLuint lineVAO, lineVBO, lineEBO;
+        GLuint legendLineVAO, legendLineVBO, legendLineEBO;
+
+        std::vector<float> legendData = {0.0f,   0.0f,
+                                         -1.0f,  0.0f,
+                                         -1.0f, -1.0f,
+                                         1.0f,   0.0f,
+                                         1.0f,   1.0f};
+        std::vector<int> legendIndices = {0, 1, 2,
+                                          0, 3, 4};
 
         // Functions
         std::shared_ptr<Shader> selectShader();
+
+        void drawLegendArea(glm::mat4 rectOverallTransform, bool selected);
 
     };
 }

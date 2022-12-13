@@ -26,6 +26,15 @@ namespace GLPL {
                               markerVertsSizeBytes, &markerVerts[0],
                               markerOutlineVertsSizeBytes, &markerOutlineVerts[0]);
 
+        int legendDataSizeBytes = legendMarkerData.size() * sizeof(legendMarkerData[0]);
+        int legendMarkerVertsSizeBytes = markerVerts.size() * sizeof(markerVerts[0]);
+        int legendMarkerOutlineVertsSizeBytes = markerOutlineVerts.size() * sizeof(markerOutlineVerts[0]);
+        createAndSetupLegendBuffers(legendDataSizeBytes, &legendMarkerData[0],
+                                    legendMarkerVertsSizeBytes, &markerVerts[0],
+                                    legendMarkerOutlineVertsSizeBytes, &markerOutlineVerts[0]);
+
+
+
         // Set number of Points
         nPts = internalData.size() / 2.0;
 
@@ -178,9 +187,6 @@ namespace GLPL {
         return std::make_tuple(0,0);
     }
 
-    void Scatter2D2Vecs::drawLegendEntry(std::shared_ptr<ParentDimensions>) {
-
-    }
 
 
 }

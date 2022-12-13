@@ -11,6 +11,7 @@
 #include "../rendering/ConstantXYDrawable.h"
 #include "../shadedLines/ShadedLine2D2CircularVecs.h"
 #include "../shapes/Rectangle.h"
+#include "LegendMarkerRectangle.h"
 
 
 namespace GLPL {
@@ -37,7 +38,7 @@ namespace GLPL {
 
         bool textChanged = false;
         unsigned legendItemCount = 0;
-         std::unordered_map<unsigned int, std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<Rectangle>>> legendItemMap;
+        std::unordered_map<unsigned int, std::tuple<std::shared_ptr<Plotable>, std::shared_ptr<TextString>, std::shared_ptr<LegendMarkerRectangle>>> legendItemMap;
 
         // Can't do it this way because it shades to the axes, which isn't what we want
         std::vector<float> vertsX = {0.0f, 1.0f};

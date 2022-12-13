@@ -22,10 +22,10 @@ namespace GLPL {
                               &internalData[0], &internalIndices[0],
                               2*sizeof(internalData[0]));
 
-        int dataSizeBytes = legendLineData.size()*sizeof(legendLineData[0]);
-        createAndSetupLegendBuffers(dataSizeBytes, &legendLineData[0], 2*sizeof(legendLineData[0]));
+        int vertLegendDataSizeBytes = legendLineData.size()*sizeof(legendLineData[0]);
+        createAndSetupLegendBuffers(vertLegendDataSizeBytes, &legendLineData[0], 2*sizeof(legendLineData[0]));
 
-        /* Set number of Points */
+        // Set number of Points
         nPts = internalData.size()/2.0;
     }
 
@@ -180,31 +180,6 @@ namespace GLPL {
         }
 
         return std::make_tuple(0,0);
-    }
-
-    void Line2D2Vecs::drawLegendEntry(std::shared_ptr<ParentDimensions> parentDimensions) {
-        std::shared_ptr<Shader> shader = selectShader();
-        shader->Use();
-        glm::vec4 inColor;
-        if (!selected) {
-            glLineWidth(lineWidth);
-            inColor = glm::vec4(colour, 1.0);
-        } else {
-            glLineWidth(10 * lineWidth);
-            inColor = glm::vec4(colour, 0.3);
-        }
-        std::shared_ptr<glm::mat4> transform = std::make_shared<glm::mat4>(parentDimensions->parentTransform);
-
-        glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float) logXBase);
-        glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float) logYBase);
-        glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE,
-                           glm::value_ptr(*transform)); // TODO check if we retain * for pointer
-        glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
-        glBindVertexArray(legendLineVAO);
-        //glBindBuffer(GL_ARRAY_BUFFER, legendLineVBO);
-        glDrawElements(mode, 2, GL_UNSIGNED_INT, nullptr);
-        glBindVertexArray(0);
-        glLineWidth(1);
     }
 
 

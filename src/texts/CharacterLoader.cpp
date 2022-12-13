@@ -76,11 +76,11 @@ namespace GLPL {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             // Store characters
             std::shared_ptr<Character3> character3b = std::make_shared<Character3>(Character3{texture,
-                                     face->glyph->metrics.width,
-                                     face->glyph->metrics.height,
-                                     face->glyph->metrics.horiBearingX,
-                                     face->glyph->metrics.horiBearingY,
-                                     face->glyph->metrics.horiAdvance});
+                                     (int)face->glyph->metrics.width,
+                                     (int)face->glyph->metrics.height,
+                                     (int)face->glyph->metrics.horiBearingX,
+                                     (int)face->glyph->metrics.horiBearingY,
+                                     (int)face->glyph->metrics.horiAdvance});
 
             this->Characters.insert(std::pair<GLchar, std::shared_ptr<Character3>>(c, character3b));
 

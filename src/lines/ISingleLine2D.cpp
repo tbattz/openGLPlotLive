@@ -61,19 +61,18 @@ namespace GLPL {
 
 
     void ISingleLine2D::createAndSetupLegendBuffers(int dataSizeBytes, const void *dataAddress,
-                                                    int strideBytes, int glType) {
-        // Create buffer
+                                              int strideBytes, int glType) {
+        // Create Buffers
         glGenVertexArrays(1, &legendLineVAO);
         glGenBuffers(1, &legendLineVBO);
 
-        /* Setup Buffers */
-        // VAO
+        // Setup Buffers
         glBindVertexArray(legendLineVAO);
-        // VBO
         glBindBuffer(GL_ARRAY_BUFFER, legendLineVBO);
+        // Copy data into buffer
         glBufferData(GL_ARRAY_BUFFER, dataSizeBytes, dataAddress, GL_STATIC_DRAW);
 
-        /* Position Attributes */
+        // Position Attributes
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, glType, GL_FALSE, strideBytes, (GLvoid *) 0);
 
@@ -106,7 +105,7 @@ namespace GLPL {
         }
     }
 
-    std::shared_ptr<Shader> ISingleLine2D::selectShader() {
+    std::shared_ptr<Shader> ISingleLine2D:: selectShader() {
         std::shared_ptr<Shader> shader;
         if (logX) {
             if (logY) {
@@ -129,5 +128,35 @@ namespace GLPL {
         return shader;
     }
 
+
+    void ISingleLine2D::drawLegendLine(glm::mat4 rectOverallTransform, bool selected) {
+        std::shared_ptr<Shader> shader = shaderSetPt->getPlot2dShader();
+        shader->Use();
+        glm::vec4 inColor;
+        if (!selected) {
+            glLineWidth(lineWidth);
+            inColor = glm::vec4(colour, 1.0);
+        } else {
+            glLineWidth(10 * lineWidth);
+            inColor = glm::vec4(colour, 0.3);
+        }
+
+        glUniform1f(glGetUniformLocation(shader->Program, "logXBase"), (float) logXBase);
+        glUniform1f(glGetUniformLocation(shader->Program, "logYBase"), (float) logYBase);
+        glUniformMatrix4fv(glGetUniformLocation(shader->Program, "transformViewport"), 1, GL_FALSE, glm::value_ptr(rectOverallTransform));
+        glUniform4fv(glGetUniformLocation(shader->Program, "inColor"), 1, glm::value_ptr(inColor));
+        glBindVertexArray(legendLineVAO);
+        glDrawArrays(mode, 0, (int)(legendLineData.size()/2.0f));
+        glBindVertexArray(0);
+        glLineWidth(1);
+    }
+
+
+    void ISingleLine2D::drawLegendEntry(glm::mat4 rectOverallTransform) {
+        if (isSelected()) {
+            drawLegendLine(rectOverallTransform, selected);
+        }
+        drawLegendLine(rectOverallTransform, false);
+    }
 
 }

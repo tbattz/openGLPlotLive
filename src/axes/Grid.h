@@ -32,7 +32,7 @@ namespace GLPL {
         std::tuple<float, float> getClosestPoint(float xVal);
         std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax);
 
-        void drawLegendEntry(std::shared_ptr<ParentDimensions>);
+        void drawLegendEntry(glm::mat4 rectOverallTransform);
 
     private:
 

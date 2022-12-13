@@ -29,7 +29,7 @@ namespace GLPL {
         virtual std::tuple<float, float> getClosestPoint(float xVal) = 0;
         virtual std::tuple<float, float> getClosestPoint(float xVal, float xmin, float xmax, float ymin, float ymax) = 0;
 
-        virtual void drawLegendEntry(std::shared_ptr<ParentDimensions>) = 0;
+        virtual void drawLegendEntry(glm::mat4 rectOverallTransform) = 0;
 
         void setLogModes(bool newLogX, bool newLogY);
         void setLogXBase(unsigned int newLogXBase);

@@ -7,6 +7,7 @@
 
 // Standard Includes
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <algorithm>
 

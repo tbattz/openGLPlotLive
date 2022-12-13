@@ -25,6 +25,8 @@ namespace GLPL {
         int getHoverCursor() override;
 
         virtual std::vector<float> getMinMax(bool onlyPositiveX, bool onlyPositiveY) = 0;
+        virtual void drawLegendEntry(glm::mat4 rectOverallTransform) = 0;
+
 
     protected:
         // Data

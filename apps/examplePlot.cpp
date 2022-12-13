@@ -130,10 +130,10 @@ int main(int argc, char **argv) {
 	// Create axes
     std::shared_ptr<GLPL::Axes2D> axesPt = std::dynamic_pointer_cast<GLPL::Axes2D>(myplot->getAxes(0));
     // Add Lines
-    std::shared_ptr<GLPL::ILine2D> line12 = axesPt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line13 = axesPt->addLine(&xVec13, &yVec13, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line15 = axesPt->addLine(&xVec15, &yVec15, GLPL::SINGLE_LINE, LC_BLUE, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line16 = axesPt->addLine(&xVec16, &yVec16, GLPL::SINGLE_LINE, LC_BLUE, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line12 = axesPt->addLine(&xVec12, &yVec12, GLPL::SINGLE_LINE, LC_YELLOW, 0.5, "Underdamped 1");
+    std::shared_ptr<GLPL::ILine2D> line13 = axesPt->addLine(&xVec13, &yVec13, GLPL::SINGLE_LINE, LC_CYAN, 0.5, "Underdamped 2");
+    std::shared_ptr<GLPL::ILine2D> line15 = axesPt->addLine(&xVec15, &yVec15, GLPL::SINGLE_LINE, LC_BLUE, 0.5, "Upper bounds");
+    std::shared_ptr<GLPL::ILine2D> line16 = axesPt->addLine(&xVec16, &yVec16, GLPL::SINGLE_LINE, LC_BLUE, 0.5, "Lower Bounds");
     // Get pointer to add data to internal store
     std::shared_ptr<GLPL::Line2D2Vecs> line12b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line12);
     std::shared_ptr<GLPL::Line2D2Vecs> line13b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line13);
@@ -146,6 +146,7 @@ int main(int argc, char **argv) {
     axesPt->setYLabel("Displacement (m)");
     axesPt->setTitle("Spring Damping Over Time");
     axesPt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
+    axesPt->showLegend(true);
 
 
     // Axes 2 - Simple Scatter, Line and Rectangle Plot
@@ -175,10 +176,10 @@ int main(int argc, char **argv) {
     std::shared_ptr<GLPL::Axes2D> axes3Pt = myplot->add2DAxes();
     axes3Pt->setLogScale(true, 10, GLPL::X_AXES);
     // Add lines
-    std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5);
-    std::shared_ptr<GLPL::ILine2D> line11b = axes3Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line17 = axes3Pt->addLine(&xVec17, &yVec17, GLPL::SINGLE_LINE, LC_CYAN, 0.5, "Single Line");
+    std::shared_ptr<GLPL::ILine2D> line11b = axes3Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.5, "Shaded Line");
     // Add Scatter Plot
-    std::shared_ptr<GLPL::IScatterPlot> line9bs = axes3Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5);
+    std::shared_ptr<GLPL::IScatterPlot> line9bs = axes3Pt->addScatterPlot(&xVec14, &yVec14, LC_CYAN, 0.5, GLPL::MARKER_CIRCLE, "Circle Marker");
     // Get pointer to data to internal store
     std::shared_ptr<GLPL::Line2D2Vecs> line17b = std::dynamic_pointer_cast<GLPL::Line2D2Vecs>(line17);
     // Set axes configuration
@@ -186,14 +187,15 @@ int main(int argc, char **argv) {
     axes3Pt->setYLabel("y");
     axes3Pt->setTitle("Example Log Plot");
     axes3Pt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
+    axes3Pt->showLegend(true);
 
 
     // Axes 4 - Test Plot
     // Create Axes
     std::shared_ptr<GLPL::Axes2D> axes4Pt = myplot->add2DAxes();
     // Add lines
-    std::shared_ptr<GLPL::ILine2D> line30 = axes4Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.25);
-    std::shared_ptr<GLPL::ILine2D> line30b = axes4Pt->addLine(&xVec11b, &yVec11b, GLPL::SINGLE_LINE, LC_RED, 0.5);
+    std::shared_ptr<GLPL::ILine2D> line30 = axes4Pt->addLine(&xVec11, &yVec11, GLPL::SHADED_LINE, LC_GREEN, 0.25, "Shaded Line");
+    std::shared_ptr<GLPL::ILine2D> line30b = axes4Pt->addLine(&xVec11b, &yVec11b, GLPL::SINGLE_LINE, LC_RED, 0.5, "Single Line");
     // Set axes configuration
     axes4Pt->setXLabel("x");
     axes4Pt->setYLabel("y");
@@ -203,6 +205,7 @@ int main(int argc, char **argv) {
     axes4Pt->setButtonState("Grid", false);
     axes4Pt->setAxesBoxOn(false);
     axes4Pt->setAxesLimits(-2.5, 2.5, -2.0, 1.5);
+    axes4Pt->showLegend(true);
 
 
     // Create new values

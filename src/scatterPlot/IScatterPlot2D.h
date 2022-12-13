@@ -25,7 +25,17 @@ namespace GLPL {
         void createAndSetupBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
                                    int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
 
+        void createAndSetupLegendBuffers(int dataSizeBytes, const void *dataAddress,
+                                         int markerVertSizeBytes, const void *markerVertsAddress,
+                                         int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
+        void createAndSetupLegendBuffersMarkerPolygons(int dataSizeBytes, const void *dataAddress,
+                                                       int markerVertSizeBytes, const void *markerVertsAddress);
+        void createAndSetupLegendBuffersMarkerOutline(int dataSizeBytes, const void *dataAddress,
+                                                      int markerOutlineIndicesDataSizeBytes, const void *markerOutlineIndicesDataAddress);
+
         void drawData(int nPts, bool selected);
+
+        void drawLegendEntry(glm::mat4 rectOverallTransform);
 
     protected:
         // Line Buffers
@@ -34,9 +44,16 @@ namespace GLPL {
         GLuint scatterOutlineVAO, scatterOutlineVBO;
         GLuint markerOutlineVBO;
 
+        GLuint legendScatterVAO, legendScatterVBO;
+        GLuint legendMarkerVBO;
+        GLuint legendScatterOutlineVAO, legendScatterOutlineVBO;
+        GLuint legendMarkerOutlineVBO;
+
         // Marker Vertices
         std::vector<float> markerVerts = {};    // positions (2)
         std::vector<float> markerOutlineVerts = {};
+
+        std::vector<float> legendMarkerData = {0.0f, 0.0f};
 
         // Functions
         std::shared_ptr<Shader> selectShader();
@@ -44,6 +61,9 @@ namespace GLPL {
         void generateMarkerEquallySpaced(unsigned int nCirclePoints, float thetaRadStart, float xHalfWidth, float yHalfHeight);
         void generateMarkerSquareVerts(float xHalfWidth, float yHalfHeight);
         void generateMarkerCircleVerts(float xHalfWidth, float yHalfHeight);
+
+        void drawLegendMarker(glm::mat4 rectOverallTransform, bool selected);
+
 
     };
 
