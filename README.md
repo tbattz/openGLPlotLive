@@ -266,3 +266,8 @@ cd tests
 ./openGLPlotLive-proj_tests
 ```
 
+
+# TODO
+* Fix legend marker positioning offset issue
+* Performance improvements around re-using OpenGL buffers, instead of recreating them
+* Performance considerations for longer running plots
