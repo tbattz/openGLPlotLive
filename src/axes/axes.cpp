@@ -62,6 +62,14 @@ namespace GLPL {
         axesArea->setButtonState(buttonName, activeState);
     }
 
+    void Axes::setXAxesLimits(float newXMin, float newXMax) {
+        axesArea->setXAxesLimits(newXMin, newXMax);
+    }
+
+    void Axes::setYAxesLimits(float newYMin, float newYMax) {
+        axesArea->setYAxesLimits(newYMin, newYMax);
+    }
+
     void Axes::setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax) {
         axesArea->setAxesLimits(newXMin, newXMax, newYMin, newYMax);
     }

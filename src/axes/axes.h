@@ -28,6 +28,8 @@ namespace GLPL {
         // Axes
         void setAxesBoxOn(bool axesBoxOnBool);
         void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
+        void setXAxesLimits(float newXMin, float newXMax);
+        void setYAxesLimits(float newYMin, float newYMax);
         void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
         void showLegend(bool legendVisibility);
         void setLegendAttachLocation(AttachLocation newAttachLocation);
