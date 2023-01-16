@@ -40,9 +40,6 @@ namespace GLPL {
 
     }
 
-    Scatter2D2Vecs::~Scatter2D2Vecs() {
-
-    }
 
     void Scatter2D2Vecs::updateInternalData() {
         /* Creates an internal data store from the current dataVecPt */

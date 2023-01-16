@@ -25,10 +25,6 @@ namespace GLPL {
 
     }
 
-    Plot::~Plot() {
-
-    }
-
 
     void Plot::setPlotLayout(unsigned int newNumHorizontal, unsigned int newNumVertical) {
         numHorizontal = newNumHorizontal;

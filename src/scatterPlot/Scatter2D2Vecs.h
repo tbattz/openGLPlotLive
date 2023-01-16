@@ -18,8 +18,6 @@ namespace GLPL {
         Scatter2D2Vecs(std::vector<float>* dataPtX, std::vector<float>* dataPtY,
                 std::shared_ptr<ParentDimensions> parentDimensions);
 
-        // Destructor
-        ~Scatter2D2Vecs();
 
         // Functions
         void updateInternalData();

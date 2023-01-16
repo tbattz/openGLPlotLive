@@ -23,10 +23,6 @@ namespace GLPL {
 
     }
 
-    Rectangle::~Rectangle() {
-
-    }
-
 
 
     void Rectangle::Draw() {

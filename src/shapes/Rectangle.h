@@ -18,9 +18,6 @@ namespace GLPL {
         Rectangle(float x, float y, float width, float height,
                   std::shared_ptr<ParentDimensions> parentDimensions);
 
-        // Destructor
-        ~Rectangle();
-
         // Functions
         void Draw();
         std::string getID();

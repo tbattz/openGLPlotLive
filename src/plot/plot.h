@@ -23,8 +23,6 @@ namespace GLPL {
         // Constructor
         Plot(float x, float y, float width, float height, std::shared_ptr<ParentDimensions> parentDimensions,
              unsigned int numHorizontal = 1, unsigned int numVertical = 1);
-        // Destructor
-        ~Plot();
 
         // Functions
         void setPlotLayout(unsigned int newNumHorizontal, unsigned int newNumVertical);

@@ -27,8 +27,6 @@ namespace GLPL {
     public:
         // Constructor
         ShaderSet();
-        // Destructor
-        ~ShaderSet();
 
         // Functions
         float getXDpiScaling();

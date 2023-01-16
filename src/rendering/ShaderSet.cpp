@@ -27,10 +27,6 @@ namespace GLPL {
         textureMangerPt = std::make_shared<TextureManager>(textureManager);
     }
 
-    GLPL::ShaderSet::~ShaderSet() {
-
-    }
-
 
     float ShaderSet::getXDpiScaling() {
         return xScaleDpi;
