@@ -43,6 +43,8 @@ namespace GLPL {
         void setAxesBoxOn(bool axesBoxOnBool);
         void setAxesBoxColor(glm::vec4 newAxesBoxColour);
         void addAxesLine(const std::string& axesName, AxesDirection axesDirection);
+        void setXAxesLimits(float newXMin, float newXMax);
+        void setYAxesLimits(float newYMin, float newYMax);
         void setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax);
         void setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes);
         // Plotables
@@ -143,6 +145,8 @@ namespace GLPL {
         void drawGrid();
         void updateInteractor();
         void updateZoomDragBox();
+        void updateXAxesLimits();
+        void updateYAxesLimits();
         void updateAxesLimits();
         std::pair<float, float> calcScrolledVals(float minVal, float maxVal, float currVal, float zoomFrac, bool dir);
         std::pair<float, float> calcAxesZoomLinearX(float zoomDir);

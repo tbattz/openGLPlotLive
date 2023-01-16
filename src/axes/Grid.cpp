@@ -19,6 +19,24 @@ namespace GLPL {
 
     }
 
+    void Grid::setMinMaxXAxes(float newXMin, float newXMax) {
+        if (newXMin != newXMax) {
+            xMin = newXMin;
+            xMax = newXMax;
+            // Regenerate axes lines
+            genLines();
+        }
+    }
+
+    void Grid::setMinMaxYAxes(float newYMin, float newYMax) {
+        if (newYMin != newYMax) {
+            yMin = newYMin;
+            yMax = newYMax;
+            // Regenerate axes lines
+            genLines();
+        }
+    }
+
     void Grid::setMinMax(float newXMin, float newXMax, float newYMin, float newYMax) {
         if ((newXMin != newXMax) && (newYMin != newYMax)) {
             xMin = newXMin;

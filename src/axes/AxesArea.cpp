@@ -42,10 +42,11 @@ namespace GLPL {
 
         // Add Buttons
         AxesArea::addButtonWithTexture("Interactor", "interactor-white", 1.0, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle the interactor");
-        AxesArea::addButtonWithTexture("Axes Limits Scaling", "axes-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Enable/disable axes auto scaling");
-        AxesArea::addButtonWithTexture("Grid", "grid-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle grid");
-        AxesArea::addButtonWithTexture("Axes", "axes-white", 0.73, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes");
-        AxesArea::addButtonWithTexture("AxesBox", "axes-box-white", 0.64, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes box");
+        AxesArea::addButtonWithTexture("Y Axes Limits Scaling", "axes-y-limits-white", 0.91, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Enable/disable y-axes auto scaling");
+        AxesArea::addButtonWithTexture("X Axes Limits Scaling", "axes-x-limits-white", 0.82, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Enable/disable x-axes auto scaling");
+        AxesArea::addButtonWithTexture("Grid", "grid-white", 0.73, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle grid");
+        AxesArea::addButtonWithTexture("Axes", "axes-white", 0.64, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes");
+        AxesArea::addButtonWithTexture("AxesBox", "axes-box-white", 0.55, 1.01, 0.08, 0.08, BOTTOM_RIGHT, true, "Toggle axes box");
 
         // Create Interactor
         AxesArea::createInteractor();
@@ -240,6 +241,54 @@ namespace GLPL {
         axesLines.insert(std::pair<std::string, std::shared_ptr<AxesLineTicks>>(axesName, newAxes));
         // Register as a child
         AxesArea::registerChild(newAxes);
+    }
+
+    void AxesArea::setXAxesLimits(float newXMin, float newXMax) {
+        // Check max limits
+        if (std::isinf(newXMin)) {
+            newXMin = -1e15;
+        }
+        if (std::isinf(newXMax)) {
+            newXMax = 1e15;
+        }
+
+        // Set values
+        xmin = newXMin;
+        xmax = newXMax;
+        // Update Axes Lines
+        for(const auto& axesLine : axesLines) {
+            axesLine.second->setMinMaxXAxes(newXMin, newXMax);
+        }
+        // Update Grid
+        std::vector<float> xAxesPos = axesLines.at("x")->getAxesTickPos();
+        grid->setMinMaxXAxes(newXMin, newXMax);
+        grid->setXLines(xAxesPos);
+        // Update Axes Area
+        AxesArea::updateAxesViewportTransform();
+    }
+
+    void AxesArea::setYAxesLimits(float newYMin, float newYMax) {
+        // Check max limits
+        if (std::isinf(newYMin)) {
+            newYMin = -1e15;
+        }
+        if (std::isinf(newYMax)) {
+            newYMax = 1e15;
+        }
+
+        // Set values
+        ymin = newYMin;
+        ymax = newYMax;
+        // Update Axes Lines
+        for(const auto& axesLine : axesLines) {
+            axesLine.second->setMinMaxYAxes(newYMin, newYMax);
+        }
+        // Update Grid
+        std::vector<float> yAxesPos = axesLines.at("y")->getAxesTickPos();
+        grid->setMinMaxYAxes(newYMin, newYMax);
+        grid->setYLines(yAxesPos);
+        // Update Axes Area
+        AxesArea::updateAxesViewportTransform();
     }
 
     void AxesArea::setAxesLimits(float newXMin, float newXMax, float newYMin, float newYMax) {
@@ -870,38 +919,28 @@ namespace GLPL {
         }
     }
 
-    void GLPL::AxesArea::updateAxesLimits() {
-        if (buttonMap["Axes Limits Scaling"]->isActive()) {
+    void GLPL::AxesArea::updateXAxesLimits() {
+        if (buttonMap["X Axes Limits Scaling"]->isActive()) {
             // Get the overall maximum and minimum from all lines
             float newXmin = -0.0;
             float newXmax = 0.0;
-            float newYmin = -0.0;
-            float newYmax = 0.0;
             if (axesLines.at("x")->getLogState()) {
                 newXmin = 1.0;
                 newXmax = 1.0;
-            }
-            if (axesLines.at("y")->getLogState()) {
-                newYmin = 1.0;
-                newYmax = 1.0;
             }
             for (std::pair<unsigned int, std::shared_ptr<Plotable>> lineInfo : plotableMap) {
                 std::vector<float> minMax = lineInfo.second->getMinMax(true);
                 if (minMax.size() == 4) {
                     if (minMax[0] < newXmin) { newXmin = minMax[0]; };
                     if (minMax[1] > newXmax) { newXmax = minMax[1]; };
-                    if (minMax[2] < newYmin) { newYmin = minMax[2]; };
-                    if (minMax[3] > newYmax) { newYmax = minMax[3]; };
                 }
             }
 
             // Set axes limits
             float absLim = 1e-10;
             if ((abs(xmin - newXmin) > absLim) ||
-                (abs(xmax - newXmax) > absLim) ||
-                (abs(ymin - newYmin) > absLim) ||
-                (abs(ymax - newYmax) > absLim)) {
-                AxesArea::setAxesLimits(newXmin, newXmax, newYmin, newYmax);
+                (abs(xmax - newXmax) > absLim)) {
+                AxesArea::setXAxesLimits(newXmin, newXmax);
             }
 
         }
@@ -915,6 +954,48 @@ namespace GLPL {
         } else if (yFontSize < xFontSize) {
             axesLines.at("x")->setMajorTickFontSize(minFontSize);
         }
+    }
+
+    void GLPL::AxesArea::updateYAxesLimits() {
+        if (buttonMap["Y Axes Limits Scaling"]->isActive()) {
+            // Get the overall maximum and minimum from all lines
+            float newYmin = -0.0;
+            float newYmax = 0.0;
+            if (axesLines.at("y")->getLogState()) {
+                newYmin = 1.0;
+                newYmax = 1.0;
+            }
+            for (std::pair<unsigned int, std::shared_ptr<Plotable>> lineInfo : plotableMap) {
+                std::vector<float> minMax = lineInfo.second->getMinMax(true);
+                if (minMax.size() == 4) {
+                    if (minMax[2] < newYmin) { newYmin = minMax[2]; };
+                    if (minMax[3] > newYmax) { newYmax = minMax[3]; };
+                }
+            }
+
+            // Set axes limits
+            float absLim = 1e-10;
+            if ((abs(ymin - newYmin) > absLim) ||
+                (abs(ymax - newYmax) > absLim)) {
+                AxesArea::setYAxesLimits(newYmin, newYmax);
+            }
+
+        }
+
+        // Match axes lines sizing
+        float xFontSize = axesLines.at("x")->getFontSize();
+        float yFontSize = axesLines.at("y")->getFontSize();
+        float minFontSize = std::min(xFontSize, yFontSize);
+        if (xFontSize < yFontSize) {
+            axesLines.at("y")->setMajorTickFontSize(minFontSize);
+        } else if (yFontSize < xFontSize) {
+            axesLines.at("x")->setMajorTickFontSize(minFontSize);
+        }
+    }
+
+    void GLPL::AxesArea::updateAxesLimits() {
+        AxesArea::updateXAxesLimits();
+        AxesArea::updateYAxesLimits();
     }
 
     std::pair<float, float>

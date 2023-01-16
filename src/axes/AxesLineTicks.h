@@ -44,6 +44,8 @@ namespace GLPL {
                                  int newParentWidthPx,
                                  int newParentHeightPx);
         void setParentDimensions(std::shared_ptr<ParentDimensions> parentDimensions);
+        void setMinMaxXAxes(float newXMin, float newXMax);
+        void setMinMaxYAxes(float newYMin, float newYMax);
         void setMinMax(float newXMin, float newXMax, float newYMin, float newYMax);
         float getFontSize();
         void setMajorTickFontSize(float fontSize);
@@ -78,6 +80,7 @@ namespace GLPL {
         void generateXTickVerts();
         void generateYTickVerts();
         void generateTickVerts();
+        void adjustMinMaxLogScale();
         std::pair<float, float> generateTickLabelVerts(float xPos, float yPos);
         // Axes Tick Labels
         AttachLocation generateMajorTickOffsetAttachLocation();

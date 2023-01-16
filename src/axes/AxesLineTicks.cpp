@@ -558,6 +558,42 @@ namespace GLPL {
         }
     }
 
+    void AxesLineTicks::adjustMinMaxLogScale() {
+        if (logScale) {
+            switch (axesDirection) {
+                case X_AXES_CENTRE:
+                case X_AXES_BOTTOM:
+                case X_AXES_TOP: {
+                    if (xMin < 1e-15) {
+                        xMin = 1e-15;
+                        std::cout << "X Log Scale, but xMin is negative! Setting to 1e-15" << std::endl;
+                    }
+                    if (xMax < 1e-15) {
+                        xMax = 1e-15;
+                        std::cout << "X Log Scale, but xMax is negative! Setting to 1e-15" << std::endl;
+                    }
+                    break;
+                }
+                case Y_AXES_CENTRE:
+                case Y_AXES_LEFT:
+                case Y_AXES_RIGHT: {
+                    if (yMin < 1e-15) {
+                        yMin = 1e-15;
+                        std::cout << "Y Log Scale, but yMin is negative! Setting to 1e-15" << std::endl;
+                    }
+                    if (yMax < 1e-15) {
+                        yMax = 1e-15;
+                        std::cout << "Y Log Scale, but yMax is negative! Setting to 1e-15" << std::endl;
+                    }
+                    break;
+                }
+                default: {
+                    std::cout << "Invalid Axes Direction!" << std::endl;
+                }
+            }
+        }
+    }
+
     std::pair<float, float>  AxesLineTicks::generateTickLabelVerts(float xPos, float yPos) {
         float labelXPos, labelYPos;
         switch(axesDirection) {
@@ -843,7 +879,6 @@ namespace GLPL {
 
     }
 
-
     void AxesLineTicks::updateSize() {
         switch (axesDirection) {
             case X_AXES_TOP:
@@ -864,6 +899,31 @@ namespace GLPL {
         }
     }
 
+    void AxesLineTicks::setMinMaxXAxes(float newXMin, float newXMax) {
+        if (newXMin != newXMax) {
+            xMin = newXMin;
+            xMax = newXMax;
+            // Adjust if we have a log scale
+            if (logScale) {
+                AxesLineTicks::adjustMinMaxLogScale();
+            }
+            // Regenerate axes lines
+            AxesLineTicks::generateAllVertices();
+        }
+    }
+
+    void AxesLineTicks::setMinMaxYAxes(float newYMin, float newYMax) {
+        if (newYMin != newYMax) {
+            yMin = newYMin;
+            yMax = newYMax;
+            // Adjust if we have a log scale
+            if (logScale) {
+                AxesLineTicks::adjustMinMaxLogScale();
+            }
+            // Regenerate axes lines
+            AxesLineTicks::generateAllVertices();
+        }
+    }
 
     void AxesLineTicks::setMinMax(float newXMin, float newXMax, float newYMin, float newYMax) {
         if ((newXMin != newXMax) && (newYMin != newYMax)) {
@@ -873,37 +933,7 @@ namespace GLPL {
             yMax = newYMax;
             // Adjust if we have a log scale
             if (logScale) {
-                switch (axesDirection) {
-                    case X_AXES_CENTRE:
-                    case X_AXES_BOTTOM:
-                    case X_AXES_TOP: {
-                        if (xMin < 1e-15) {
-                            xMin = 1e-15;
-                            std::cout << "X Log Scale, but xMin is negative! Setting to 1e-15" << std::endl;
-                        }
-                        if (xMax < 1e-15) {
-                            xMax = 1e-15;
-                            std::cout << "X Log Scale, but xMax is negative! Setting to 1e-15" << std::endl;
-                        }
-                        break;
-                    }
-                    case Y_AXES_CENTRE:
-                    case Y_AXES_LEFT:
-                    case Y_AXES_RIGHT: {
-                        if (yMin < 1e-15) {
-                            yMin = 1e-15;
-                            std::cout << "Y Log Scale, but yMin is negative! Setting to 1e-15" << std::endl;
-                        }
-                        if (yMax < 1e-15) {
-                            yMax = 1e-15;
-                            std::cout << "Y Log Scale, but yMax is negative! Setting to 1e-15" << std::endl;
-                        }
-                        break;
-                    }
-                    default: {
-                        std::cout << "Invalid Axes Direction!" << std::endl;
-                    }
-                }
+                AxesLineTicks::adjustMinMaxLogScale();
             }
             // Regenerate axes lines
             AxesLineTicks::generateAllVertices();

@@ -24,6 +24,8 @@ namespace GLPL {
         void Draw() override;
         std::vector<float> getMinMax(bool onlyPositiveX = false, bool onlyPositiveY = false);
         std::string getID() override;
+        void setMinMaxXAxes(float newXMin, float newXMax);
+        void setMinMaxYAxes(float newYMin, float newYMax);
         void setMinMax(float newXMin, float newXMax, float newYMin, float newYMax);
         void setXLines(std::vector<float> xVals);
         void setYLines(std::vector<float> yVals);

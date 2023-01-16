@@ -201,7 +201,8 @@ int main(int argc, char **argv) {
     axes4Pt->setYLabel("y");
     axes4Pt->setTitle("Test Plot");
     axes4Pt->setYLabelRotation(GLPL::SIDEWAYS_RIGHT);
-    axes4Pt->setButtonState("Axes Limits Scaling", false);
+    axes4Pt->setButtonState("X Axes Limits Scaling", false);
+    axes4Pt->setButtonState("Y Axes Limits Scaling", false);
     axes4Pt->setButtonState("Grid", false);
     axes4Pt->setAxesBoxOn(false);
     axes4Pt->setAxesLimits(-2.5, 2.5, -2.0, 1.5);
