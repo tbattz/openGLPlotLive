@@ -306,23 +306,25 @@ namespace GLPL {
             newYMax = 1e15;
         }
 
-        // Set values
-        xmin = newXMin;
-        xmax = newXMax;
-        ymin = newYMin;
-        ymax = newYMax;
-        // Update Axes Lines
-        for(const auto& axesLine : axesLines) {
-            axesLine.second->setMinMax(newXMin, newXMax, newYMin, newYMax);
+        if ((fabs(newXMin - newXMax) > 0) && (fabs(newYMin - newYMax) > 0)) {
+            // Set values
+            xmin = newXMin;
+            xmax = newXMax;
+            ymin = newYMin;
+            ymax = newYMax;
+            // Update Axes Lines
+            for (const auto &axesLine : axesLines) {
+                axesLine.second->setMinMax(newXMin, newXMax, newYMin, newYMax);
+            }
+            // Update Grid
+            grid->setMinMax(newXMin, newXMax, newYMin, newYMax);
+            std::vector<float> xAxesPos = axesLines.at("x")->getAxesTickPos();
+            std::vector<float> yAxesPos = axesLines.at("y")->getAxesTickPos();
+            grid->setXLines(xAxesPos);
+            grid->setYLines(yAxesPos);
+            // Update Axes Area
+            AxesArea::updateAxesViewportTransform();
         }
-        // Update Grid
-        grid->setMinMax(newXMin, newXMax, newYMin, newYMax);
-        std::vector<float> xAxesPos = axesLines.at("x")->getAxesTickPos();
-        std::vector<float> yAxesPos = axesLines.at("y")->getAxesTickPos();
-        grid->setXLines(xAxesPos);
-        grid->setYLines(yAxesPos);
-        // Update Axes Area
-        AxesArea::updateAxesViewportTransform();
     }
 
     void AxesArea::setLogScale(bool logOn, unsigned int newLogBase, LogAxes logAxes) {
@@ -1174,27 +1176,39 @@ namespace GLPL {
 
     std::pair<float, float> GLPL::AxesArea::calcAxesDragLinearX() {
         // Move the axes proportional to the distance the mouse is dragged
+        float newXMin, newXMax;
         float mouseXAx = convertMouseX2AxesX(mouseX);
         float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
         float xDiff = mouseXAx - mouseHeldXAx;
         float xRange = xMaxDrag - xMinDrag;
-        float xRatio = xDiff / xRange;
-        float newXMin = xMinDrag + (xRatio * xRange);
-        float newXMax = xMaxDrag + (xRatio * xRange);
+        if (abs(xRange) > 0) {
+            float xRatio = xDiff / xRange;
+            newXMin = xMinDrag + (xRatio * xRange);
+            newXMax = xMaxDrag + (xRatio * xRange);
+        } else {
+            newXMin = xMinDrag;
+            newXMax = xMaxDrag;
+        }
 
         return {newXMin, newXMax};
     }
 
     std::pair<float, float> GLPL::AxesArea::calcAxesDragLinearY() {
         // Move the axes proportional to the distance the mouse is dragged
+        float newYMin, newYMax;
         float mouseYAx = convertMouseY2AxesY(mouseY);
         float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
         float yDiff = mouseYAx - mouseHeldYAx;
         float yRange = yMaxDrag - yMinDrag;
-        float yRatio = yDiff / yRange;
+        if (abs(yRange) > 0) {
+            float yRatio = yDiff / yRange;
+            newYMin = yMinDrag + (yRatio * yRange);
+            newYMax = yMaxDrag + (yRatio * yRange);
+        } else {
+            newYMin = yMinDrag;
+            newYMax = yMaxDrag;
+        }
 
-        float newYMin = yMinDrag + (yRatio * yRange);
-        float newYMax = yMaxDrag + (yRatio * yRange);
 
         return {newYMin, newYMax};
     }
@@ -1205,19 +1219,26 @@ namespace GLPL {
         float mouseHeldXAx = convertMouseX2AxesX(mouseHeldX);
 
         // Account for log values
+        float newXMin, newXMax;
         unsigned int logBase = axesLines.at("x")->getLogBase();
-        float inXmin = logWithBase(xMinDrag, logBase);
-        float inXmax = logWithBase(xMaxDrag, logBase);
-        float xDiff = logWithBase(mouseXAx, logBase) - logWithBase(mouseHeldXAx, logBase);
+        if (abs(xMinDrag) > 0 && abs(xMaxDrag) > 0) {
+            float inXmin = logWithBase(xMinDrag, logBase);
+            float inXmax = logWithBase(xMaxDrag, logBase);
+            float xDiff = logWithBase(mouseXAx, logBase) - logWithBase(mouseHeldXAx, logBase);
 
-        float xRange = inXmax - inXmin;
-        float xRatio = xDiff / xRange;
-        float newXMin = inXmin + (xRatio * xRange);
-        float newXMax = inXmax + (xRatio * xRange);
+            float xRange = inXmax - inXmin;
+            float xRatio = xDiff / xRange;
+            newXMin = inXmin + (xRatio * xRange);
+            newXMax = inXmax + (xRatio * xRange);
 
-        // Undo log
-        newXMin = std::pow(logBase, newXMin);
-        newXMax = std::pow(logBase, newXMax);
+            // Undo log
+            newXMin = std::pow(logBase, newXMin);
+            newXMax = std::pow(logBase, newXMax);
+
+        } else {
+            newXMin = xMinDrag;
+            newXMax = xMaxDrag;
+        }
 
         return {newXMin, newXMax};
     }
@@ -1228,18 +1249,25 @@ namespace GLPL {
         float mouseHeldYAx = convertMouseY2AxesY(mouseHeldY);
 
         // Account for log values
+        float newYMin, newYMax;
         unsigned int logBase = axesLines.at("y")->getLogBase();
-        float inYmin = logWithBase(yMinDrag, logBase);
-        float inYmax = logWithBase(yMaxDrag, logBase);
-        float yDiff = logWithBase(mouseYAx, logBase) - logWithBase(mouseHeldYAx, logBase);
+        if (abs(yMinDrag) > 0 && abs(yMaxDrag) > 0) {
+            float inYmin = logWithBase(yMinDrag, logBase);
+            float inYmax = logWithBase(yMaxDrag, logBase);
+            float yDiff = logWithBase(mouseYAx, logBase) - logWithBase(mouseHeldYAx, logBase);
 
-        float yRange = inYmax - inYmin;
-        float yRatio = yDiff / yRange;
-        float newYMin = inYmin + (yRatio * yRange);
-        float newYMax = inYmax + (yRatio * yRange);
+            float yRange = inYmax - inYmin;
+            float yRatio = yDiff / yRange;
+            newYMin = inYmin + (yRatio * yRange);
+            newYMax = inYmax + (yRatio * yRange);
 
-        newYMin = std::pow(logBase, newYMin);
-        newYMax = std::pow(logBase, newYMax);
+            newYMin = std::pow(logBase, newYMin);
+            newYMax = std::pow(logBase, newYMax);
+        } else {
+            newYMin = yMinDrag;
+            newYMax = yMaxDrag;
+        }
+
 
         return {newYMin, newYMax};
     }
