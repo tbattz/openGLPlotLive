@@ -1,7 +1,8 @@
 # openGLPlotLive
 openGLPlotter provides a means to plot large amounts of quickly updated data in an OpenGL context. This can be a window created specifically for the plotter, or to embed in another OpenGL window. Originally this was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. 
 
-# What can it do
+
+# Features
 Plot simple data in realtime.
 
 Current method of operation.
@@ -21,7 +22,24 @@ A few interactive tools are provided
 
 <img src="https://github.com/tbattz/openGLPlotLive/raw/master/Other/plotGif.gif" width="830" height="430">
 
-# Simple Plots
+
+# Contents
+* [openGLPlotLive](#openGLPlotLive)
+* [Features](#Features)
+* [Creating Plots](#Creating-Plots)
+* [Installation & Dependencies](#Installation--Dependencies)
+* [Compiling](#Compiling)
+* [Running an Example](#Running-an-example)
+* [Controls](#Controls)
+* [Debugging](#Debugging)
+* [Documentation](#Documentation)
+* [Tests](#Tests-with-googletest)
+* [TODO](#TODO)
+
+
+# Creating Plots
+An example is given in [apps/examplePlot.cpp](https://github.com/tbattz/openGLPlotLive/blob/master/apps/examplePlot.cpp), below gives an explanation of the steps required.
+
 ## Window Setup
 To create a window for plotting, you will need the following
 ```c++
@@ -119,7 +137,9 @@ When including in another project, you'll need to copy the Shader directory to t
 add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/../openGLPlotLive/Shaders $<TARGET_FILE_DIR:${PROJECT_NAME}>/Shaders)
 ```
 
-# Dependencies
+
+# Installation & Dependencies
+
 ##  Automated Install
 A few scripts have been created to automate the installation process. In the event these fail, you may have to compile the dependencies manually.
 
@@ -193,15 +213,54 @@ There are a number of different make targets.
 | docs           | Makes both the doxygen and sphinx documentation | docs/doxygen/html/index.html,<br>docs/sphinx/index.html |
 | tests          | Make the test suite runner using gtest          | tests/openGLPlotLive-proj_tests                         |
 
+## Compiling an Eclipse Project
+To generate an Eclipse project, from the root directory,
+```
+cd build
+rm -r CMakeFiles/
+cmake -G "Eclipse CDT4 - Unix Makefiles" ../src
+```
+Then import the project into Eclipse using File >> Import >> General >> Existing Projects into Workspace. Click next and set the root directory to <workspace>/openGLMap/build. Click Finish. The project can now be built with Eclipse using the 'all' Build Target. The source files will be inside the "[Source Directory]" and are linked to their actual counterpats.
 
-## Debugging
+
+# Running an Example
+An example binary is created, examplePlot. To run this
+```
+cd build/apps
+./examplePlot
+```
+
+A secondary example contained in the apps directory, movingTimeframe, provides a method of displaying a rolling window by adjusting the x axes scaling, while allowing the y axes to be autoscaled.
+```
+cd build/apps
+./movingTimeframe
+```
+
+
+# Controls
+When autoscaling is disabled, the following controls allows the user to manipulate the axes area:
+
+| Control Input                     | Description                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| Scroll Wheel                      | Zooms the axes in and out                                            |
+| Right Click & Drag                | Zoom the x & y axes at different scales, based on the drag distance  |
+| Left Click & Drag                 | Pan the axes left, right, up or down                                 |
+| Left Click, hold Shift Key & Drag | Drag a zoom box, that will zoom to the extents of the box on release |
+| Middle Click & Drag               | Drag a zoom box, that will zoom to the extents of the box on release |
+| Spacebar                          | Iterates through plotables in the view, when the view is hovered     |
+
+
+# Debugging
 To enable debugging, when running cmake, enable the debugging flag.
 ```
 cmake -DCMAKE_BUILD_TYPE=Debug
 ```
 
-## Documentation
-There are two ways to generate documentation, with the latter requiring the former.
+A useful tool for debugging anything at the opengl level is qrenderdoc - https://github.com/baldurk/renderdoc
+
+
+# Documentation
+There are two ways to generate documentation, with the latter requiring the former. The documentation is not extensive, but the setup to generate it, to allow it to be built out, exists.
 * Using Doxygen
 * Using Sphinx with Breathe and Doxygen
 
@@ -226,39 +285,9 @@ cd build
 make sphinx
 ```
 
-# Runnning an Example
-An example binary is created, examplePlot. To run this
-```
-cd build/apps
-./examplePlot
-```
-
-# Controls
-When autoscaling is disabled, the following controls allows the user to manipulate the axes area:
-
-| Control Input                     | Description                                                          |
-| --------------------------------- | -------------------------------------------------------------------- |
-| Scroll Wheel                      | Zooms the axes in and out                                            |
-| Right Click & Drag                | Zoom the x & y axes at different scales, based on the drag distance  |
-| Left Click & Drag                 | Pan the axes left, right, up or down                                 |
-| Left Click, hold Shift Key & Drag | Drag a zoom box, that will zoom to the extents of the box on release |
-| Middle Click & Drag               | Drag a zoom box, that will zoom to the extents of the box on release |
-| Spacebar                          | Iterates through plotables in the view, when the view is hovered     |
-
-# Compiling an Eclipse Project
-To generate an Eclipse project, from the root directory,
-```
-cd build
-rm -r CMakeFiles/
-cmake -G "Eclipse CDT4 - Unix Makefiles" ../src
-```
-Then import the project into Eclipse using File >> Import >> General >> Existing Projects into Workspace. Click next and set the root directory to <workspace>/openGLMap/build. Click Finish. The project can now be built with Eclipse using the 'all' Build Target. The source files will be inside the "[Source Directory]" and are linked to their actual counterpats.
-
-# Debugging
-A useful tool for debugging anything at the opengl level is qrenderdoc - https://github.com/baldurk/renderdoc
 
 # Tests with googletest
-Some simple tests have been written for debugging purposes. These use the googletest framework. To compile and run the tests,
+Some simple tests have been written for debugging purposes, though is not extensive. These use the googletest framework. To compile and run the tests,
 ```
 cd build
 make tests -j4
