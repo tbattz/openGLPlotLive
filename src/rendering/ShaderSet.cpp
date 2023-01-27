@@ -5,7 +5,12 @@
 #include "ShaderSet.h"
 
 namespace GLPL {
+
     GLPL::ShaderSet::ShaderSet() {
+        // Setup character loader using the correct fonts
+        const GLchar* fontPath = getFontPath();
+        characterLoaderPt = std::make_shared<CharacterLoader>(fontPath);
+
         // Get DPI Scaling
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         glfwGetMonitorContentScale(monitor, &xScaleDpi, &yScaleDpi);
@@ -23,8 +28,34 @@ namespace GLPL {
         textureShaderPt = std::make_shared<Shader>(textureShader);
         plotPosNeg2DShaderPt = std::make_shared<Shader>(plotPosNeg2DShader);
         plotTransparent2dShaderPt = std::make_shared<Shader>(plotTransparent2dShader);
-        characterLoaderPt = std::make_shared<CharacterLoader>(characterLoader);
         textureMangerPt = std::make_shared<TextureManager>(textureManager);
+    }
+
+
+    const GLchar* GLPL::ShaderSet::getFontPath() {
+        // Determine font paths
+        // Check for fonts in Ubuntu
+        const GLchar* ubuntuFontPath = "/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf";
+        std::ifstream f(ubuntuFontPath);
+        if (f.good()) {
+            return ubuntuFontPath;
+        }
+        // Check for fonts in Fedora
+        const GLchar* fedoraFontPath = "/usr/share/fonts/liberation-mono/LiberationMono-Regular.ttf";
+        std::ifstream g(fedoraFontPath);
+        if (g.good()) {
+            return fedoraFontPath;
+        }
+        // Check for fonts in Windows
+        const GLchar* windowsFontPath = "C:/Windows/Fonts/Arial.ttf";
+        std::ifstream h(windowsFontPath);
+        if (h.good()) {
+            return windowsFontPath;
+        }
+
+        std::cout << "No Fonts Found! Try adding a path to determineFontPath in ShaderSet.h." << std::endl;
+
+        return nullptr;
     }
 
 

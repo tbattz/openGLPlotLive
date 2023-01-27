@@ -15,12 +15,6 @@
 
 
 namespace GLPL {
-    // Define Fonts
-    #ifdef _WIN32
-        #define FONTPATH "C:/Windows/Fonts/Arial.ttf"
-    #elif __linux__
-        #define FONTPATH "/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf"
-    #endif
 
     // Contains the shaders for plotting
     class ShaderSet {
@@ -29,6 +23,7 @@ namespace GLPL {
         ShaderSet();
 
         // Functions
+        const GLchar* getFontPath();
         float getXDpiScaling();
         float getYDpiScaling();
         std::shared_ptr<Shader> getTextShader();
@@ -78,12 +73,11 @@ namespace GLPL {
         std::shared_ptr<Shader> textureShaderPt;
         std::shared_ptr<Shader> plotPosNeg2DShaderPt;
         std::shared_ptr<Shader> plotTransparent2dShaderPt;
-        std::shared_ptr<CharacterLoader> characterLoaderPt;
         std::shared_ptr<TextureManager> textureMangerPt;
 
 
         // Text
-        CharacterLoader characterLoader = CharacterLoader(FONTPATH);
+        std::shared_ptr<CharacterLoader> characterLoaderPt;
         // Textures
         TextureManager textureManager = TextureManager();
 

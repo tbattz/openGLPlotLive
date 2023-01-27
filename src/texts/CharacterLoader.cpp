@@ -17,7 +17,7 @@
 
 namespace GLPL {
 
-    CharacterLoader::CharacterLoader(const GLchar *fontPath) {
+    CharacterLoader::CharacterLoader(const GLchar* fontPath) {
         // Initialise a font
         // Enable Blending for transparent text background
         glEnable(GL_BLEND);
@@ -41,7 +41,7 @@ namespace GLPL {
         return this->Characters[reqCharacter];
     }
 
-    void CharacterLoader::loadFont(const GLchar *fontPath) {
+    void CharacterLoader::loadFont(const GLchar* fontPath) {
         // Initialise Font
         if(FT_Init_FreeType(&ft)) {
             std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << '\n';

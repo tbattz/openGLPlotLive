@@ -1,5 +1,5 @@
 # openGLPlotLive
-openGLPlotter provides a means to plot large amounts of quickly updated data in an OpenGL context. This can be a window created specifically for the plotter, or to embed in another OpenGL window. Originally this was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. 
+openGLPlotter provides a means to plot data that is quickly updated in an OpenGL context. This can be a window created specifically for the plotter, or embedded in another OpenGL window. Originally openGLPlotLive was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. Once dependencie are installed, the code should work on Linux & Windows.
 
 
 # Features
@@ -141,14 +141,70 @@ add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E 
 # Installation & Dependencies
 
 ##  Automated Install
-A few scripts have been created to automate the installation process. In the event these fail, you may have to compile the dependencies manually.
+A few scripts have been created to automate the installation process, residing in the Installers directory. In the event these fail, you may have to compile the dependencies manually. It is recommended that the user goes through this script before running it, to ensure that the commands won't cause any conflicts with the existing environment. 
+
+Optionally, Doxygen and Sphinx with Breathe (and the sphinx-rtd-theme) are required to generate the documentation. This isn't part of the provided scripts, but is explained [here](##Optional-Dependencies).
 
 ### Linux (Ubuntu)
 On Ubuntu these dependencies can be installed by running
 ```
-sudo chmod +x installDependencies.sh
-./installDependenciesUbuntu.txt
+cd Installers
+sudo chmod +x installDependenciesUbuntu.sh
+./installDependenciesUbuntu.sh
 ```
+
+### Linux (Fedora)
+On Fedora, these dependencies can be installed by running
+```
+cd Installers
+sudo chmod +x ./installDependenciesFedora.sh
+./installDependenciesFedora.sh
+```
+
+
+### Windows
+On Windows, these dependencies are installed in two steps by running the following. After the first shell script completes, open a new terminal to ensure the new environment variable are loaded, before running the second script.
+```
+cd Installers
+installDependenciesWindows-part1.bat
+```
+* Close the command prompt
+* Open a new command prompt
+```
+cd Installers
+installDependenciesWindows-part2.bat
+```
+
+
+## Optional Dependencies
+### Doxygen
+Ubuntu
+```
+sudo apt-get install doxygen
+```
+
+Fedora
+```
+sudo dnf -y install doxygen
+```
+
+
+### Sphinx with Breathe
+Ubuntu
+```
+sudo apt-get install python3-sphinx
+sudo apt-get install python3-breathe
+sudo apt-get install python3-sphinx-rtd-theme
+```
+
+Fedora
+```
+sudo dnf -y install sphinx
+sudo dnf -y install python3-breathe
+sudo dnf -y install python-sphinx_rtd_theme 
+```
+
+
 ## Manual Install
 ### Linux (Ubuntu)
 * Building Dependencies

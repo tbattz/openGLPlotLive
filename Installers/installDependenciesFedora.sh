@@ -1,6 +1,6 @@
 #!/bin/bash
-# Make script executable with sudo chmod +x installDependenciesUbuntu.sh
-# Run script without sudo ./installDependenciesUbuntu.sh
+# Make script executable with sudo chmod +x installDependenciesFedora.sh
+# Run script without sudo ./installDependenciesFedora.sh
 
 # Get number of cores
 NPROC=$(nproc)
@@ -15,7 +15,7 @@ cd ~/Downloads
 echo "Switched to ~/Downloads"
 
 echo -e "\e[44m ================================ Build Dependencies =============================== \e[49m"
-sudo apt-get -y install cmake
+sudo dnf -y install cmake
 
 echo -e "\e[44m ===================== GLFW (multi-platform library for OpenGL) ==================== \e[49m"
 if [ ! -d ~/Downloads/glfw/ ]; then
@@ -23,17 +23,20 @@ if [ ! -d ~/Downloads/glfw/ ]; then
 else
 	echo "glfw directory already exists! Not cloning."
 fi
-echo "Installing mesa depencies."
-sudo apt-get -y install xorg-dev libglu1-mesa-dev
+echo "Installing X11 and wayland dependencies, allowing either to be used."
+sudo dnf -y install libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel libXxf86vm-devel
+sudo dnf -y install wayland-devel libxkbcommon-devel wayland-protocols-devel extra-cmake-modules
 echo "Building glfw."
 cd glfw
-cmake -G "Unix Makefiles"
+mkdir build
+cmake -S . -B build -DGLFW_USE_WAYLAND=ON -G "Unix Makefiles"
+cd build
 make -j$NPROC
 sudo make install
-cd ..
+cd ../..
 
 echo -e "\e[44m ================== GLEW (The OpenGL Extension Wrangler Library) =================== \e[49m"
-sudo apt-get -y install libglew-dev
+sudo dnf -y install glew-devel
 
 echo -e "\e[44m ======================= GLM (The OpenGL Mathematics Library) ====================== \e[49m"
 if [ ! -d ~/Downloads/glm/ ]; then
@@ -46,6 +49,7 @@ echo "Copying GLM to" $curDIR"/include/"
 sudo cp -r ~/Downloads/glm/glm /usr/local/include
 
 echo -e "\e[44m ======================= FreeType - Font Rendering Library ========================= \e[49m"
+sudo dnf -y install freetype-devel
 if [ ! -f ~/Downloads/freetype.tar.bz2 ]; then
 	wget -O ~/Downloads/freetype.tar.bz2 "http://download.savannah.gnu.org/releases/freetype/freetype-2.7.1.tar.bz2"
 fi

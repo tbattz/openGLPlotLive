@@ -99,11 +99,11 @@ namespace GLPL {
         float unitsPerEm = 1;
         float dpiX = 1;
         float dpiY = 1;
-        const float inch2Mm = 25.4;
+        float inch2Mm = 25.4;
         int emSquareSize = 2048;
 
         // Functions
-        void loadFont(const GLchar *fontPath);
+        void loadFont(const GLchar* fontPath);
         void loadGlyphs();
         void createAndSetupBuffers();
         void determineScaling();

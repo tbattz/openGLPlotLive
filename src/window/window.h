@@ -26,12 +26,6 @@
 
 
 namespace GLPL {
-	// Define Fonts
-	#ifdef _WIN32
-		#define FONTPATH "C:/Windows/Fonts/Arial.ttf"
-	#elif __linux__
-		#define FONTPATH "/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf"
-	#endif
 
 	enum CurrentAction {
 		NO_ACTION,
