@@ -1,5 +1,5 @@
 # openGLPlotLive
-openGLPlotter provides a means to plot data that is quickly updated in an OpenGL context. This can be a window created specifically for the plotter, or embedded in another OpenGL window. Originally openGLPlotLive was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. Once dependencie are installed, the code should work on Linux & Windows.
+openGLPlotter provides a means to plot data that is quickly updated in an OpenGL context. This can be a window created specifically for the plotter, or embedded in another OpenGL window. Originally openGLPlotLive was created to enable debugging of another OpenGL project, where the bug required visualising the path of a vehicle in 60 fps. It may be useful for similar purposes, or for those wanting to embed a graphing library in their code, using c++. Once dependencies are installed, the code should work on Linux (tested on Ubuntu or Fedora) & Windows.
 
 
 # Features
