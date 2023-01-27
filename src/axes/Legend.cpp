@@ -83,11 +83,7 @@ namespace GLPL {
                     currRect->setPosition(0.025f, currHeight + 0.05f);
                     currRect->setSize(0.2f, textStringPt->getHeight() - 0.05f);
 
-                    std::cout << currHeight << std::endl;
-
                     currHeight += textStringPt->getHeight() + heightOffset;
-
-                    std::cout << textStringPt->getPosition()[1] << " : " << currRect->getPosition()[1] << std::endl;
                 }
             }
             textChanged = false;

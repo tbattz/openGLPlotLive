@@ -10,9 +10,10 @@
 
 namespace GLPL {
 
-    Window::Window(int windowWidth, int windowHeight, bool transparentBackground, bool focusOnShow) :
+    Window::Window(int windowWidth, int windowHeight, bool printSelected, bool transparentBackground, bool focusOnShow) :
             TopLevelDrawable(0.0f, 0.0f, windowWidth, windowHeight) {
         // Set window options
+        this->printSelected = printSelected;
         this->transparentBackground = transparentBackground;
         this->focusOnShow = focusOnShow;
 
